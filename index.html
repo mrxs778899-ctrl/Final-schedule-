@@ -11,17 +11,15 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #1c1e21;
             min-height: 100vh;
-            /* خلفية دراسية جميلة */
             background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             position: relative;
         }
-        /* طبقة شفافة لتوضيح العناصر */
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.45);
             z-index: -1;
         }
         .container {
@@ -30,45 +28,110 @@
             padding: 20px;
             position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        /* صفحة الترحيب */
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            width: 100%;
+        }
+        .welcome-card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #0088cc;
+            margin-bottom: 15px;
+        }
+        .welcome-card h1 {
+            font-size: 1.8rem;
+            color: #0d47a1;
+            margin-bottom: 10px;
+        }
+        .welcome-card p {
+            font-size: 1rem;
+            color: #444;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .btn-start {
+            background: #0088cc;
+            color: #fff;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 6px 15px rgba(0, 136, 204, 0.4);
+        }
+        .btn-start:active { transform: scale(0.95); background: #005f8a; }
+        /* الصفحة الرئيسية */
+        .main-page {
+            width: 100%;
         }
         .card {
             background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 16px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
         }
         h2 { font-size: 1.3rem; margin-bottom: 12px; color: #0d47a1; }
         .user { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .user img { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #0088cc; }
-        .progress-section { margin: 10px 0; }
+        .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #0088cc; }
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 15px;
+        }
+        .progress-section { margin: 15px 0; }
         .progress-label { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .progress-bar { height: 18px; background: #e0e0e0; border-radius: 9px; overflow: hidden; margin: 6px 0 10px; }
-        .progress-fill { height: 100%; background: #0088cc; transition: width 0.4s; }
-        .controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        .progress-bar { height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 6px 0 10px; }
+        .progress-fill { height: 100%; background: #0088cc; transition: width 0.5s ease; }
+        .controls { display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 5px; }
         .ctrl-btn {
-            width: 36px; height: 36px;
+            width: 38px; height: 38px;
             border-radius: 50%;
             border: none;
             background: #0088cc;
             color: #fff;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
-        .ctrl-btn:active { transform: scale(0.9); background: #005f8a; }
+        .ctrl-btn:active { transform: scale(0.9); }
         .ctrl-btn.minus { background: #e0e0e0; color: #333; }
         .ctrl-btn.minus:active { background: #bdbdbd; }
-        .total-progress { text-align: center; margin: 12px 0; font-weight: bold; }
+        .value { font-size: 1.2rem; font-weight: bold; color: #0088cc; min-width: 30px; text-align: center; }
+        .back-welcome {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .back-welcome button {
+            background: none;
+            border: none;
+            color: #0088cc;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
         .note { text-align: center; font-size: 0.7rem; color: #ddd; margin-top: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .value { font-weight: bold; color: #0088cc; }
     </style>
 </head>
 <body>
@@ -80,82 +143,144 @@
 
         const user = tg.initDataUnsafe?.user;
         const userName = user ? (user.first_name || 'مستخدم') : 'مستخدم';
+        const userPhoto = user?.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0088cc&color=fff`;
 
         const TOTAL_THEORETICAL = 7;
         const TOTAL_PRACTICAL = 6;
 
-        async function load() {
+        // دوال localStorage
+        function loadProgress() {
             const raw = localStorage.getItem('tma_progress');
             return raw ? JSON.parse(raw) : { theoretical: 4, practical: 0 };
         }
-        async function save(d) { localStorage.setItem('tma_progress', JSON.stringify(d)); }
+        function saveProgress(data) { localStorage.setItem('tma_progress', JSON.stringify(data)); }
+        function isWelcomeShown() { return localStorage.getItem('tma_welcome') === 'true'; }
+        function setWelcomeShown() { localStorage.setItem('tma_welcome', 'true'); }
 
-        function render(state) {
-            const done = state.theoretical + state.practical;
-            const total = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
-            const pct = Math.round((done / total) * 100);
-
-            document.getElementById('app').innerHTML = `
-                <div class="user">
-                    <img src="${user?.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName) + '&background=0088cc&color=fff'}" alt="">
-                    <div>
-                        <strong style="font-size:1.1rem;">${userName}</strong>
-                        <div style="font-size:0.8rem; opacity:0.8;">@${user?.username || 'لا يوجد'}</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <h2>📈 تقدّم الدراسة</h2>
-                    <div class="progress-section">
-                        <div class="progress-label">
-                            <span>📘 نظري</span>
-                            <span>${state.theoretical}/${TOTAL_THEORETICAL}</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width:${(state.theoretical/TOTAL_THEORETICAL)*100}%"></div>
-                        </div>
-                        <div class="controls">
-                            <button class="ctrl-btn minus" onclick="changeProgress('theoretical', -1)">−</button>
-                            <span class="value">${state.theoretical}</span>
-                            <button class="ctrl-btn" onclick="changeProgress('theoretical', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="progress-section">
-                        <div class="progress-label">
-                            <span>🧪 عملي</span>
-                            <span>${state.practical}/${TOTAL_PRACTICAL}</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width:${(state.practical/TOTAL_PRACTICAL)*100}%"></div>
-                        </div>
-                        <div class="controls">
-                            <button class="ctrl-btn minus" onclick="changeProgress('practical', -1)">−</button>
-                            <span class="value">${state.practical}</span>
-                            <button class="ctrl-btn" onclick="changeProgress('practical', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="total-progress">
-                        ${pct}% مكتمل (${done}/${total})
-                    </div>
-                </div>
-                <div class="note">تطبيق تيليجرام المصغر • بدون تسجيل دخول</div>
+        // رسم المخطط البياني الدائري باستخدام SVG
+        function createDonutChart(percent) {
+            const radius = 50;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (percent / 100) * circumference;
+            return `
+                <svg width="140" height="140" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="${radius}" fill="none" stroke="#e0e0e0" stroke-width="12" />
+                    <circle cx="60" cy="60" r="${radius}" fill="none" stroke="#0088cc" stroke-width="12"
+                            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
+                            stroke-linecap="round" transform="rotate(-90 60 60)"
+                            style="transition: stroke-dashoffset 0.8s ease;" />
+                    <text x="60" y="55" text-anchor="middle" fill="#0d47a1" font-size="22" font-weight="bold">${percent}%</text>
+                    <text x="60" y="75" text-anchor="middle" fill="#555" font-size="12">مكتمل</text>
+                </svg>
             `;
         }
 
-        window.changeProgress = async function(type, amount) {
-            const data = await load();
+        // عرض الصفحة الرئيسية
+        function renderMainPage() {
+            const progress = loadProgress();
+            const done = progress.theoretical + progress.practical;
+            const total = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
+            const pct = Math.round((done / total) * 100);
+
+            const html = `
+                <div class="main-page">
+                    <div class="user">
+                        <img src="${userPhoto}" alt="صورة المستخدم">
+                        <div>
+                            <strong style="font-size:1.1rem;">${userName}</strong>
+                            <div style="font-size:0.8rem; opacity:0.8;">@${user?.username || 'لا يوجد'}</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="text-align:center;">
+                        <h2>📊 نسبة الإكمال</h2>
+                        <div class="chart-container">${createDonutChart(pct)}</div>
+                        <p style="margin-top:5px; color:#555;">${done} من ${total} محاضرة</p>
+                    </div>
+
+                    <div class="card">
+                        <h2>📈 تقدّم المحاضرات</h2>
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>📘 نظري</span>
+                                <span>${progress.theoretical}/${TOTAL_THEORETICAL}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width:${(progress.theoretical/TOTAL_THEORETICAL)*100}%"></div>
+                            </div>
+                            <div class="controls">
+                                <button class="ctrl-btn minus" onclick="changeProgress('theoretical', -1)">−</button>
+                                <span class="value">${progress.theoretical}</span>
+                                <button class="ctrl-btn" onclick="changeProgress('theoretical', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>🧪 عملي</span>
+                                <span>${progress.practical}/${TOTAL_PRACTICAL}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width:${(progress.practical/TOTAL_PRACTICAL)*100}%"></div>
+                            </div>
+                            <div class="controls">
+                                <button class="ctrl-btn minus" onclick="changeProgress('practical', -1)">−</button>
+                                <span class="value">${progress.practical}</span>
+                                <button class="ctrl-btn" onclick="changeProgress('practical', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="back-welcome">
+                        <button onclick="showWelcome()">⬅️ العودة لصفحة الترحيب</button>
+                    </div>
+                    <div class="note">تطبيق تيليجرام المصغر • بدون تسجيل دخول</div>
+                </div>
+            `;
+            document.getElementById('app').innerHTML = html;
+        }
+
+        // عرض صفحة الترحيب
+        function showWelcome() {
+            const html = `
+                <div class="welcome-card">
+                    <img src="${userPhoto}" alt="صورة المستخدم">
+                    <h1>أهلًا ${userName}! 👋</h1>
+                    <p>
+                        مرحبًا بك في <strong>منظّم جلسات الدراسة</strong> 🧬<br>
+                        تابع تقدّمك في المحاضرات النظرية والعملية،<br>
+                        وشارك في التصويت الجماعي لأوقات الجلسات.<br>
+                        <em>بالتوفيق في رحلتك العلمية!</em>
+                    </p>
+                    <button class="btn-start" onclick="startApp()">✨ ابدأ الآن</button>
+                </div>
+            `;
+            document.getElementById('app').innerHTML = html;
+        }
+
+        // حدث بدء التطبيق
+        window.startApp = function() {
+            setWelcomeShown();
+            renderMainPage();
+        };
+
+        // تغيير التقدم
+        window.changeProgress = function(type, amount) {
+            const data = loadProgress();
             if (type === 'theoretical') {
                 data.theoretical = Math.min(Math.max(data.theoretical + amount, 0), TOTAL_THEORETICAL);
             } else if (type === 'practical') {
                 data.practical = Math.min(Math.max(data.practical + amount, 0), TOTAL_PRACTICAL);
             }
-            await save(data);
-            render(data);
+            saveProgress(data);
+            renderMainPage();
         };
 
-        (async ()=>{
-            const data = await load();
-            render(data);
-        })();
+        // نقطة البداية
+        if (isWelcomeShown()) {
+            renderMainPage();
+        } else {
+            showWelcome();
+        }
     </script>
 </body>
 </html>
