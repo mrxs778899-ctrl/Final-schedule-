@@ -11,211 +11,356 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--tg-theme-bg-color, #f0f2f5);
             color: var(--tg-theme-text-color, #1c1e21);
-            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+            height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+            transition: background 0.3s, color 0.3s;
         }
-        .container { flex: 1; overflow-y: auto; padding: 20px 20px 90px 20px; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
         .card {
-            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.85));
-            backdrop-filter: blur(10px);
-            border-radius: 20px; padding: 20px; margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.9));
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            transition: all 0.2s;
         }
-        .user-card { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .user-card img { border-radius: 50%; width: 56px; height: 56px; }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--tg-theme-text-color, #1c1e21);
+        }
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .user-row img {
+            width: 52px; height: 52px; border-radius: 50%;
+            border: 2px solid var(--tg-theme-button-color, #0088cc);
+        }
+        .progress-bar {
+            background: var(--tg-theme-hint-color, #ddd);
+            border-radius: 12px;
+            height: 20px;
+            overflow: hidden;
+            margin: 8px 0 16px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #0088cc, #00c6a7);
+            border-radius: 12px;
+            width: 0%;
+            transition: width 0.6s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: white;
+            font-weight: bold;
+        }
+        .stat-grid {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .stat-box {
+            flex: 1;
+            background: var(--tg-theme-bg-color, #fff);
+            border-radius: 16px;
+            padding: 14px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .stat-box .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--tg-theme-button-color, #0088cc);
+        }
         button {
             background: var(--tg-theme-button-color, #0088cc);
             color: var(--tg-theme-button-text-color, #fff);
-            border: none; border-radius: 12px; padding: 10px 16px;
-            font-size: 1rem; font-weight: bold; cursor: pointer;
+            border: none;
+            border-radius: 14px;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            width: 100%;
+            margin-top: 8px;
         }
-        .nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.9));
-            backdrop-filter: blur(12px);
-            display: flex; justify-content: space-around; padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 10;
+        button:active {
+            transform: scale(0.97);
+            opacity: 0.85;
         }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--tg-theme-hint-color, #8a8a8e); font-size: 0.75rem;
-            background: none; border: none; cursor: pointer;
+        button.secondary {
+            background: var(--tg-theme-secondary-bg-color, #e0e0e0);
+            color: var(--tg-theme-text-color, #1c1e21);
         }
-        .nav-item.active { color: var(--tg-theme-button-color, #0088cc); font-weight: bold; }
-        .nav-item span { font-size: 1.5rem; }
+        .week-table {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .day-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--tg-theme-bg-color, #fafafa);
+            border-radius: 14px;
+            padding: 10px 14px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .day-name {
+            font-weight: bold;
+            min-width: 70px;
+            color: var(--tg-theme-text-color, #1c1e21);
+        }
+        .time-options {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .time-btn {
+            background: var(--tg-theme-secondary-bg-color, #e8e8e8);
+            color: var(--tg-theme-text-color, #1c1e21);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .time-btn.selected {
+            background: var(--tg-theme-button-color, #0088cc);
+            color: var(--tg-theme-button-text-color, #fff);
+            font-weight: bold;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--tg-theme-hint-color, #888);
+            margin-top: 24px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="home" class="tab-content active"></div>
-        <div id="theoretical" class="tab-content"></div>
-        <div id="practical" class="tab-content"></div>
-        <div id="voting" class="tab-content"></div>
-        <div id="statistics" class="tab-content"></div>
+    <div class="container" id="app">
+        <!-- المحتوى يُبنى بالجافاسكربت -->
     </div>
-
-    <nav class="nav">
-        <button class="nav-item active" data-tab="home"><span>🏠</span> الرئيسية</button>
-        <button class="nav-item" data-tab="theoretical"><span>📘</span> نظري</button>
-        <button class="nav-item" data-tab="practical"><span>🧪</span> عملي</button>
-        <button class="nav-item" data-tab="voting"><span>🗳️</span> تصويت</button>
-        <button class="nav-item" data-tab="statistics"><span>📊</span> إحصائيات</button>
-    </nav>
-
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+
         const user = tg.initDataUnsafe?.user;
         const userId = user ? user.id : 'local';
 
-        // قوالب المحاضرات
-        const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس"];
-        const times = ["8:00 مساءً", "9:00 مساءً", "10:00 مساءً", "11:00 مساءً"];
-        function generateLectures(type) {
-            const lectures = [];
-            days.forEach(day => {
-                times.forEach(time => {
-                    const id = `${type}_${day}_${time.replace(/:/g,'').replace(/\s/g,'')}`;
-                    lectures.push({ id, day, time });
+        // ========== المعطيات الثابتة ==========
+        const TOTAL_THEORETICAL = 7;
+        const COMPLETED_THEORETICAL = 4; // افتراضي
+        const TOTAL_PRACTICAL = 6;
+        const COMPLETED_PRACTICAL = 0; // افتراضي
+
+        // حساب تواريخ الأسبوع (من اليوم إلى السبت القادم)
+        function getWeekDays() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0=أحد, 6=سبت
+            const daysUntilSaturday = (6 - dayOfWeek + 7) % 7; // أيام حتى السبت
+            const days = [];
+            for (let i = 0; i <= daysUntilSaturday; i++) {
+                const d = new Date(today);
+                d.setDate(today.getDate() + i);
+                const dayNames = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+                days.push({
+                    name: dayNames[d.getDay()],
+                    date: d.toISOString().slice(0,10), // YYYY-MM-DD
+                    shortDate: d.getDate() + '/' + (d.getMonth()+1)
                 });
-            });
-            return lectures;
-        }
-        const theoreticalLectures = generateLectures('theoretical');
-        const practicalLectures = generateLectures('practical');
-
-        // ----- دوال localStorage -----
-        function getData() {
-            const raw = localStorage.getItem('study_tma_data');
-            return raw ? JSON.parse(raw) : { attendance: {}, vote: null };
-        }
-        function saveData(data) {
-            localStorage.setItem('study_tma_data', JSON.stringify(data));
+            }
+            return days;
         }
 
-        // ----- حضور -----
-        window.markAttendance = function(lectureId) {
-            const data = getData();
-            if (!data.attendance[userId]) data.attendance[userId] = {};
-            data.attendance[userId][lectureId] = true;
-            saveData(data);
-            const type = lectureId.startsWith('theoretical') ? 'theoretical' : 'practical';
-            updateAttendanceUI(type);
-        };
+        // أوقات التصويت
+        const VOTE_TIMES = ['8','9','10','11'];
 
-        function updateAttendanceUI(type) {
-            const lectures = type === 'theoretical' ? theoreticalLectures : practicalLectures;
-            const data = getData();
-            const userAtt = (data.attendance[userId] || {});
-            lectures.forEach(lec => {
-                const el = document.getElementById(`lec-${lec.id}`);
-                if (el) {
-                    const status = el.querySelector('.attendance-status');
-                    if (status) status.textContent = userAtt[lec.id] ? ' ✅' : ' ⬜';
+        // ========== دوال التخزين (localStorage مع احتياط CloudStorage) ==========
+        async function loadData() {
+            // محاولة استخدام CloudStorage الخاصة بتيليجرام إن أمكن
+            if (tg.CloudStorage) {
+                try {
+                    const keys = ['progress', 'votes'];
+                    const items = await Promise.all(keys.map(k => new Promise(resolve => {
+                        tg.CloudStorage.getItem(k, (err, value) => {
+                            resolve(value || null);
+                        });
+                    })));
+                    return {
+                        progress: items[0] ? JSON.parse(items[0]) : { theoretical: COMPLETED_THEORETICAL, practical: COMPLETED_PRACTICAL },
+                        votes: items[1] ? JSON.parse(items[1]) : {}
+                    };
+                } catch (e) {}
+            }
+            // العودة إلى localStorage
+            const raw = localStorage.getItem('tma_study_data');
+            if (raw) {
+                try {
+                    return JSON.parse(raw);
+                } catch (e) {}
+            }
+            return {
+                progress: { theoretical: COMPLETED_THEORETICAL, practical: COMPLETED_PRACTICAL },
+                votes: {} // { "2026-05-06": "8" }
+            };
+        }
+
+        async function saveData(data) {
+            // محاولة CloudStorage
+            if (tg.CloudStorage) {
+                try {
+                    await new Promise((resolve, reject) => {
+                        tg.CloudStorage.setItem('progress', JSON.stringify(data.progress), (err, ok) => {
+                            if (err) reject(err); else resolve();
+                        });
+                    });
+                    await new Promise((resolve, reject) => {
+                        tg.CloudStorage.setItem('votes', JSON.stringify(data.votes), (err, ok) => {
+                            if (err) reject(err); else resolve();
+                        });
+                    });
+                    console.log('Saved to CloudStorage');
+                } catch(e) {
+                    localStorage.setItem('tma_study_data', JSON.stringify(data));
                 }
-            });
+            } else {
+                localStorage.setItem('tma_study_data', JSON.stringify(data));
+            }
         }
 
-        async function renderLectureList(type) {
-            const container = document.getElementById(type);
-            const lectures = type === 'theoretical' ? theoreticalLectures : practicalLectures;
-            let html = `<h2>📚 ${type === 'theoretical' ? 'النظرية' : 'العملية'}</h2>`;
-            lectures.forEach(lec => {
-                html += `
-                <div class="card" id="lec-${lec.id}">
-                    <strong>${lec.day}</strong> - ${lec.time}
-                    <button style="float:left;" onclick="markAttendance('${lec.id}')">حضرت</button>
-                    <span class="attendance-status"></span>
-                </div>`;
-            });
-            container.innerHTML = html;
-            updateAttendanceUI(type);
-        }
+        // ========== عرض الواجهة ==========
+        async function renderApp() {
+            const data = await loadData();
+            const weekDays = getWeekDays();
+            const totalCompleted = data.progress.theoretical + data.progress.practical;
+            const totalAll = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
+            const percentage = Math.round((totalCompleted / totalAll) * 100);
 
-        // ----- تصويت -----
-        window.castVote = function(time) {
-            const data = getData();
-            data.vote = time;
-            saveData(data);
-            renderVoting();
-            renderStatistics();
-        };
-
-        function renderVoting() {
-            const data = getData();
-            const myVote = data.vote;
-            document.getElementById('voting').innerHTML = `
-                <h2>🗳️ تصويتك للجلسة الجماعية</h2>
-                <div class="card">
-                    <p>اختر الوقت المفضل:</p>
-                    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-                        <button onclick="castVote('8')" style="${myVote==='8'?'background:gold; color:black':''}">8:00</button>
-                        <button onclick="castVote('9')" style="${myVote==='9'?'background:gold; color:black':''}">9:00</button>
-                        <button onclick="castVote('10')" style="${myVote==='10'?'background:gold; color:black':''}">10:00</button>
-                        <button onclick="castVote('11')" style="${myVote==='11'?'background:gold; color:black':''}">11:00</button>
-                    </div>
-                    <p style="margin-top:15px;"><strong>صوتك:</strong> ${myVote ? myVote + ':00 مساءً' : 'لم تصوت بعد'}</p>
-                </div>`;
-        }
-
-        // ----- إحصائيات (محلية) -----
-        function renderStatistics() {
-            const data = getData();
-            const userAtt = data.attendance[userId] || {};
-            const attCount = Object.keys(userAtt).length;
-            const vote = data.vote;
-
-            document.getElementById('statistics').innerHTML = `
-                <h2>📊 ملخصك</h2>
-                <div class="card">
-                    <p>✅ الجلسات التي حضرتها: <strong>${attCount}</strong></p>
-                    <p>🗳️ تصويتك للجلسة الجماعية: <strong>${vote ? vote + ':00 مساءً' : 'لم تصوت'}</strong></p>
-                    <hr>
-                    <p style="color: gray; font-size: 0.85rem;">ℹ️ تُحفظ بياناتك على جهازك فقط. لمشاركة التصويت مع الزملاء، استخدم البوت المرفق لاحقاً.</p>
-                </div>`;
-        }
-
-        // ----- الرئيسية -----
-        function renderHome() {
-            const data = getData();
-            const userAtt = data.attendance[userId] || {};
-            const attCount = Object.keys(userAtt).length;
-            document.getElementById('home').innerHTML = `
-                <div class="user-card card">
-                    <img src="${user?.photo_url || 'https://via.placeholder.com/56/0088cc/ffffff?text=👤'}" alt="صورة" />
+            const html = `
+                <div class="user-row">
+                    <img src="${user?.photo_url || 'https://via.placeholder.com/52/0088cc/ffffff?text=👤'}" alt="صورة">
                     <div>
                         <strong>${user?.first_name || 'مستخدم'} ${user?.last_name || ''}</strong>
-                        <div style="font-size:0.9rem; opacity:0.7;">@${user?.username || 'لا يوجد'}</div>
+                        <div style="font-size:0.85rem; opacity:0.7;">مرحباً بك في منظّم الجلسات</div>
                     </div>
                 </div>
+
+                <!-- بطاقة التقدم -->
                 <div class="card">
-                    <p>📅 حضرت <strong>${attCount}</strong> جلسة حتى الآن</p>
-                </div>`;
+                    <h2>📈 تقدّمك</h2>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="number" id="theoCount">${data.progress.theoretical}/7</div>
+                            <small>نظري</small>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${(data.progress.theoretical/7)*100}%">${Math.round((data.progress.theoretical/7)*100)}%</div></div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number" id="pracCount">${data.progress.practical}/6</div>
+                            <small>عملي</small>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${(data.progress.practical/6)*100}%">${Math.round((data.progress.practical/6)*100)}%</div></div>
+                        </div>
+                    </div>
+                    <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="width:${percentage}%">${percentage}% مكتمل (${totalCompleted}/${totalAll})</div></div>
+                    <div style="display:flex; gap:10px; margin-top:16px;">
+                        <button class="secondary" onclick="addProgress('theoretical')">+ أنهيت محاضرة نظرية</button>
+                        <button class="secondary" onclick="addProgress('practical')">+ أنهيت محاضرة عملية</button>
+                    </div>
+                </div>
+
+                <!-- بطاقة التصويت -->
+                <div class="card">
+                    <h2>🗳️ التصويت الجماعي للأسبوع</h2>
+                    <div class="week-table">
+                        ${weekDays.map(day => `
+                            <div class="day-row">
+                                <div class="day-name">${day.name}<br><small>${day.shortDate}</small></div>
+                                <div class="time-options">
+                                    ${VOTE_TIMES.map(t => {
+                                        const selected = data.votes[day.date] === t ? 'selected' : '';
+                                        return `<button class="time-btn ${selected}" onclick="vote('${day.date}','${t}')">${t}:00</button>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="text-align:center; margin-top:8px; font-size:0.85rem;" id="voteStatus">
+                        ${Object.keys(data.votes).length ? '✅ تم تسجيل تصويتك لـ ' + Object.keys(data.votes).length + ' أيام' : 'لم تصوت بعد'}
+                    </div>
+                    <button onclick="sendVotesToBot()">📤 مشاركة تصويتي مع المجموعة (عبر البوت)</button>
+                </div>
+
+                <div class="footer-note">
+                    التطبيق يعمل داخل تيليجرام • بياناتك محفوظة محلياً على جهازك
+                </div>
+            `;
+            document.getElementById('app').innerHTML = html;
         }
 
-        // التنقل
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.nav-item[data-tab="${tabId}"]`).classList.add('active');
+        // ========== أحداث التفاعل ==========
+        window.addProgress = async function(type) {
+            const data = await loadData();
+            if (type === 'theoretical' && data.progress.theoretical < TOTAL_THEORETICAL) {
+                data.progress.theoretical += 1;
+            } else if (type === 'practical' && data.progress.practical < TOTAL_PRACTICAL) {
+                data.progress.practical += 1;
+            }
+            await saveData(data);
+            renderApp();
+        };
 
-            if (tabId === 'home') renderHome();
-            else if (tabId === 'theoretical') renderLectureList('theoretical');
-            else if (tabId === 'practical') renderLectureList('practical');
-            else if (tabId === 'voting') renderVoting();
-            else if (tabId === 'statistics') renderStatistics();
-        }
+        window.vote = async function(date, time) {
+            const data = await loadData();
+            data.votes[date] = time;
+            await saveData(data);
+            renderApp();
+        };
 
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-        });
+        window.sendVotesToBot = async function() {
+            const data = await loadData();
+            const votes = data.votes;
+            if (Object.keys(votes).length === 0) {
+                alert('لم تصوت على أي يوم بعد.');
+                return;
+            }
+            // إرسال عبر Telegram.WebApp.sendData
+            if (tg.sendData) {
+                tg.sendData(JSON.stringify({ action: 'vote', votes }));
+                tg.showPopup({ title: 'تم الإرسال', message: 'تم إرسال تصويتك إلى البوت. النتائج الجماعية ستظهر لاحقاً.' });
+            } else {
+                // نسخ احتياطي: عرض البيانات في نافذة لنسخها
+                const text = JSON.stringify(votes);
+                prompt('انسخ هذا النص وأرسله إلى البوت:', text);
+            }
+        };
 
-        // تشغيل
-        renderHome();
+        // بدء التطبيق
+        renderApp();
     </script>
 </body>
 </html>
