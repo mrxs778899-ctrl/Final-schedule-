@@ -9,38 +9,66 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
             color: #1c1e21;
-            padding: 20px;
             min-height: 100vh;
+            /* خلفية دراسية جميلة */
+            background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
         }
-        .container { max-width: 500px; margin: 0 auto; }
+        /* طبقة شفافة لتوضيح العناصر */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
         .card {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
-        h2 { font-size: 1.3rem; margin-bottom: 12px; color: #0088cc; }
+        h2 { font-size: 1.3rem; margin-bottom: 12px; color: #0d47a1; }
         .user { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #0088cc; }
-        .progress-bar { height: 20px; background: #eee; border-radius: 10px; overflow: hidden; margin: 8px 0; }
+        .user img { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #0088cc; }
+        .progress-section { margin: 10px 0; }
+        .progress-label { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .progress-bar { height: 18px; background: #e0e0e0; border-radius: 9px; overflow: hidden; margin: 6px 0 10px; }
         .progress-fill { height: 100%; background: #0088cc; transition: width 0.4s; }
-        .btn {
+        .controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        .ctrl-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: none;
             background: #0088cc;
             color: #fff;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            width: 100%;
-            font-size: 0.95rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            margin-top: 10px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
-        .btn:active { opacity: 0.8; }
-        .note { text-align: center; font-size: 0.75rem; color: #888; margin-top: 16px; }
+        .ctrl-btn:active { transform: scale(0.9); background: #005f8a; }
+        .ctrl-btn.minus { background: #e0e0e0; color: #333; }
+        .ctrl-btn.minus:active { background: #bdbdbd; }
+        .total-progress { text-align: center; margin: 12px 0; font-weight: bold; }
+        .note { text-align: center; font-size: 0.7rem; color: #ddd; margin-top: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .value { font-weight: bold; color: #0088cc; }
     </style>
 </head>
 <body>
@@ -69,32 +97,57 @@
 
             document.getElementById('app').innerHTML = `
                 <div class="user">
-                    <img src="${user?.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName)}" alt="">
+                    <img src="${user?.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName) + '&background=0088cc&color=fff'}" alt="">
                     <div>
-                        <strong>${userName}</strong>
-                        <div style="font-size:0.8rem;color:#888;">@${user?.username || 'لا يوجد'}</div>
+                        <strong style="font-size:1.1rem;">${userName}</strong>
+                        <div style="font-size:0.8rem; opacity:0.8;">@${user?.username || 'لا يوجد'}</div>
                     </div>
                 </div>
                 <div class="card">
                     <h2>📈 تقدّم الدراسة</h2>
-                    <div>نظري: ${state.theoretical}/${TOTAL_THEORETICAL}</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width:${(state.theoretical/TOTAL_THEORETICAL)*100}%"></div></div>
-                    <div>عملي: ${state.practical}/${TOTAL_PRACTICAL}</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width:${(state.practical/TOTAL_PRACTICAL)*100}%"></div></div>
-                    <div style="text-align:center;margin:10px 0;font-weight:bold;">${pct}% مكتمل (${done}/${total})</div>
-                    <div style="display:flex;gap:10px;">
-                        <button class="btn" onclick="add('theoretical')">+ أنهيت نظري</button>
-                        <button class="btn" onclick="add('practical')">+ أنهيت عملي</button>
+                    <div class="progress-section">
+                        <div class="progress-label">
+                            <span>📘 نظري</span>
+                            <span>${state.theoretical}/${TOTAL_THEORETICAL}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:${(state.theoretical/TOTAL_THEORETICAL)*100}%"></div>
+                        </div>
+                        <div class="controls">
+                            <button class="ctrl-btn minus" onclick="changeProgress('theoretical', -1)">−</button>
+                            <span class="value">${state.theoretical}</span>
+                            <button class="ctrl-btn" onclick="changeProgress('theoretical', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-label">
+                            <span>🧪 عملي</span>
+                            <span>${state.practical}/${TOTAL_PRACTICAL}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:${(state.practical/TOTAL_PRACTICAL)*100}%"></div>
+                        </div>
+                        <div class="controls">
+                            <button class="ctrl-btn minus" onclick="changeProgress('practical', -1)">−</button>
+                            <span class="value">${state.practical}</span>
+                            <button class="ctrl-btn" onclick="changeProgress('practical', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="total-progress">
+                        ${pct}% مكتمل (${done}/${total})
                     </div>
                 </div>
                 <div class="note">تطبيق تيليجرام المصغر • بدون تسجيل دخول</div>
             `;
         }
 
-        window.add = async function(type) {
+        window.changeProgress = async function(type, amount) {
             const data = await load();
-            if (type === 'theoretical' && data.theoretical < TOTAL_THEORETICAL) data.theoretical++;
-            else if (type === 'practical' && data.practical < TOTAL_PRACTICAL) data.practical++;
+            if (type === 'theoretical') {
+                data.theoretical = Math.min(Math.max(data.theoretical + amount, 0), TOTAL_THEORETICAL);
+            } else if (type === 'practical') {
+                data.practical = Math.min(Math.max(data.practical + amount, 0), TOTAL_PRACTICAL);
+            }
             await save(data);
             render(data);
         };
