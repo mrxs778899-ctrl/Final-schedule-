@@ -32,6 +32,7 @@
             background: #f5f5f5;
             font-size: 0.9rem;
             cursor: pointer;
+            transition: 0.2s;
         }
         .time-btn.active { background: #0088cc; color: #fff; border-color: #0088cc; }
         .btn {
@@ -45,13 +46,17 @@
             font-weight: bold;
             margin-top: 8px;
             cursor: pointer;
+            transition: 0.2s;
         }
+        .btn:active { opacity: 0.8; }
         .progress-bar { height: 20px; background: #eee; border-radius: 10px; overflow: hidden; margin: 8px 0; }
         .progress-fill { height: 100%; background: #0088cc; transition: width 0.3s; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         td { padding: 6px 0; border-bottom: 1px solid #eee; }
         .note { text-align: center; font-size: 0.7rem; color: #888; margin-top: 16px; }
         .error { color: #d32f2f; text-align: center; margin: 8px 0; font-size: 0.85rem; }
+        .loading { text-align: center; color: #888; margin: 10px 0; }
+        .success { color: #2e7d32; text-align: center; margin: 8px 0; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -81,7 +86,8 @@
                 progress: { theoretical: 4, practical: 0 },
                 voted: null,
                 results: {},
-                lastError: null
+                lastMessage: null,
+                lastMessageType: null // 'success' or 'error'
             };
         }
         async function save(d) { localStorage.setItem('tmastudy', JSON.stringify(d)); }
@@ -90,8 +96,10 @@
             const today = getToday();
             const local = await load();
             local.voted = time;
-            local.lastError = null;
+            local.lastMessage = '⏳ جارٍ إرسال تصويتك...';
+            local.lastMessageType = 'loading';
             await save(local);
+            render();
 
             try {
                 const res = await fetch(SCRIPT_URL, {
@@ -101,16 +109,19 @@
                 });
                 const json = await res.json();
                 if (json.success) {
-                    await loadResults();
+                    local.lastMessage = '✅ تم تسجيل تصويتك بنجاح';
+                    local.lastMessageType = 'success';
+                    await loadResults(); // تحميل النتائج فوراً
                 } else {
-                    local.lastError = json.error || 'خطأ غير معروف';
-                    await save(local);
+                    local.lastMessage = '❌ ' + (json.error || 'خطأ غير معروف');
+                    local.lastMessageType = 'error';
                 }
             } catch (e) {
                 console.error(e);
-                local.lastError = 'تعذر الاتصال بالخادم. تحقق من الرابط.';
-                await save(local);
+                local.lastMessage = '❌ تعذر الاتصال بالخادم. تأكد من الرابط والإنترنت.';
+                local.lastMessageType = 'error';
             }
+            await save(local);
             render();
         }
 
@@ -145,6 +156,19 @@
             const total = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
             const pct = Math.round((done / total) * 100);
 
+            const messageHtml = local.lastMessage ? 
+                `<div class="${local.lastMessageType === 'success' ? 'success' : local.lastMessageType === 'error' ? 'error' : 'loading'}">${local.lastMessage}</div>` : '';
+
+            const resultsHtml = Object.keys(local.results).length ? `
+                <table>
+                    ${['8','9','10','11'].map(t => `<tr><td>${t}:00 مساءً</td><td><strong>${local.results[t] || 0} صوت</strong></td></tr>`).join('')}
+                </table>
+                <div style="text-align:center;margin-top:6px;">🏆 الأعلى: ${(() => {
+                    const best = bestVote(local.results);
+                    return best.time ? `${best.time}:00 (${best.count} صوت)` : '-';
+                })()}</div>
+            ` : '<div style="text-align:center;color:#888;margin-top:8px;">لا توجد أصوات لليوم بعد</div>';
+
             document.getElementById('app').innerHTML = `
                 <div class="user">
                     <img src="${user?.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName)}" alt="">
@@ -173,21 +197,27 @@
                     <div style="text-align:center; margin:10px 0;">
                         ${local.voted ? `✅ صوتك: ${local.voted}:00 مساءً` : '⚠️ لم تصوت بعد'}
                     </div>
-                    ${local.lastError ? `<div class="error">❌ ${local.lastError}</div>` : ''}
-                    <button class="btn" onclick="loadResults().then(()=>render())">📊 عرض نتائج التصويت الجماعي</button>
-                    ${Object.keys(local.results).length ? `
-                        <table>
-                            ${['8','9','10','11'].map(t => `<tr><td>${t}:00 مساءً</td><td><strong>${local.results[t] || 0} صوت</strong></td></tr>`).join('')}
-                        </table>
-                        <div style="text-align:center;margin-top:6px;">🏆 الأعلى: ${(() => {
-                            const best = bestVote(local.results);
-                            return best.time ? `${best.time}:00 (${best.count} صوت)` : '-';
-                        })()}</div>
-                    ` : '<div style="text-align:center;color:#888;margin-top:8px;">لا توجد أصوات لليوم</div>'}
+                    ${messageHtml}
+                    <button class="btn" id="showResultsBtn" onclick="showResults()">📊 عرض نتائج التصويت الجماعي</button>
+                    <div id="resultsContainer">${resultsHtml}</div>
                 </div>
                 <div class="note">تطبيق تيليجرام المصغر • بدون تسجيل دخول</div>
             `;
         }
+
+        window.showResults = async function() {
+            const btn = document.getElementById('showResultsBtn');
+            if (btn) {
+                btn.textContent = '⏳ جارٍ التحميل...';
+                btn.disabled = true;
+            }
+            await loadResults();
+            await render();
+            if (btn) {
+                btn.textContent = '📊 عرض نتائج التصويت الجماعي';
+                btn.disabled = false;
+            }
+        };
 
         window.addProgress = async function(type) {
             const local = await load();
