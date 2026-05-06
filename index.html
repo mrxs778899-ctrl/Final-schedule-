@@ -9,197 +9,249 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--tg-theme-bg-color, #f0f2f5);
-            color: var(--tg-theme-text-color, #1c1e21);
-            height: 100vh; overflow-x: hidden; padding: 20px;
-            transition: background 0.3s, color 0.3s;
+            background: #f0f2f5;
+            color: #1c1e21;
+            padding: 20px;
+            height: 100vh;
         }
         .container { max-width: 500px; margin: 0 auto; }
         .card {
-            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.9));
-            backdrop-filter: blur(15px); border-radius: 24px; padding: 20px; margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            background: #fff;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
-        h2 { font-size: 1.4rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .user-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .user-row img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--tg-theme-button-color, #0088cc); }
-        .progress-bar { background: var(--tg-theme-hint-color, #ddd); border-radius: 12px; height: 20px; overflow: hidden; margin: 6px 0; }
+        h2 { font-size: 1.3rem; margin-bottom: 12px; }
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .user img {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            border: 2px solid #0088cc;
+        }
+        .times {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .times button {
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background: #f5f5f5;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .times button.active {
+            background: #0088cc;
+            color: #fff;
+            border-color: #0088cc;
+        }
+        .btn {
+            background: #0088cc;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        .btn.secondary {
+            background: #e0e0e0;
+            color: #1c1e21;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
         .progress-fill {
-            height: 100%; background: linear-gradient(135deg, #0088cc, #00c6a7); border-radius: 12px;
-            width: 0%; transition: width 0.6s; display: flex; align-items: center; justify-content: center;
-            font-size: 0.7rem; color: white; font-weight: bold;
+            height: 100%;
+            background: #0088cc;
+            /* width is dynamic */
         }
-        .stat-grid { display: flex; gap: 10px; margin-bottom: 12px; }
-        .stat-box {
-            flex: 1; background: var(--tg-theme-bg-color, #fff); border-radius: 16px; padding: 12px;
-            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
         }
-        .stat-box .number { font-size: 1.8rem; font-weight: bold; color: var(--tg-theme-button-color, #0088cc); }
-        button {
-            background: var(--tg-theme-button-color, #0088cc); color: var(--tg-theme-button-text-color, #fff);
-            border: none; border-radius: 14px; padding: 10px 16px; font-size: 0.9rem; font-weight: 600;
-            cursor: pointer; transition: transform 0.1s, opacity 0.2s; width: 100%; margin-top: 8px;
+        td {
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
         }
-        button:active { transform: scale(0.97); opacity: 0.85; }
-        button.secondary { background: var(--tg-theme-secondary-bg-color, #e0e0e0); color: var(--tg-theme-text-color, #1c1e21); }
-        .day-row {
-            display: flex; align-items: center; justify-content: space-between; background: var(--tg-theme-bg-color, #fafafa);
-            border-radius: 14px; padding: 10px 14px; gap: 10px; margin-bottom: 10px;
+        .note {
+            font-size: 0.7rem;
+            color: #888;
+            text-align: center;
+            margin-top: 16px;
         }
-        .day-name { font-weight: bold; min-width: 80px; }
-        .time-options { display: flex; gap: 6px; flex-wrap: wrap; }
-        .time-btn {
-            background: var(--tg-theme-secondary-bg-color, #e8e8e8); color: var(--tg-theme-text-color, #1c1e21);
-            border: none; border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
-            transition: all 0.2s; font-weight: 500;
-        }
-        .time-btn.selected { background: var(--tg-theme-button-color, #0088cc); color: #fff; font-weight: bold; }
-        .footer-note { text-align: center; font-size: 0.75rem; color: var(--tg-theme-hint-color, #888); margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container" id="app"></div>
     <script>
+        // رابط Google Apps Script (تم تضمينه تلقائياً)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyIlF3qvwWcHuoDprfjkMVQn6pQKvMVAPcD8dxRjojcpnFM_5YisAGGPL8nV7lW93X/exec';
+
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
         const user = tg.initDataUnsafe?.user;
         const userId = user ? user.id : 'local';
+        const userName = user ? (user.first_name || 'مستخدم') : 'مستخدم';
 
         const TOTAL_THEORETICAL = 7;
-        const COMPLETED_THEORETICAL = 4;
         const TOTAL_PRACTICAL = 6;
-        const COMPLETED_PRACTICAL = 0;
-        const VOTE_TIMES = ['8','9','10','11'];
 
-        function getTodayDate() { return new Date().toISOString().slice(0,10); }
-        function getTodayName() {
-            return ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][new Date().getDay()];
+        function getToday() {
+            return new Date().toISOString().slice(0,10);
+        }
+        function getDayName() {
+            const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+            return days[new Date().getDay()];
         }
 
-        async function loadData() {
-           const SERVER_URL = 'https://script.google.com/macros/s/AKfycbyyIlF3qvwWcHuoDprfjkMVQn6pQKvMVAPcD8dxRjojcpnFM_5YisAGGPL8nV7lW93X/exec';
-            const raw = localStorage.getItem('tma_study_data');
-           if (raw) {
-                try { return JSON.parse(raw); } catch(e) {}
-            }
-            return {
-                progress: { theoretical: COMPLETED_THEORETICAL, practical: COMPLETED_PRACTICAL },
-                votes: {} // { "2026-05-06": { "user1": "8", "user2": "9", ... } }
+        async function loadLocal() {
+            const raw = localStorage.getItem('tmastudy');
+            return raw ? JSON.parse(raw) : {
+                progress: { theoretical: 4, practical: 0 },
+                vote: null,
+                results: {}
             };
         }
-
-        async function saveData(data) {
-            localStorage.setItem('tma_study_data', JSON.stringify(data));
+        async function saveLocal(d) {
+            localStorage.setItem('tmastudy', JSON.stringify(d));
         }
 
-        function getTodayVotes(data) {
-            const today = getTodayDate();
-            const dayVotes = data.votes[today] || {};
-            const results = {};
-            for (const [uid, time] of Object.entries(dayVotes)) {
-                if (!results[time]) results[time] = 0;
-                results[time]++;
+        async function submitVote(time) {
+            const today = getToday();
+            const local = await loadLocal();
+            local.vote = time;
+            await saveLocal(local);
+            // إرسال التصويت إلى Google Sheets
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: String(userId),
+                        date: today,
+                        vote: time
+                    })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    await loadResults();
+                    render();
+                } else {
+                    alert('فشل إرسال التصويت: ' + (json.error || 'خطأ غير معروف'));
+                }
+            } catch (e) {
+                alert('تعذر الاتصال بالخادم. تأكد من الإنترنت.');
+                console.error(e);
             }
-            return results;
         }
 
-        async function renderApp() {
-            const data = await loadData();
-            const todayDate = getTodayDate();
-            const todayName = getTodayName();
-            const totalCompleted = data.progress.theoretical + data.progress.practical;
-            const totalAll = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
-            const percentage = Math.round((totalCompleted / totalAll) * 100);
-            const todayVotes = getTodayVotes(data);
-            const myVote = data.votes[todayDate]?.[userId] || null;
+        async function loadResults() {
+            const local = await loadLocal();
+            const today = getToday();
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const all = await res.json();
+                local.results = all[today] || {};
+            } catch (e) {
+                console.error(e);
+                local.results = {};
+            }
+            await saveLocal(local);
+        }
 
-            document.getElementById('app').innerHTML = `
-                <div class="user-row">
-                    <img src="${user?.photo_url || 'https://via.placeholder.com/48/0088cc/ffffff?text=👤'}" alt="صورة">
+        function maxVote(results) {
+            let best = '';
+            let max = 0;
+            for (const [t, c] of Object.entries(results)) {
+                if (c > max) { max = c; best = t; }
+            }
+            return { time: best, count: max };
+        }
+
+        async function render() {
+            const local = await loadLocal();
+            const today = getToday();
+            const done = local.progress.theoretical + local.progress.practical;
+            const total = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
+            const pct = Math.round((done / total) * 100);
+
+            const html = `
+                <div class="user">
+                    <img src="${user?.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName)}" alt="">
                     <div>
-                        <strong>${user?.first_name || 'مستخدم'} ${user?.last_name || ''}</strong>
-                        <div style="font-size:0.8rem; opacity:0.7;">@${user?.username || 'لا يوجد'}</div>
+                        <strong>${userName}</strong>
+                        <div style="font-size:0.8rem;color:#888;">@${user?.username || 'لا يوجد'}</div>
                     </div>
                 </div>
-
                 <div class="card">
-                    <h2>📈 تقدّمك</h2>
-                    <div class="stat-grid">
-                        <div class="stat-box">
-                            <div class="number">${data.progress.theoretical}/7</div>
-                            <small>نظري</small>
-                            <div class="progress-bar"><div class="progress-fill" style="width:${(data.progress.theoretical/7)*100}%">${Math.round((data.progress.theoretical/7)*100)}%</div></div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="number">${data.progress.practical}/6</div>
-                            <small>عملي</small>
-                            <div class="progress-bar"><div class="progress-fill" style="width:${(data.progress.practical/6)*100}%">${Math.round((data.progress.practical/6)*100)}%</div></div>
-                        </div>
-                    </div>
-                    <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="width:${percentage}%">${percentage}% مكتمل (${totalCompleted}/${totalAll})</div></div>
-                    <div style="display:flex; gap:10px; margin-top:12px;">
-                        <button class="secondary" onclick="addProgress('theoretical')">+ أنهيت محاضرة نظرية</button>
-                        <button class="secondary" onclick="addProgress('practical')">+ أنهيت محاضرة عملية</button>
+                    <h2>📈 تقدّم الدراسة</h2>
+                    <div style="margin:6px 0;">نظري: ${local.progress.theoretical}/${TOTAL_THEORETICAL}</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${(local.progress.theoretical/TOTAL_THEORETICAL)*100}%"></div></div>
+                    <div style="margin:6px 0;">عملي: ${local.progress.practical}/${TOTAL_PRACTICAL}</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${(local.progress.practical/TOTAL_PRACTICAL)*100}%"></div></div>
+                    <div style="text-align:center;margin:10px 0;font-weight:bold;">${pct}% مكتمل (${done}/${total})</div>
+                    <div style="display:flex;gap:10px;">
+                        <button style="flex:1;background:#0088cc;color:#fff;border:none;padding:10px;border-radius:12px;" onclick="addProgress('theoretical')">+ أنهيت نظري</button>
+                        <button style="flex:1;background:#0088cc;color:#fff;border:none;padding:10px;border-radius:12px;" onclick="addProgress('practical')">+ أنهيت عملي</button>
                     </div>
                 </div>
-
                 <div class="card">
-                    <h2>🗳️ تصويت اليوم (${todayName})</h2>
-                    <div class="day-row">
-                        <div class="day-name">${todayDate.split('-')[2]}/${todayDate.split('-')[1]}</div>
-                        <div class="time-options">
-                            ${VOTE_TIMES.map(t => `<button class="time-btn ${myVote === t ? 'selected' : ''}" onclick="castVote('${t}')">${t}:00</button>`).join('')}
+                    <h2>🗳️ تصويت اليوم (${getDayName()})</h2>
+                    <div class="times">
+                        ${['8', '9', '10', '11'].map(t => `<button class="${local.vote === t ? 'active' : ''}" onclick="submitVote('${t}')">${t}:00 مساءً</button>`).join('')}
+                    </div>
+                    <div style="text-align:center;">${local.vote ? `✅ صوتك: ${local.vote}:00 مساءً` : '⚠️ لم تصوت بعد'}</div>
+                    <button class="btn" onclick="loadResults().then(render)">📊 عرض نتائج التصويت الجماعي لليوم</button>
+                    <div style="margin-top:12px;">
+                        ${Object.keys(local.results).length ? `
+                        <table>
+                            ${['8', '9', '10', '11'].map(t => `<tr><td>${t}:00 مساءً</td><td><strong>${local.results[t] || 0} صوت</strong></td></tr>`).join('')}
+                        </table>
+                        <div style="margin-top:8px;text-align:center;font-weight:bold;">
+                            🏆 أعلى تصويت: ${(() => {
+                                const best = maxVote(local.results);
+                                return best.time ? `${best.time}:00 مساءً (${best.count} صوت)` : 'لا أصوات بعد';
+                            })()}
                         </div>
-                    </div>
-                    <div style="text-align:center; margin:10px 0;">
-                        ${myVote ? `✅ صوتك اليوم: <strong>${myVote}:00 مساءً</strong>` : '⚠️ لم تصوت بعد'}
+                        ` : '<div style="text-align:center;color:#888;margin-top:8px;">لا توجد أصوات لليوم</div>'}
                     </div>
                 </div>
-
-                ${Object.keys(todayVotes).length > 0 ? `
-                <div class="card">
-                    <h2>📊 نتائج اليوم (من صوتوا)</h2>
-                    <table style="width:100%; text-align:center; margin-top:10px;">
-                        <tr><th>الوقت</th><th>عدد الأصوات</th></tr>
-                        ${VOTE_TIMES.map(t => `<tr><td>${t}:00 مساءً</td><td>${todayVotes[t] || 0} صوت</td></tr>`).join('')}
-                    </table>
-                    <div style="margin-top:10px; font-weight:bold; text-align:center;">
-                        🏆 الأعلى: ${(() => {
-                            const max = Math.max(...VOTE_TIMES.map(t => todayVotes[t] || 0));
-                            const winners = VOTE_TIMES.filter(t => (todayVotes[t] || 0) === max).map(t => t+':00').join(' و ');
-                            return winners || 'لا أصوات';
-                        })()}
-                    </div>
-                </div>
-                ` : '<div class="card" style="text-align:center;">لا توجد تصويتات اليوم بعد</div>'}
-
-                <div class="footer-note">
-                    التصويت يظهر هنا فقط ولا يراه أحد غيرك
-                </div>
+                <div class="note">تطبيق تيليجرام المصغر • بدون تسجيل دخول</div>
             `;
+            document.getElementById('app').innerHTML = html;
         }
 
         window.addProgress = async function(type) {
-            const data = await loadData();
-            if (type === 'theoretical' && data.progress.theoretical < TOTAL_THEORETICAL) data.progress.theoretical++;
-            else if (type === 'practical' && data.progress.practical < TOTAL_PRACTICAL) data.progress.practical++;
-            await saveData(data);
-            renderApp();
+            const local = await loadLocal();
+            if (type === 'theoretical' && local.progress.theoretical < TOTAL_THEORETICAL) {
+                local.progress.theoretical++;
+            } else if (type === 'practical' && local.progress.practical < TOTAL_PRACTICAL) {
+                local.progress.practical++;
+            }
+            await saveLocal(local);
+            render();
         };
 
-        window.castVote = async function(time) {
-            if (!time) return;
-            const data = await loadData();
-            const todayDate = getTodayDate();
-            if (!data.votes[todayDate]) data.votes[todayDate] = {};
-            data.votes[todayDate][userId] = time;
-            await saveData(data);
-            renderApp();
-        };
-
-        renderApp();
+        render();
     </script>
 </body>
 </html>
