@@ -27,7 +27,6 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-            transition: all 0.2s;
         }
         h2 {
             font-size: 1.5rem;
@@ -35,7 +34,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: var(--tg-theme-text-color, #1c1e21);
         }
         .user-row {
             display: flex;
@@ -106,12 +104,6 @@
             background: var(--tg-theme-secondary-bg-color, #e0e0e0);
             color: var(--tg-theme-text-color, #1c1e21);
         }
-        .week-table {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 16px 0;
-        }
         .day-row {
             display: flex;
             align-items: center;
@@ -120,12 +112,11 @@
             border-radius: 14px;
             padding: 10px 14px;
             gap: 10px;
-            flex-wrap: wrap;
+            margin-bottom: 12px;
         }
         .day-name {
             font-weight: bold;
-            min-width: 70px;
-            color: var(--tg-theme-text-color, #1c1e21);
+            min-width: 80px;
         }
         .time-options {
             display: flex;
@@ -138,7 +129,7 @@
             border: none;
             border-radius: 20px;
             padding: 6px 14px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
@@ -147,11 +138,6 @@
             background: var(--tg-theme-button-color, #0088cc);
             color: var(--tg-theme-button-text-color, #fff);
             font-weight: bold;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
         }
         .footer-note {
             text-align: center;
@@ -162,9 +148,7 @@
     </style>
 </head>
 <body>
-    <div class="container" id="app">
-        <!-- المحتوى يُبنى بالجافاسكربت -->
-    </div>
+    <div class="container" id="app"></div>
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -179,38 +163,27 @@
         const TOTAL_PRACTICAL = 6;
         const COMPLETED_PRACTICAL = 0; // افتراضي
 
-        // حساب تواريخ الأسبوع (من اليوم إلى السبت القادم)
-        function getWeekDays() {
-            const today = new Date();
-            const dayOfWeek = today.getDay(); // 0=أحد, 6=سبت
-            const daysUntilSaturday = (6 - dayOfWeek + 7) % 7; // أيام حتى السبت
-            const days = [];
-            for (let i = 0; i <= daysUntilSaturday; i++) {
-                const d = new Date(today);
-                d.setDate(today.getDate() + i);
-                const dayNames = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-                days.push({
-                    name: dayNames[d.getDay()],
-                    date: d.toISOString().slice(0,10), // YYYY-MM-DD
-                    shortDate: d.getDate() + '/' + (d.getMonth()+1)
-                });
-            }
-            return days;
+        // ========== دوال التاريخ ==========
+        function getTodayDate() {
+            const d = new Date();
+            return d.toISOString().slice(0,10); // YYYY-MM-DD
+        }
+
+        function getTodayName() {
+            const days = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+            return days[new Date().getDay()];
         }
 
         // أوقات التصويت
         const VOTE_TIMES = ['8','9','10','11'];
 
-        // ========== دوال التخزين (localStorage مع احتياط CloudStorage) ==========
+        // ========== دوال التخزين ==========
         async function loadData() {
-            // محاولة استخدام CloudStorage الخاصة بتيليجرام إن أمكن
             if (tg.CloudStorage) {
                 try {
                     const keys = ['progress', 'votes'];
                     const items = await Promise.all(keys.map(k => new Promise(resolve => {
-                        tg.CloudStorage.getItem(k, (err, value) => {
-                            resolve(value || null);
-                        });
+                        tg.CloudStorage.getItem(k, (err, value) => resolve(value || null));
                     })));
                     return {
                         progress: items[0] ? JSON.parse(items[0]) : { theoretical: COMPLETED_THEORETICAL, practical: COMPLETED_PRACTICAL },
@@ -218,12 +191,9 @@
                     };
                 } catch (e) {}
             }
-            // العودة إلى localStorage
             const raw = localStorage.getItem('tma_study_data');
             if (raw) {
-                try {
-                    return JSON.parse(raw);
-                } catch (e) {}
+                try { return JSON.parse(raw); } catch (e) {}
             }
             return {
                 progress: { theoretical: COMPLETED_THEORETICAL, practical: COMPLETED_PRACTICAL },
@@ -232,19 +202,12 @@
         }
 
         async function saveData(data) {
-            // محاولة CloudStorage
             if (tg.CloudStorage) {
                 try {
-                    await new Promise((resolve, reject) => {
-                        tg.CloudStorage.setItem('progress', JSON.stringify(data.progress), (err, ok) => {
-                            if (err) reject(err); else resolve();
-                        });
-                    });
-                    await new Promise((resolve, reject) => {
-                        tg.CloudStorage.setItem('votes', JSON.stringify(data.votes), (err, ok) => {
-                            if (err) reject(err); else resolve();
-                        });
-                    });
+                    await Promise.all([
+                        new Promise((res, rej) => tg.CloudStorage.setItem('progress', JSON.stringify(data.progress), (err, ok) => err ? rej(err) : res())),
+                        new Promise((res, rej) => tg.CloudStorage.setItem('votes', JSON.stringify(data.votes), (err, ok) => err ? rej(err) : res()))
+                    ]);
                     console.log('Saved to CloudStorage');
                 } catch(e) {
                     localStorage.setItem('tma_study_data', JSON.stringify(data));
@@ -257,10 +220,14 @@
         // ========== عرض الواجهة ==========
         async function renderApp() {
             const data = await loadData();
-            const weekDays = getWeekDays();
+            const todayDate = getTodayDate();
+            const todayName = getTodayName();
             const totalCompleted = data.progress.theoretical + data.progress.practical;
             const totalAll = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
             const percentage = Math.round((totalCompleted / totalAll) * 100);
+
+            // جلب صوت اليوم الحالي إن وجد
+            const todayVote = data.votes[todayDate] || null;
 
             const html = `
                 <div class="user-row">
@@ -276,12 +243,12 @@
                     <h2>📈 تقدّمك</h2>
                     <div class="stat-grid">
                         <div class="stat-box">
-                            <div class="number" id="theoCount">${data.progress.theoretical}/7</div>
+                            <div class="number">${data.progress.theoretical}/7</div>
                             <small>نظري</small>
                             <div class="progress-bar"><div class="progress-fill" style="width:${(data.progress.theoretical/7)*100}%">${Math.round((data.progress.theoretical/7)*100)}%</div></div>
                         </div>
                         <div class="stat-box">
-                            <div class="number" id="pracCount">${data.progress.practical}/6</div>
+                            <div class="number">${data.progress.practical}/6</div>
                             <small>عملي</small>
                             <div class="progress-bar"><div class="progress-fill" style="width:${(data.progress.practical/6)*100}%">${Math.round((data.progress.practical/6)*100)}%</div></div>
                         </div>
@@ -293,26 +260,22 @@
                     </div>
                 </div>
 
-                <!-- بطاقة التصويت -->
+                <!-- بطاقة التصويت (لليوم فقط) -->
                 <div class="card">
-                    <h2>🗳️ التصويت الجماعي للأسبوع</h2>
-                    <div class="week-table">
-                        ${weekDays.map(day => `
-                            <div class="day-row">
-                                <div class="day-name">${day.name}<br><small>${day.shortDate}</small></div>
-                                <div class="time-options">
-                                    ${VOTE_TIMES.map(t => {
-                                        const selected = data.votes[day.date] === t ? 'selected' : '';
-                                        return `<button class="time-btn ${selected}" onclick="vote('${day.date}','${t}')">${t}:00</button>`;
-                                    }).join('')}
-                                </div>
-                            </div>
-                        `).join('')}
+                    <h2>🗳️ تصويت اليوم</h2>
+                    <div class="day-row">
+                        <div class="day-name">${todayName}<br><small>${todayDate.split('-')[2]}/${todayDate.split('-')[1]}</small></div>
+                        <div class="time-options">
+                            ${VOTE_TIMES.map(t => {
+                                const selected = todayVote === t ? 'selected' : '';
+                                return `<button class="time-btn ${selected}" onclick="voteToday('${t}')">${t}:00</button>`;
+                            }).join('')}
+                        </div>
                     </div>
-                    <div style="text-align:center; margin-top:8px; font-size:0.85rem;" id="voteStatus">
-                        ${Object.keys(data.votes).length ? '✅ تم تسجيل تصويتك لـ ' + Object.keys(data.votes).length + ' أيام' : 'لم تصوت بعد'}
+                    <div style="text-align:center; margin-top:8px; font-size:0.9rem;">
+                        ${todayVote ? `✅ صوتك اليوم: <strong>${todayVote}:00 مساءً</strong>` : '⚠️ لم تصوت اليوم بعد'}
                     </div>
-                    <button onclick="sendVotesToBot()">📤 مشاركة تصويتي مع المجموعة (عبر البوت)</button>
+                    <button onclick="sendVoteToBot()">📤 مشاركة تصويتي مع المجموعة (عبر البوت)</button>
                 </div>
 
                 <div class="footer-note">
@@ -334,28 +297,28 @@
             renderApp();
         };
 
-        window.vote = async function(date, time) {
+        window.voteToday = async function(time) {
             const data = await loadData();
-            data.votes[date] = time;
+            const todayDate = getTodayDate();
+            data.votes[todayDate] = time; // يخزن فقط لليوم
             await saveData(data);
             renderApp();
         };
 
-        window.sendVotesToBot = async function() {
+        window.sendVoteToBot = async function() {
             const data = await loadData();
-            const votes = data.votes;
-            if (Object.keys(votes).length === 0) {
-                alert('لم تصوت على أي يوم بعد.');
+            const todayDate = getTodayDate();
+            const myVote = data.votes[todayDate];
+            if (!myVote) {
+                alert('لم تصوت اليوم بعد.');
                 return;
             }
-            // إرسال عبر Telegram.WebApp.sendData
+            const payload = { action: 'vote', date: todayDate, vote: myVote };
             if (tg.sendData) {
-                tg.sendData(JSON.stringify({ action: 'vote', votes }));
-                tg.showPopup({ title: 'تم الإرسال', message: 'تم إرسال تصويتك إلى البوت. النتائج الجماعية ستظهر لاحقاً.' });
+                tg.sendData(JSON.stringify(payload));
+                tg.showPopup({ title: 'تم الإرسال', message: 'تم إرسال تصويتك إلى البوت.' });
             } else {
-                // نسخ احتياطي: عرض البيانات في نافذة لنسخها
-                const text = JSON.stringify(votes);
-                prompt('انسخ هذا النص وأرسله إلى البوت:', text);
+                prompt('انسخ هذا النص وأرسله إلى البوت:', JSON.stringify(payload));
             }
         };
 
