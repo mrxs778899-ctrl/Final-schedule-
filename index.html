@@ -79,8 +79,9 @@
         }
 
         async function loadData() {
+           const SERVER_URL = 'https://script.google.com/macros/s/AKfycbyyIlF3qvwWcHuoDprfjkMVQn6pQKvMVAPcD8dxRjojcpnFM_5YisAGGPL8nV7lW93X/exec';
             const raw = localStorage.getItem('tma_study_data');
-            if (raw) {
+           if (raw) {
                 try { return JSON.parse(raw); } catch(e) {}
             }
             return {
