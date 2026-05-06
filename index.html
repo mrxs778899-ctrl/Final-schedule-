@@ -12,7 +12,6 @@
             background: #f0f2f5;
             color: #1c1e21;
             padding: 20px;
-            height: 100vh;
         }
         .container { max-width: 500px; margin: 0 auto; }
         .card {
@@ -20,27 +19,13 @@
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         h2 { font-size: 1.3rem; margin-bottom: 12px; }
-        .user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .user img {
-            width: 48px; height: 48px;
-            border-radius: 50%;
-            border: 2px solid #0088cc;
-        }
-        .times {
-            display: flex;
-            gap: 8px;
-            margin: 12px 0;
-            flex-wrap: wrap;
-        }
-        .times button {
+        .user { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #0088cc; }
+        .times { display: flex; gap: 8px; margin: 12px 0; }
+        .time-btn {
             padding: 8px 16px;
             border-radius: 12px;
             border: 1px solid #ddd;
@@ -48,11 +33,7 @@
             font-size: 0.9rem;
             cursor: pointer;
         }
-        .times button.active {
-            background: #0088cc;
-            color: #fff;
-            border-color: #0088cc;
-        }
+        .time-btn.active { background: #0088cc; color: #fff; border-color: #0088cc; }
         .btn {
             background: #0088cc;
             color: #fff;
@@ -65,44 +46,18 @@
             margin-top: 8px;
             cursor: pointer;
         }
-        .btn.secondary {
-            background: #e0e0e0;
-            color: #1c1e21;
-        }
-        .progress-bar {
-            height: 20px;
-            background: #eee;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 8px 0;
-        }
-        .progress-fill {
-            height: 100%;
-            background: #0088cc;
-            /* width is dynamic */
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-        }
-        td {
-            padding: 6px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .note {
-            font-size: 0.7rem;
-            color: #888;
-            text-align: center;
-            margin-top: 16px;
-        }
+        .progress-bar { height: 20px; background: #eee; border-radius: 10px; overflow: hidden; margin: 8px 0; }
+        .progress-fill { height: 100%; background: #0088cc; transition: width 0.3s; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td { padding: 6px 0; border-bottom: 1px solid #eee; }
+        .note { text-align: center; font-size: 0.7rem; color: #888; margin-top: 16px; }
+        .error { color: #d32f2f; text-align: center; margin: 8px 0; font-size: 0.85rem; }
     </style>
 </head>
 <body>
     <div class="container" id="app"></div>
     <script>
-        // رابط Google Apps Script (تم تضمينه تلقائياً)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyIlF3qvwWcHuoDprfjkMVQn6pQKvMVAPcD8dxRjojcpnFM_5YisAGGPL8nV7lW93X/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynfAPsLZLzZ8AheLRkdz_1zw58qaQCKUz1JWTB8e9qUQElXZrDfV_6lHe0SyG_qmmq/exec';
 
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -115,57 +70,52 @@
         const TOTAL_THEORETICAL = 7;
         const TOTAL_PRACTICAL = 6;
 
-        function getToday() {
-            return new Date().toISOString().slice(0,10);
-        }
+        function getToday() { return new Date().toISOString().slice(0,10); }
         function getDayName() {
-            const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-            return days[new Date().getDay()];
+            return ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][new Date().getDay()];
         }
 
-        async function loadLocal() {
+        async function load() {
             const raw = localStorage.getItem('tmastudy');
             return raw ? JSON.parse(raw) : {
                 progress: { theoretical: 4, practical: 0 },
-                vote: null,
-                results: {}
+                voted: null,
+                results: {},
+                lastError: null
             };
         }
-        async function saveLocal(d) {
-            localStorage.setItem('tmastudy', JSON.stringify(d));
-        }
+        async function save(d) { localStorage.setItem('tmastudy', JSON.stringify(d)); }
 
         async function submitVote(time) {
             const today = getToday();
-            const local = await loadLocal();
-            local.vote = time;
-            await saveLocal(local);
-            // إرسال التصويت إلى Google Sheets
+            const local = await load();
+            local.voted = time;
+            local.lastError = null;
+            await save(local);
+
             try {
                 const res = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: String(userId),
-                        date: today,
-                        vote: time
-                    })
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ userId: String(userId), date: today, vote: time })
                 });
                 const json = await res.json();
                 if (json.success) {
                     await loadResults();
-                    render();
                 } else {
-                    alert('فشل إرسال التصويت: ' + (json.error || 'خطأ غير معروف'));
+                    local.lastError = json.error || 'خطأ غير معروف';
+                    await save(local);
                 }
             } catch (e) {
-                alert('تعذر الاتصال بالخادم. تأكد من الإنترنت.');
                 console.error(e);
+                local.lastError = 'تعذر الاتصال بالخادم. تحقق من الرابط.';
+                await save(local);
             }
+            render();
         }
 
         async function loadResults() {
-            const local = await loadLocal();
+            const local = await load();
             const today = getToday();
             try {
                 const res = await fetch(SCRIPT_URL);
@@ -175,10 +125,11 @@
                 console.error(e);
                 local.results = {};
             }
-            await saveLocal(local);
+            await save(local);
+            return local.results;
         }
 
-        function maxVote(results) {
+        function bestVote(results) {
             let best = '';
             let max = 0;
             for (const [t, c] of Object.entries(results)) {
@@ -188,13 +139,13 @@
         }
 
         async function render() {
-            const local = await loadLocal();
+            const local = await load();
             const today = getToday();
             const done = local.progress.theoretical + local.progress.practical;
             const total = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
             const pct = Math.round((done / total) * 100);
 
-            const html = `
+            document.getElementById('app').innerHTML = `
                 <div class="user">
                     <img src="${user?.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName)}" alt="">
                     <div>
@@ -204,50 +155,45 @@
                 </div>
                 <div class="card">
                     <h2>📈 تقدّم الدراسة</h2>
-                    <div style="margin:6px 0;">نظري: ${local.progress.theoretical}/${TOTAL_THEORETICAL}</div>
+                    <div>نظري: ${local.progress.theoretical}/${TOTAL_THEORETICAL}</div>
                     <div class="progress-bar"><div class="progress-fill" style="width:${(local.progress.theoretical/TOTAL_THEORETICAL)*100}%"></div></div>
-                    <div style="margin:6px 0;">عملي: ${local.progress.practical}/${TOTAL_PRACTICAL}</div>
+                    <div>عملي: ${local.progress.practical}/${TOTAL_PRACTICAL}</div>
                     <div class="progress-bar"><div class="progress-fill" style="width:${(local.progress.practical/TOTAL_PRACTICAL)*100}%"></div></div>
-                    <div style="text-align:center;margin:10px 0;font-weight:bold;">${pct}% مكتمل (${done}/${total})</div>
-                    <div style="display:flex;gap:10px;">
-                        <button style="flex:1;background:#0088cc;color:#fff;border:none;padding:10px;border-radius:12px;" onclick="addProgress('theoretical')">+ أنهيت نظري</button>
-                        <button style="flex:1;background:#0088cc;color:#fff;border:none;padding:10px;border-radius:12px;" onclick="addProgress('practical')">+ أنهيت عملي</button>
+                    <div style="text-align:center;margin:10px 0;">${pct}% مكتمل (${done}/${total})</div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn" onclick="addProgress('theoretical')">+ أنهيت نظري</button>
+                        <button class="btn" onclick="addProgress('practical')">+ أنهيت عملي</button>
                     </div>
                 </div>
                 <div class="card">
                     <h2>🗳️ تصويت اليوم (${getDayName()})</h2>
                     <div class="times">
-                        ${['8', '9', '10', '11'].map(t => `<button class="${local.vote === t ? 'active' : ''}" onclick="submitVote('${t}')">${t}:00 مساءً</button>`).join('')}
+                        ${['8','9','10','11'].map(t => `<button class="time-btn ${local.voted === t ? 'active' : ''}" onclick="submitVote('${t}')">${t}:00</button>`).join('')}
                     </div>
-                    <div style="text-align:center;">${local.vote ? `✅ صوتك: ${local.vote}:00 مساءً` : '⚠️ لم تصوت بعد'}</div>
-                    <button class="btn" onclick="loadResults().then(render)">📊 عرض نتائج التصويت الجماعي لليوم</button>
-                    <div style="margin-top:12px;">
-                        ${Object.keys(local.results).length ? `
+                    <div style="text-align:center; margin:10px 0;">
+                        ${local.voted ? `✅ صوتك: ${local.voted}:00 مساءً` : '⚠️ لم تصوت بعد'}
+                    </div>
+                    ${local.lastError ? `<div class="error">❌ ${local.lastError}</div>` : ''}
+                    <button class="btn" onclick="loadResults().then(()=>render())">📊 عرض نتائج التصويت الجماعي</button>
+                    ${Object.keys(local.results).length ? `
                         <table>
-                            ${['8', '9', '10', '11'].map(t => `<tr><td>${t}:00 مساءً</td><td><strong>${local.results[t] || 0} صوت</strong></td></tr>`).join('')}
+                            ${['8','9','10','11'].map(t => `<tr><td>${t}:00 مساءً</td><td><strong>${local.results[t] || 0} صوت</strong></td></tr>`).join('')}
                         </table>
-                        <div style="margin-top:8px;text-align:center;font-weight:bold;">
-                            🏆 أعلى تصويت: ${(() => {
-                                const best = maxVote(local.results);
-                                return best.time ? `${best.time}:00 مساءً (${best.count} صوت)` : 'لا أصوات بعد';
-                            })()}
-                        </div>
-                        ` : '<div style="text-align:center;color:#888;margin-top:8px;">لا توجد أصوات لليوم</div>'}
-                    </div>
+                        <div style="text-align:center;margin-top:6px;">🏆 الأعلى: ${(() => {
+                            const best = bestVote(local.results);
+                            return best.time ? `${best.time}:00 (${best.count} صوت)` : '-';
+                        })()}</div>
+                    ` : '<div style="text-align:center;color:#888;margin-top:8px;">لا توجد أصوات لليوم</div>'}
                 </div>
                 <div class="note">تطبيق تيليجرام المصغر • بدون تسجيل دخول</div>
             `;
-            document.getElementById('app').innerHTML = html;
         }
 
         window.addProgress = async function(type) {
-            const local = await loadLocal();
-            if (type === 'theoretical' && local.progress.theoretical < TOTAL_THEORETICAL) {
-                local.progress.theoretical++;
-            } else if (type === 'practical' && local.progress.practical < TOTAL_PRACTICAL) {
-                local.progress.practical++;
-            }
-            await saveLocal(local);
+            const local = await load();
+            if (type === 'theoretical' && local.progress.theoretical < TOTAL_THEORETICAL) local.progress.theoretical++;
+            else if (type === 'practical' && local.progress.practical < TOTAL_PRACTICAL) local.progress.practical++;
+            await save(local);
             render();
         };
 
