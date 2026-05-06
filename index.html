@@ -7,604 +7,102 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
             color: #1c1e21;
+            padding: 20px;
             min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')
-                        no-repeat center center fixed;
-            background-size: cover;
-            position: relative;
         }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.38);
-            z-index: 0;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 16px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ───── CARDS ───── */
+        .container { max-width: 500px; margin: 0 auto; }
         .card {
-            background: rgba(255,255,255,0.93);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-radius: 22px;
-            padding: 18px;
-            margin-bottom: 14px;
-            box-shadow: 0 6px 28px rgba(0,0,0,0.18);
-        }
-
-        h2 {
-            font-size: 1.15rem;
-            margin-bottom: 12px;
-            color: #0d47a1;
-        }
-
-        /* ───── USER BAR ───── */
-        .user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255,255,255,0.88);
-            backdrop-filter: blur(14px);
-            border-radius: 18px;
-            padding: 12px 14px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-        }
-        .user img { width: 46px; height: 46px; border-radius: 50%; border: 2px solid #0088cc; flex-shrink:0; }
-
-        /* ───── PROGRESS ───── */
-        .progress-bar {
-            height: 14px;
-            background: #e0e0e0;
-            border-radius: 7px;
-            overflow: hidden;
-            margin: 5px 0 10px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg,#0088cc,#00bcd4);
-            border-radius: 7px;
-            transition: width 0.45s ease;
-        }
-
-        /* ───── LECTURE GRID ───── */
-        .lecture-grid {
-            display: grid;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .lecture-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 12px;
-            background: #f5f5f5;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.15s;
-            user-select: none;
-        }
-        .lecture-item:active { transform: scale(0.97); }
-        .lecture-item.done { background: #e8f5e9; }
-        .lecture-item .check {
-            width: 26px; height: 26px;
-            border-radius: 50%;
-            border: 2px solid #bbb;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-            transition: all 0.2s;
             background: #fff;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        .lecture-item.done .check {
-            background: #43a047;
-            border-color: #43a047;
-            color: #fff;
-        }
-        .lecture-item .lec-text { font-size: 0.88rem; font-weight: 500; line-height: 1.3; }
-        .lecture-item.done .lec-text { color: #555; text-decoration: line-through; }
-        .lecture-item .lec-badge {
-            margin-right: auto;
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 8px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-        .badge-theory  { background:#e3f2fd; color:#1565c0; }
-        .badge-practice{ background:#fce4ec; color:#c62828; }
-
-        /* ───── TIME BUTTONS ───── */
-        .times {
-            display: flex;
-            gap: 8px;
-            margin: 10px 0;
-            flex-wrap: wrap;
-        }
-        .time-btn {
-            padding: 9px 18px;
-            border-radius: 12px;
-            border: 2px solid #ddd;
-            background: #f8f8f8;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-        .time-btn.active {
-            background: #0088cc;
-            color: #fff;
-            border-color: #0088cc;
-            box-shadow: 0 3px 10px rgba(0,136,204,0.35);
-        }
-        .time-btn .vote-count {
-            position: absolute;
-            top: -7px; left: -7px;
-            background: #ff5722;
-            color: #fff;
-            border-radius: 50%;
-            width: 20px; height: 20px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* ───── RESULTS BAR ───── */
-        .result-row {
-            margin-bottom: 10px;
-        }
-        .result-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .result-bar-wrap {
-            height: 12px;
-            background: #e8e8e8;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .result-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg,#0088cc,#00bcd4);
-            border-radius: 6px;
-            transition: width 0.5s ease;
-        }
-        .result-bar-fill.winner { background: linear-gradient(90deg,#ff6f00,#ffa000); }
-
-        /* ───── GENERAL BUTTON ───── */
+        h2 { font-size: 1.3rem; margin-bottom: 12px; color: #0088cc; }
+        .user { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #0088cc; }
+        .progress-bar { height: 20px; background: #eee; border-radius: 10px; overflow: hidden; margin: 8px 0; }
+        .progress-fill { height: 100%; background: #0088cc; transition: width 0.4s; }
         .btn {
-            background: linear-gradient(135deg,#0088cc,#0066a0);
+            background: #0088cc;
             color: #fff;
             border: none;
             padding: 12px;
-            border-radius: 13px;
+            border-radius: 12px;
             width: 100%;
             font-size: 0.95rem;
             font-weight: bold;
-            margin-top: 8px;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.15s;
-            font-family: inherit;
-        }
-        .btn:active { opacity: 0.85; transform: scale(0.98); }
-        .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
-        /* ───── MESSAGES ───── */
-        .msg {
-            text-align: center;
-            margin: 8px 0 4px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            padding: 8px 12px;
-            border-radius: 10px;
-        }
-        .msg.success { background: #e8f5e9; color: #2e7d32; }
-        .msg.error   { background: #fce4ec; color: #c62828; }
-        .msg.loading { background: #fff8e1; color: #e65100; }
-
-        .note { text-align:center; font-size:0.68rem; color:#ccc; margin-top:14px; padding-bottom:8px; }
-
-        /* ───── SECTION DIVIDER ───── */
-        .section-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 12px 0 6px;
-            padding-right: 2px;
-        }
-
-        .winner-banner {
-            text-align: center;
-            padding: 10px;
-            background: linear-gradient(135deg,#fff8e1,#ffecb3);
-            border-radius: 12px;
             margin-top: 10px;
-            font-weight: 700;
-            color: #e65100;
-            font-size: 1rem;
+            cursor: pointer;
         }
-
-        /* spinner */
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .spinner {
-            display: inline-block;
-            width: 14px; height: 14px;
-            border: 2px solid rgba(255,255,255,0.4);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            vertical-align: middle;
-            margin-left: 4px;
-        }
+        .btn:active { opacity: 0.8; }
+        .note { text-align: center; font-size: 0.75rem; color: #888; margin-top: 16px; }
     </style>
 </head>
 <body>
-<div class="container" id="app">
-    <div style="text-align:center;padding:60px 20px;color:#fff;font-size:1rem;">⏳ جارٍ التحميل...</div>
-</div>
+    <div class="container" id="app"></div>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-<script>
-// ══════════════════════════════════════════════
-//  CONFIG  –  ضع رابط Apps Script الخاص بك هنا
-// ══════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLydQ1CZn6x_n5SSKG7a9Rz63KOcG8oaRSXcc65AOeZSKOJzwu_En6e4kvwqkGuV1K/exec';
+        const user = tg.initDataUnsafe?.user;
+        const userName = user ? (user.first_name || 'مستخدم') : 'مستخدم';
 
-// ══════════════════════════════════════════════
-//  TELEGRAM INIT
-// ══════════════════════════════════════════════
-const tg = window.Telegram?.WebApp;
-if (tg) { tg.ready(); tg.expand(); }
+        const TOTAL_THEORETICAL = 7;
+        const TOTAL_PRACTICAL = 6;
 
-const tgUser  = tg?.initDataUnsafe?.user;
-const userId  = tgUser ? String(tgUser.id) : ('anon_' + Math.random().toString(36).slice(2,8));
-const userName = tgUser ? (tgUser.first_name || 'مستخدم') : 'زائر';
-const userUsername = tgUser?.username || '';
-const userPhoto    = tgUser?.photo_url || '';
-
-// ══════════════════════════════════════════════
-//  LECTURES DATA
-//  النظري أولاً ثم العملي – أحياء جزيئية
-// ══════════════════════════════════════════════
-const LECTURES = [
-    // نظري
-    { id:'t1', label:'المحاضرة النظرية ١', type:'theory'   },
-    { id:'t2', label:'المحاضرة النظرية ٢', type:'theory'   },
-    { id:'t3', label:'المحاضرة النظرية ٣', type:'theory'   },
-    { id:'t4', label:'المحاضرة النظرية ٤', type:'theory'   },
-    { id:'t5', label:'المحاضرة النظرية ٥', type:'theory'   },
-    { id:'t6', label:'المحاضرة النظرية ٦', type:'theory'   },
-    { id:'t7', label:'المحاضرة النظرية ٧', type:'theory'   },
-    // عملي
-    { id:'p1', label:'المحاضرة العملية ١',  type:'practice' },
-    { id:'p2', label:'المحاضرة العملية ٢',  type:'practice' },
-    { id:'p3', label:'المحاضرة العملية ٣',  type:'practice' },
-    { id:'p4', label:'المحاضرة العملية ٤',  type:'practice' },
-    { id:'p5', label:'المحاضرة العملية ٥',  type:'practice' },
-    { id:'p6', label:'المحاضرة العملية ٦',  type:'practice' },
-];
-
-const VOTE_TIMES = ['7','8','9','10','11'];
-
-// ══════════════════════════════════════════════
-//  STATE  (localStorage)
-// ══════════════════════════════════════════════
-const LS_KEY = 'tma_study_v4';
-function loadState() {
-    try {
-        const raw = localStorage.getItem(LS_KEY);
-        return raw ? JSON.parse(raw) : defaultState();
-    } catch { return defaultState(); }
-}
-function defaultState() {
-    return { done: [], voted: null, results: {}, msg: null, msgType: null, resultsVisible: false };
-}
-function saveState(s) {
-    try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch {}
-}
-
-let state = loadState();
-
-// ══════════════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════════════
-function getToday() { return new Date().toISOString().slice(0,10); }
-function getDayName() {
-    return ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][new Date().getDay()];
-}
-
-/* ─── الطلب الرئيسي: GET مع query params لتجنب CORS ─── */
-async function apiGet(params) {
-    const url = new URL(SCRIPT_URL);
-    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k,v));
-    const res = await fetch(url.toString(), {
-        method: 'GET',
-        cache: 'no-store',
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
-}
-
-function getWinner(results) {
-    if (!results || !Object.keys(results).length) return null;
-    let best = null, bestVal = 0;
-    for (const [k,v] of Object.entries(results)) {
-        if (Number(v) > bestVal) { bestVal = Number(v); best = k; }
-    }
-    return best ? { time: best, count: bestVal } : null;
-}
-
-// ══════════════════════════════════════════════
-//  RENDER
-// ══════════════════════════════════════════════
-function render() {
-    const s = state;
-    const today = getToday();
-    const dayName = getDayName();
-
-    const totalTheory  = LECTURES.filter(l=>l.type==='theory').length;
-    const totalPrac    = LECTURES.filter(l=>l.type==='practice').length;
-    const doneTheory   = LECTURES.filter(l=>l.type==='theory'   && s.done.includes(l.id)).length;
-    const donePrac     = LECTURES.filter(l=>l.type==='practice' && s.done.includes(l.id)).length;
-    const totalDone    = doneTheory + donePrac;
-    const totalAll     = totalTheory + totalPrac;
-    const pct          = Math.round((totalDone / totalAll) * 100);
-
-    const theoryClear  = doneTheory >= totalTheory;
-
-    // أعلى الصفحة
-    const userAvatarSrc = userPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0088cc&color=fff`;
-
-    // محاضرات نظري
-    const theoryRows = LECTURES
-        .filter(l => l.type === 'theory')
-        .map(l => {
-            const done = s.done.includes(l.id);
-            return `
-            <div class="lecture-item ${done?'done':''}" onclick="toggleDone('${l.id}')">
-                <div class="check">${done?'✓':''}</div>
-                <div class="lec-text">${l.label}</div>
-                <span class="lec-badge badge-theory">نظري</span>
-            </div>`;
-        }).join('');
-
-    // محاضرات عملي (تظهر فقط إذا انتهى النظري)
-    let practiceRows = '';
-    if (theoryClear) {
-        practiceRows = `
-        <div class="section-title">📋 العملي – متاح بعد إنهاء النظري</div>
-        <div class="lecture-grid">
-            ${LECTURES.filter(l => l.type === 'practice').map(l => {
-                const done = s.done.includes(l.id);
-                return `
-                <div class="lecture-item ${done?'done':''}" onclick="toggleDone('${l.id}')">
-                    <div class="check">${done?'✓':''}</div>
-                    <div class="lec-text">${l.label}</div>
-                    <span class="lec-badge badge-practice">عملي</span>
-                </div>`;
-            }).join('')}
-        </div>`;
-    } else {
-        practiceRows = `
-        <div style="text-align:center;margin-top:8px;padding:10px;background:#fff3e0;border-radius:12px;font-size:0.82rem;color:#bf360c;font-weight:600;">
-            🔒 العملي يفتح بعد إنهاء جميع المحاضرات النظرية
-        </div>`;
-    }
-
-    // التصويت
-    const totalVotesCast = VOTE_TIMES.reduce((a,t)=>a+Number(s.results[t]||0),0);
-    const winner = getWinner(s.results);
-
-    const timeBtns = VOTE_TIMES.map(t => {
-        const count = Number(s.results[t] || 0);
-        const isActive = s.voted === t;
-        const countBadge = count > 0 ? `<span class="vote-count">${count}</span>` : '';
-        return `
-        <button class="time-btn ${isActive?'active':''}" onclick="castVote('${t}')" id="tbtn_${t}">
-            ${countBadge}${t}:00
-        </button>`;
-    }).join('');
-
-    // شريط النتائج
-    let resultsHtml = '';
-    if (s.resultsVisible) {
-        if (totalVotesCast === 0) {
-            resultsHtml = `<div style="text-align:center;color:#888;font-size:0.85rem;margin-top:8px;">لا توجد أصوات بعد.</div>`;
-        } else {
-            resultsHtml = VOTE_TIMES.map(t => {
-                const c = Number(s.results[t] || 0);
-                const pctBar = totalVotesCast ? Math.round((c/totalVotesCast)*100) : 0;
-                const isWin = winner?.time === t && c > 0;
-                return `
-                <div class="result-row">
-                    <div class="result-label">
-                        <span>${isWin?'🏆 ':''}${t}:00 مساءً</span>
-                        <span>${c} صوت (${pctBar}%)</span>
-                    </div>
-                    <div class="result-bar-wrap">
-                        <div class="result-bar-fill ${isWin?'winner':''}" style="width:${pctBar}%"></div>
-                    </div>
-                </div>`;
-            }).join('');
-            if (winner) {
-                resultsHtml += `
-                <div class="winner-banner">
-                    🏆 الأنسب: ${winner.time}:00 مساءً — ${winner.count} صوت
-                </div>`;
-            }
+        async function load() {
+            const raw = localStorage.getItem('tma_progress');
+            return raw ? JSON.parse(raw) : { theoretical: 4, practical: 0 };
         }
-    }
+        async function save(d) { localStorage.setItem('tma_progress', JSON.stringify(d)); }
 
-    const msgHtml = s.msg ? `<div class="msg ${s.msgType}">${s.msg}</div>` : '';
+        function render(state) {
+            const done = state.theoretical + state.practical;
+            const total = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
+            const pct = Math.round((done / total) * 100);
 
-    document.getElementById('app').innerHTML = `
-        <!-- USER BAR -->
-        <div class="user">
-            <img src="${userAvatarSrc}" alt="avatar"
-                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0088cc&color=fff'" />
-            <div>
-                <strong style="font-size:1.05rem;">${userName}</strong>
-                ${userUsername ? `<div style="font-size:0.75rem;opacity:0.7;">@${userUsername}</div>` : ''}
-            </div>
-            <div style="margin-right:auto;text-align:left;font-size:0.75rem;color:#555;">
-                ${dayName}<br/>${today}
-            </div>
-        </div>
-
-        <!-- PROGRESS CARD -->
-        <div class="card">
-            <h2>📈 تقدّم مراجعة الأحياء الجزيئية</h2>
-
-            <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:600;margin-bottom:2px;">
-                <span>النظري</span><span>${doneTheory}/${totalTheory}</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width:${(doneTheory/totalTheory)*100}%"></div>
-            </div>
-
-            <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:600;margin-bottom:2px;">
-                <span>العملي</span><span>${donePrac}/${totalPrac}</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width:${totalPrac>0?(donePrac/totalPrac)*100:0}%"></div>
-            </div>
-
-            <div style="text-align:center;font-weight:700;font-size:0.95rem;margin-top:6px;">
-                ${pct}% مكتمل &nbsp;(${totalDone}/${totalAll} محاضرة)
-            </div>
-        </div>
-
-        <!-- LECTURES CARD -->
-        <div class="card">
-            <h2>📚 المحاضرات – أحياء جزيئية</h2>
-            <div class="section-title">🧬 النظري</div>
-            <div class="lecture-grid">${theoryRows}</div>
-            ${practiceRows}
-        </div>
-
-        <!-- VOTE CARD -->
-        <div class="card">
-            <h2>🗳️ تصويت على وقت المغرب (${dayName})</h2>
-            <div style="font-size:0.82rem;color:#555;margin-bottom:4px;">اختر الوقت الأنسب لك من المغرب:</div>
-            <div class="times">${timeBtns}</div>
-            <div style="text-align:center;font-size:0.88rem;font-weight:600;margin:6px 0;">
-                ${s.voted ? `✅ صوّتك: ${s.voted}:00 مساءً` : '⚪ لم تصوت بعد'}
-                ${totalVotesCast > 0 ? `&nbsp;•&nbsp; ${totalVotesCast} صوت إجمالاً` : ''}
-            </div>
-            ${msgHtml}
-            <button class="btn" id="showResBtn" onclick="toggleResults()">
-                ${s.resultsVisible ? '🔼 إخفاء النتائج' : '📊 عرض نتائج التصويت الجماعي'}
-            </button>
-            ${s.resultsVisible ? `<div style="margin-top:12px;">${resultsHtml}</div>` : ''}
-        </div>
-
-        <div class="note">Telegram Mini App • أحياء جزيئية – الفاينل ٢٠٢٦</div>
-    `;
-}
-
-// ══════════════════════════════════════════════
-//  ACTIONS
-// ══════════════════════════════════════════════
-
-window.toggleDone = function(id) {
-    if (state.done.includes(id)) {
-        state.done = state.done.filter(x => x !== id);
-    } else {
-        state.done = [...state.done, id];
-    }
-    saveState(state);
-    render();
-};
-
-window.castVote = async function(time) {
-    if (state.voted === time) return; // نفس الصوت
-
-    // تحديث فوري للواجهة
-    state.voted  = time;
-    state.msg    = '⏳ جارٍ تسجيل تصويتك... ';
-    state.msgType = 'loading';
-    saveState(state);
-    render();
-
-    try {
-        /* ✅ GET request مع query params – يتجاوز CORS تماماً */
-        const data = await apiGet({
-            action : 'vote',
-            userId : userId,
-            date   : getToday(),
-            vote   : time
-        });
-
-        if (data.success) {
-            state.msg     = '✅ تم تسجيل تصويتك بنجاح!';
-            state.msgType = 'success';
-            // تحديث الأصوات فوراً
-            state.results = data.results || state.results;
-        } else {
-            state.msg     = '❌ ' + (data.error || 'خطأ غير معروف');
-            state.msgType = 'error';
+            document.getElementById('app').innerHTML = `
+                <div class="user">
+                    <img src="${user?.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName)}" alt="">
+                    <div>
+                        <strong>${userName}</strong>
+                        <div style="font-size:0.8rem;color:#888;">@${user?.username || 'لا يوجد'}</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>📈 تقدّم الدراسة</h2>
+                    <div>نظري: ${state.theoretical}/${TOTAL_THEORETICAL}</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${(state.theoretical/TOTAL_THEORETICAL)*100}%"></div></div>
+                    <div>عملي: ${state.practical}/${TOTAL_PRACTICAL}</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:${(state.practical/TOTAL_PRACTICAL)*100}%"></div></div>
+                    <div style="text-align:center;margin:10px 0;font-weight:bold;">${pct}% مكتمل (${done}/${total})</div>
+                    <div style="display:flex;gap:10px;">
+                        <button class="btn" onclick="add('theoretical')">+ أنهيت نظري</button>
+                        <button class="btn" onclick="add('practical')">+ أنهيت عملي</button>
+                    </div>
+                </div>
+                <div class="note">تطبيق تيليجرام المصغر • بدون تسجيل دخول</div>
+            `;
         }
-    } catch(e) {
-        console.error('Vote error:', e);
-        state.msg     = '❌ تعذّر الاتصال. تأكد من الإنترنت أو حاول مجدداً.';
-        state.msgType = 'error';
-    }
 
-    saveState(state);
-    render();
-};
+        window.add = async function(type) {
+            const data = await load();
+            if (type === 'theoretical' && data.theoretical < TOTAL_THEORETICAL) data.theoretical++;
+            else if (type === 'practical' && data.practical < TOTAL_PRACTICAL) data.practical++;
+            await save(data);
+            render(data);
+        };
 
-window.toggleResults = async function() {
-    if (state.resultsVisible) {
-        // إخفاء
-        state.resultsVisible = false;
-        saveState(state);
-        render();
-        return;
-    }
-
-    // إظهار + جلب أحدث البيانات
-    const btn = document.getElementById('showResBtn');
-    if (btn) { btn.disabled = true; btn.innerHTML = '⏳ جارٍ التحميل... <span class="spinner"></span>'; }
-
-    try {
-        const data = await apiGet({ action: 'results', date: getToday() });
-        state.results        = data[getToday()] || data.results || {};
-        state.resultsVisible = true;
-        state.msg            = null;
-    } catch(e) {
-        console.error('Results error:', e);
-        state.msg     = '❌ فشل جلب النتائج. حاول مجدداً.';
-        state.msgType = 'error';
-        state.resultsVisible = true; // عرض ما لدينا محلياً
-    }
-
-    saveState(state);
-    render();
-};
-
-// ══════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════
-render();
-</script>
+        (async ()=>{
+            const data = await load();
+            render(data);
+        })();
+    </script>
 </body>
 </html>
