@@ -11,140 +11,50 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--tg-theme-bg-color, #f0f2f5);
             color: var(--tg-theme-text-color, #1c1e21);
-            height: 100vh;
-            overflow-x: hidden;
-            padding: 20px;
+            height: 100vh; overflow-x: hidden; padding: 20px;
             transition: background 0.3s, color 0.3s;
         }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
+        .container { max-width: 500px; margin: 0 auto; }
         .card {
             background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.9));
-            backdrop-filter: blur(15px);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
+            backdrop-filter: blur(15px); border-radius: 24px; padding: 20px; margin-bottom: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         }
-        h2 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .user-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .user-row img {
-            width: 52px; height: 52px; border-radius: 50%;
-            border: 2px solid var(--tg-theme-button-color, #0088cc);
-        }
-        .progress-bar {
-            background: var(--tg-theme-hint-color, #ddd);
-            border-radius: 12px;
-            height: 20px;
-            overflow: hidden;
-            margin: 8px 0 16px 0;
-        }
+        h2 { font-size: 1.4rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .user-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .user-row img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--tg-theme-button-color, #0088cc); }
+        .progress-bar { background: var(--tg-theme-hint-color, #ddd); border-radius: 12px; height: 20px; overflow: hidden; margin: 6px 0; }
         .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #0088cc, #00c6a7);
-            border-radius: 12px;
-            width: 0%;
-            transition: width 0.6s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            color: white;
-            font-weight: bold;
+            height: 100%; background: linear-gradient(135deg, #0088cc, #00c6a7); border-radius: 12px;
+            width: 0%; transition: width 0.6s; display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; color: white; font-weight: bold;
         }
-        .stat-grid {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
+        .stat-grid { display: flex; gap: 10px; margin-bottom: 12px; }
         .stat-box {
-            flex: 1;
-            background: var(--tg-theme-bg-color, #fff);
-            border-radius: 16px;
-            padding: 14px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            flex: 1; background: var(--tg-theme-bg-color, #fff); border-radius: 16px; padding: 12px;
+            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
-        .stat-box .number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--tg-theme-button-color, #0088cc);
-        }
+        .stat-box .number { font-size: 1.8rem; font-weight: bold; color: var(--tg-theme-button-color, #0088cc); }
         button {
-            background: var(--tg-theme-button-color, #0088cc);
-            color: var(--tg-theme-button-text-color, #fff);
-            border: none;
-            border-radius: 14px;
-            padding: 10px 18px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            width: 100%;
-            margin-top: 8px;
+            background: var(--tg-theme-button-color, #0088cc); color: var(--tg-theme-button-text-color, #fff);
+            border: none; border-radius: 14px; padding: 10px 16px; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; transition: transform 0.1s, opacity 0.2s; width: 100%; margin-top: 8px;
         }
-        button:active {
-            transform: scale(0.97);
-            opacity: 0.85;
-        }
-        button.secondary {
-            background: var(--tg-theme-secondary-bg-color, #e0e0e0);
-            color: var(--tg-theme-text-color, #1c1e21);
-        }
+        button:active { transform: scale(0.97); opacity: 0.85; }
+        button.secondary { background: var(--tg-theme-secondary-bg-color, #e0e0e0); color: var(--tg-theme-text-color, #1c1e21); }
         .day-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--tg-theme-bg-color, #fafafa);
-            border-radius: 14px;
-            padding: 10px 14px;
-            gap: 10px;
-            margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between; background: var(--tg-theme-bg-color, #fafafa);
+            border-radius: 14px; padding: 10px 14px; gap: 10px; margin-bottom: 10px;
         }
-        .day-name {
-            font-weight: bold;
-            min-width: 80px;
-        }
-        .time-options {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
+        .day-name { font-weight: bold; min-width: 80px; }
+        .time-options { display: flex; gap: 6px; flex-wrap: wrap; }
         .time-btn {
-            background: var(--tg-theme-secondary-bg-color, #e8e8e8);
-            color: var(--tg-theme-text-color, #1c1e21);
-            border: none;
-            border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
+            background: var(--tg-theme-secondary-bg-color, #e8e8e8); color: var(--tg-theme-text-color, #1c1e21);
+            border: none; border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
+            transition: all 0.2s; font-weight: 500;
         }
-        .time-btn.selected {
-            background: var(--tg-theme-button-color, #0088cc);
-            color: var(--tg-theme-button-text-color, #fff);
-            font-weight: bold;
-        }
-        .footer-note {
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--tg-theme-hint-color, #888);
-            margin-top: 24px;
-        }
+        .time-btn.selected { background: var(--tg-theme-button-color, #0088cc); color: #fff; font-weight: bold; }
+        .footer-note { text-align: center; font-size: 0.75rem; color: var(--tg-theme-hint-color, #888); margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -157,67 +67,43 @@
         const user = tg.initDataUnsafe?.user;
         const userId = user ? user.id : 'local';
 
-        // ========== المعطيات الثابتة ==========
         const TOTAL_THEORETICAL = 7;
-        const COMPLETED_THEORETICAL = 4; // افتراضي
+        const COMPLETED_THEORETICAL = 4;
         const TOTAL_PRACTICAL = 6;
-        const COMPLETED_PRACTICAL = 0; // افتراضي
-
-        // ========== دوال التاريخ ==========
-        function getTodayDate() {
-            const d = new Date();
-            return d.toISOString().slice(0,10); // YYYY-MM-DD
-        }
-
-        function getTodayName() {
-            const days = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-            return days[new Date().getDay()];
-        }
-
-        // أوقات التصويت
+        const COMPLETED_PRACTICAL = 0;
         const VOTE_TIMES = ['8','9','10','11'];
 
-        // ========== دوال التخزين ==========
+        function getTodayDate() { return new Date().toISOString().slice(0,10); }
+        function getTodayName() {
+            return ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][new Date().getDay()];
+        }
+
         async function loadData() {
-            if (tg.CloudStorage) {
-                try {
-                    const keys = ['progress', 'votes'];
-                    const items = await Promise.all(keys.map(k => new Promise(resolve => {
-                        tg.CloudStorage.getItem(k, (err, value) => resolve(value || null));
-                    })));
-                    return {
-                        progress: items[0] ? JSON.parse(items[0]) : { theoretical: COMPLETED_THEORETICAL, practical: COMPLETED_PRACTICAL },
-                        votes: items[1] ? JSON.parse(items[1]) : {}
-                    };
-                } catch (e) {}
-            }
             const raw = localStorage.getItem('tma_study_data');
             if (raw) {
-                try { return JSON.parse(raw); } catch (e) {}
+                try { return JSON.parse(raw); } catch(e) {}
             }
             return {
                 progress: { theoretical: COMPLETED_THEORETICAL, practical: COMPLETED_PRACTICAL },
-                votes: {} // { "2026-05-06": "8" }
+                votes: {} // { "2026-05-06": { "user1": "8", "user2": "9", ... } }
             };
         }
 
         async function saveData(data) {
-            if (tg.CloudStorage) {
-                try {
-                    await Promise.all([
-                        new Promise((res, rej) => tg.CloudStorage.setItem('progress', JSON.stringify(data.progress), (err, ok) => err ? rej(err) : res())),
-                        new Promise((res, rej) => tg.CloudStorage.setItem('votes', JSON.stringify(data.votes), (err, ok) => err ? rej(err) : res()))
-                    ]);
-                    console.log('Saved to CloudStorage');
-                } catch(e) {
-                    localStorage.setItem('tma_study_data', JSON.stringify(data));
-                }
-            } else {
-                localStorage.setItem('tma_study_data', JSON.stringify(data));
-            }
+            localStorage.setItem('tma_study_data', JSON.stringify(data));
         }
 
-        // ========== عرض الواجهة ==========
+        function getTodayVotes(data) {
+            const today = getTodayDate();
+            const dayVotes = data.votes[today] || {};
+            const results = {};
+            for (const [uid, time] of Object.entries(dayVotes)) {
+                if (!results[time]) results[time] = 0;
+                results[time]++;
+            }
+            return results;
+        }
+
         async function renderApp() {
             const data = await loadData();
             const todayDate = getTodayDate();
@@ -225,20 +111,18 @@
             const totalCompleted = data.progress.theoretical + data.progress.practical;
             const totalAll = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
             const percentage = Math.round((totalCompleted / totalAll) * 100);
+            const todayVotes = getTodayVotes(data);
+            const myVote = data.votes[todayDate]?.[userId] || null;
 
-            // جلب صوت اليوم الحالي إن وجد
-            const todayVote = data.votes[todayDate] || null;
-
-            const html = `
+            document.getElementById('app').innerHTML = `
                 <div class="user-row">
-                    <img src="${user?.photo_url || 'https://via.placeholder.com/52/0088cc/ffffff?text=👤'}" alt="صورة">
+                    <img src="${user?.photo_url || 'https://via.placeholder.com/48/0088cc/ffffff?text=👤'}" alt="صورة">
                     <div>
                         <strong>${user?.first_name || 'مستخدم'} ${user?.last_name || ''}</strong>
-                        <div style="font-size:0.85rem; opacity:0.7;">مرحباً بك في منظّم الجلسات</div>
+                        <div style="font-size:0.8rem; opacity:0.7;">@${user?.username || 'لا يوجد'}</div>
                     </div>
                 </div>
 
-                <!-- بطاقة التقدم -->
                 <div class="card">
                     <h2>📈 تقدّمك</h2>
                     <div class="stat-grid">
@@ -254,75 +138,66 @@
                         </div>
                     </div>
                     <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="width:${percentage}%">${percentage}% مكتمل (${totalCompleted}/${totalAll})</div></div>
-                    <div style="display:flex; gap:10px; margin-top:16px;">
+                    <div style="display:flex; gap:10px; margin-top:12px;">
                         <button class="secondary" onclick="addProgress('theoretical')">+ أنهيت محاضرة نظرية</button>
                         <button class="secondary" onclick="addProgress('practical')">+ أنهيت محاضرة عملية</button>
                     </div>
                 </div>
 
-                <!-- بطاقة التصويت (لليوم فقط) -->
                 <div class="card">
-                    <h2>🗳️ تصويت اليوم</h2>
+                    <h2>🗳️ تصويت اليوم (${todayName})</h2>
                     <div class="day-row">
-                        <div class="day-name">${todayName}<br><small>${todayDate.split('-')[2]}/${todayDate.split('-')[1]}</small></div>
+                        <div class="day-name">${todayDate.split('-')[2]}/${todayDate.split('-')[1]}</div>
                         <div class="time-options">
-                            ${VOTE_TIMES.map(t => {
-                                const selected = todayVote === t ? 'selected' : '';
-                                return `<button class="time-btn ${selected}" onclick="voteToday('${t}')">${t}:00</button>`;
-                            }).join('')}
+                            ${VOTE_TIMES.map(t => `<button class="time-btn ${myVote === t ? 'selected' : ''}" onclick="castVote('${t}')">${t}:00</button>`).join('')}
                         </div>
                     </div>
-                    <div style="text-align:center; margin-top:8px; font-size:0.9rem;">
-                        ${todayVote ? `✅ صوتك اليوم: <strong>${todayVote}:00 مساءً</strong>` : '⚠️ لم تصوت اليوم بعد'}
+                    <div style="text-align:center; margin:10px 0;">
+                        ${myVote ? `✅ صوتك اليوم: <strong>${myVote}:00 مساءً</strong>` : '⚠️ لم تصوت بعد'}
                     </div>
-                    <button onclick="sendVoteToBot()">📤 مشاركة تصويتي مع المجموعة (عبر البوت)</button>
                 </div>
+
+                ${Object.keys(todayVotes).length > 0 ? `
+                <div class="card">
+                    <h2>📊 نتائج اليوم (من صوتوا)</h2>
+                    <table style="width:100%; text-align:center; margin-top:10px;">
+                        <tr><th>الوقت</th><th>عدد الأصوات</th></tr>
+                        ${VOTE_TIMES.map(t => `<tr><td>${t}:00 مساءً</td><td>${todayVotes[t] || 0} صوت</td></tr>`).join('')}
+                    </table>
+                    <div style="margin-top:10px; font-weight:bold; text-align:center;">
+                        🏆 الأعلى: ${(() => {
+                            const max = Math.max(...VOTE_TIMES.map(t => todayVotes[t] || 0));
+                            const winners = VOTE_TIMES.filter(t => (todayVotes[t] || 0) === max).map(t => t+':00').join(' و ');
+                            return winners || 'لا أصوات';
+                        })()}
+                    </div>
+                </div>
+                ` : '<div class="card" style="text-align:center;">لا توجد تصويتات اليوم بعد</div>'}
 
                 <div class="footer-note">
-                    التطبيق يعمل داخل تيليجرام • بياناتك محفوظة محلياً على جهازك
+                    التصويت يظهر هنا فقط ولا يراه أحد غيرك
                 </div>
             `;
-            document.getElementById('app').innerHTML = html;
         }
 
-        // ========== أحداث التفاعل ==========
         window.addProgress = async function(type) {
             const data = await loadData();
-            if (type === 'theoretical' && data.progress.theoretical < TOTAL_THEORETICAL) {
-                data.progress.theoretical += 1;
-            } else if (type === 'practical' && data.progress.practical < TOTAL_PRACTICAL) {
-                data.progress.practical += 1;
-            }
+            if (type === 'theoretical' && data.progress.theoretical < TOTAL_THEORETICAL) data.progress.theoretical++;
+            else if (type === 'practical' && data.progress.practical < TOTAL_PRACTICAL) data.progress.practical++;
             await saveData(data);
             renderApp();
         };
 
-        window.voteToday = async function(time) {
+        window.castVote = async function(time) {
+            if (!time) return;
             const data = await loadData();
             const todayDate = getTodayDate();
-            data.votes[todayDate] = time; // يخزن فقط لليوم
+            if (!data.votes[todayDate]) data.votes[todayDate] = {};
+            data.votes[todayDate][userId] = time;
             await saveData(data);
             renderApp();
         };
 
-        window.sendVoteToBot = async function() {
-            const data = await loadData();
-            const todayDate = getTodayDate();
-            const myVote = data.votes[todayDate];
-            if (!myVote) {
-                alert('لم تصوت اليوم بعد.');
-                return;
-            }
-            const payload = { action: 'vote', date: todayDate, vote: myVote };
-            if (tg.sendData) {
-                tg.sendData(JSON.stringify(payload));
-                tg.showPopup({ title: 'تم الإرسال', message: 'تم إرسال تصويتك إلى البوت.' });
-            } else {
-                prompt('انسخ هذا النص وأرسله إلى البوت:', JSON.stringify(payload));
-            }
-        };
-
-        // بدء التطبيق
         renderApp();
     </script>
 </body>
