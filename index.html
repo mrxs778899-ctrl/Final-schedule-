@@ -9,60 +9,83 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
             color: #1c1e21;
-            padding: 20px;
+            min-height: 100vh;
+            /* صورة خلفية بموضوع دراسي (مكتبة هادئة) */
+            background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
         }
-        .container { max-width: 500px; margin: 0 auto; }
+        /* طبقة شفافة داكنة لتوضيح النص */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: -1;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
         .card {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
         }
-        h2 { font-size: 1.3rem; margin-bottom: 12px; }
+        h2 { font-size: 1.3rem; margin-bottom: 12px; color: #0d47a1; }
         .user { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
         .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #0088cc; }
-        .times { display: flex; gap: 8px; margin: 12px 0; }
+        .times { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
         .time-btn {
             padding: 8px 16px;
             border-radius: 12px;
-            border: 1px solid #ddd;
-            background: #f5f5f5;
+            border: 1px solid #ccc;
+            background: #f0f0f0;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
+            font-weight: 500;
         }
         .time-btn.active { background: #0088cc; color: #fff; border-color: #0088cc; }
         .btn {
             background: #0088cc;
             color: #fff;
             border: none;
-            padding: 10px;
+            padding: 12px;
             border-radius: 12px;
             width: 100%;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: bold;
-            margin-top: 8px;
+            margin-top: 10px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background 0.2s, opacity 0.2s;
         }
-        .btn:active { opacity: 0.8; }
-        .progress-bar { height: 20px; background: #eee; border-radius: 10px; overflow: hidden; margin: 8px 0; }
-        .progress-fill { height: 100%; background: #0088cc; transition: width 0.3s; }
+        .btn:hover { background: #0077b5; }
+        .btn:active { opacity: 0.85; }
+        .progress-bar { height: 18px; background: #e0e0e0; border-radius: 9px; overflow: hidden; margin: 6px 0; }
+        .progress-fill { height: 100%; background: #0088cc; transition: width 0.4s; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         td { padding: 6px 0; border-bottom: 1px solid #eee; }
-        .note { text-align: center; font-size: 0.7rem; color: #888; margin-top: 16px; }
-        .error { color: #d32f2f; text-align: center; margin: 8px 0; font-size: 0.85rem; }
-        .loading { text-align: center; color: #888; margin: 10px 0; }
-        .success { color: #2e7d32; text-align: center; margin: 8px 0; font-weight: bold; }
+        .note { text-align: center; font-size: 0.7rem; color: #555; margin-top: 16px; }
+        .msg { text-align: center; margin: 8px 0; font-size: 0.9rem; }
+        .msg.success { color: #2e7d32; }
+        .msg.error { color: #d32f2f; }
+        .msg.loading { color: #ff8f00; }
     </style>
 </head>
 <body>
     <div class="container" id="app"></div>
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynfAPsLZLzZ8AheLRkdz_1zw58qaQCKUz1JWTB8e9qUQElXZrDfV_6lHe0SyG_qmmq/exec';
+        // رابط Google Apps Script الجديد (تم التضمين)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXcsd6TcvBTZiS-qgfnNGMQ9f6-TYs1eWCo7EYxxAMPNrzC7qXquCqFeXe8d9WNhK1_Q/exec';
 
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -86,95 +109,37 @@
                 progress: { theoretical: 4, practical: 0 },
                 voted: null,
                 results: {},
-                lastMessage: null,
-                lastMessageType: null // 'success' or 'error'
+                msg: null,
+                msgType: null
             };
         }
         async function save(d) { localStorage.setItem('tmastudy', JSON.stringify(d)); }
 
-        async function submitVote(time) {
-            const today = getToday();
-            const local = await load();
-            local.voted = time;
-            local.lastMessage = '⏳ جارٍ إرسال تصويتك...';
-            local.lastMessageType = 'loading';
-            await save(local);
-            render();
-
-            try {
-                const res = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ userId: String(userId), date: today, vote: time })
-                });
-                const json = await res.json();
-                if (json.success) {
-                    local.lastMessage = '✅ تم تسجيل تصويتك بنجاح';
-                    local.lastMessageType = 'success';
-                    await loadResults(); // تحميل النتائج فوراً
-                } else {
-                    local.lastMessage = '❌ ' + (json.error || 'خطأ غير معروف');
-                    local.lastMessageType = 'error';
-                }
-            } catch (e) {
-                console.error(e);
-                local.lastMessage = '❌ تعذر الاتصال بالخادم. تأكد من الرابط والإنترنت.';
-                local.lastMessageType = 'error';
-            }
-            await save(local);
-            render();
-        }
-
-        async function loadResults() {
-            const local = await load();
-            const today = getToday();
-            try {
-                const res = await fetch(SCRIPT_URL);
-                const all = await res.json();
-                local.results = all[today] || {};
-            } catch (e) {
-                console.error(e);
-                local.results = {};
-            }
-            await save(local);
-            return local.results;
-        }
-
-        function bestVote(results) {
-            let best = '';
-            let max = 0;
-            for (const [t, c] of Object.entries(results)) {
-                if (c > max) { max = c; best = t; }
-            }
-            return { time: best, count: max };
-        }
-
-        async function render() {
-            const local = await load();
+        function render(state) {
+            const local = state;
             const today = getToday();
             const done = local.progress.theoretical + local.progress.practical;
             const total = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
             const pct = Math.round((done / total) * 100);
-
-            const messageHtml = local.lastMessage ? 
-                `<div class="${local.lastMessageType === 'success' ? 'success' : local.lastMessageType === 'error' ? 'error' : 'loading'}">${local.lastMessage}</div>` : '';
+            const msgHtml = local.msg ? `<div class="msg ${local.msgType}">${local.msg}</div>` : '';
 
             const resultsHtml = Object.keys(local.results).length ? `
                 <table>
                     ${['8','9','10','11'].map(t => `<tr><td>${t}:00 مساءً</td><td><strong>${local.results[t] || 0} صوت</strong></td></tr>`).join('')}
                 </table>
-                <div style="text-align:center;margin-top:6px;">🏆 الأعلى: ${(() => {
-                    const best = bestVote(local.results);
-                    return best.time ? `${best.time}:00 (${best.count} صوت)` : '-';
+                <div style="text-align:center; margin-top:6px; font-weight:bold;">🏆 الأعلى: ${(()=>{
+                    let max=0, best='';
+                    for(const [k,v] of Object.entries(local.results)) if(v>max){max=v;best=k;}
+                    return best ? `${best}:00 (${max} صوت)` : 'لا أصوات';
                 })()}</div>
-            ` : '<div style="text-align:center;color:#888;margin-top:8px;">لا توجد أصوات لليوم بعد</div>';
+            ` : '<div style="text-align:center; color:#888; margin-top:8px;">لا توجد أصوات لليوم بعد.</div>';
 
             document.getElementById('app').innerHTML = `
                 <div class="user">
                     <img src="${user?.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName)}" alt="">
                     <div>
-                        <strong>${userName}</strong>
-                        <div style="font-size:0.8rem;color:#888;">@${user?.username || 'لا يوجد'}</div>
+                        <strong style="font-size:1.1rem;">${userName}</strong>
+                        <div style="font-size:0.8rem; opacity:0.8;">@${user?.username || 'لا يوجد'}</div>
                     </div>
                 </div>
                 <div class="card">
@@ -183,7 +148,7 @@
                     <div class="progress-bar"><div class="progress-fill" style="width:${(local.progress.theoretical/TOTAL_THEORETICAL)*100}%"></div></div>
                     <div>عملي: ${local.progress.practical}/${TOTAL_PRACTICAL}</div>
                     <div class="progress-bar"><div class="progress-fill" style="width:${(local.progress.practical/TOTAL_PRACTICAL)*100}%"></div></div>
-                    <div style="text-align:center;margin:10px 0;">${pct}% مكتمل (${done}/${total})</div>
+                    <div style="text-align:center; margin:10px 0; font-weight:bold;">${pct}% مكتمل (${done}/${total})</div>
                     <div style="display:flex; gap:10px;">
                         <button class="btn" onclick="addProgress('theoretical')">+ أنهيت نظري</button>
                         <button class="btn" onclick="addProgress('practical')">+ أنهيت عملي</button>
@@ -192,27 +157,71 @@
                 <div class="card">
                     <h2>🗳️ تصويت اليوم (${getDayName()})</h2>
                     <div class="times">
-                        ${['8','9','10','11'].map(t => `<button class="time-btn ${local.voted === t ? 'active' : ''}" onclick="submitVote('${t}')">${t}:00</button>`).join('')}
+                        ${['8','9','10','11'].map(t => `<button class="time-btn ${local.voted === t ? 'active' : ''}" onclick="castVote('${t}')">${t}:00</button>`).join('')}
                     </div>
-                    <div style="text-align:center; margin:10px 0;">
+                    <div style="text-align:center; margin:10px 0; font-weight:500;">
                         ${local.voted ? `✅ صوتك: ${local.voted}:00 مساءً` : '⚠️ لم تصوت بعد'}
                     </div>
-                    ${messageHtml}
-                    <button class="btn" id="showResultsBtn" onclick="showResults()">📊 عرض نتائج التصويت الجماعي</button>
-                    <div id="resultsContainer">${resultsHtml}</div>
+                    ${msgHtml}
+                    <button class="btn" id="resultBtn" onclick="showResults()">📊 عرض نتائج التصويت الجماعي</button>
+                    <div id="resultsContainer" style="margin-top:10px;">${resultsHtml}</div>
                 </div>
                 <div class="note">تطبيق تيليجرام المصغر • بدون تسجيل دخول</div>
             `;
         }
 
+        window.castVote = async function(time) {
+            const local = await load();
+            local.voted = time;
+            local.msg = '⏳ إرسال التصويت...';
+            local.msgType = 'loading';
+            await save(local);
+            render(local);
+
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ userId: String(userId), date: getToday(), vote: time })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    local.msg = '✅ تم تسجيل تصويتك بنجاح';
+                    local.msgType = 'success';
+                    // تحديث النتائج مباشرة
+                    const resp = await fetch(SCRIPT_URL);
+                    const all = await resp.json();
+                    local.results = all[getToday()] || {};
+                } else {
+                    local.msg = '❌ ' + (json.error || 'خطأ غير معروف');
+                    local.msgType = 'error';
+                }
+            } catch (e) {
+                local.msg = '❌ تعذر الاتصال بالخادم. تأكد من الإنترنت.';
+                local.msgType = 'error';
+            }
+            await save(local);
+            render(local);
+        };
+
         window.showResults = async function() {
-            const btn = document.getElementById('showResultsBtn');
+            const local = await load();
+            const btn = document.getElementById('resultBtn');
             if (btn) {
                 btn.textContent = '⏳ جارٍ التحميل...';
                 btn.disabled = true;
             }
-            await loadResults();
-            await render();
+            local.msg = null;
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const all = await res.json();
+                local.results = all[getToday()] || {};
+            } catch(e) {
+                local.msg = '❌ فشل جلب النتائج';
+                local.msgType = 'error';
+            }
+            await save(local);
+            render(local);
             if (btn) {
                 btn.textContent = '📊 عرض نتائج التصويت الجماعي';
                 btn.disabled = false;
@@ -224,10 +233,13 @@
             if (type === 'theoretical' && local.progress.theoretical < TOTAL_THEORETICAL) local.progress.theoretical++;
             else if (type === 'practical' && local.progress.practical < TOTAL_PRACTICAL) local.progress.practical++;
             await save(local);
-            render();
+            render(local);
         };
 
-        render();
+        (async ()=>{
+            const local = await load();
+            render(local);
+        })();
     </script>
 </body>
 </html>
