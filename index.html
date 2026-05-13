@@ -11,7 +11,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #1c1e21;
             min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1581093588401-fbb62a02f120?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            /* خلفية جديدة: مختبر أنيق */
+            background: url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             position: relative;
         }
@@ -19,7 +20,7 @@
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.45);
             z-index: -1;
         }
         .container {
@@ -82,10 +83,6 @@
         .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #0088cc; }
         h2 { font-size: 1.3rem; margin-bottom: 12px; color: #0d47a1; }
         .chart-container { display: flex; justify-content: center; margin: 10px 0 15px; }
-        .progress-section { margin: 15px 0; }
-        .progress-label { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .progress-bar { height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 6px 0 10px; }
-        .progress-fill { height: 100%; background: #0088cc; transition: width 0.5s; }
         .lecture-list { margin-top: 15px; }
         .lecture-item {
             display: flex; align-items: center; justify-content: space-between;
@@ -162,7 +159,6 @@
         .note { text-align: center; font-size: 0.7rem; color: #ddd; margin-top: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .back-link { text-align: center; margin-top: 10px; }
         .back-link button { background: none; border: none; color: #0088cc; text-decoration: underline; font-size: 0.9rem; cursor: pointer; }
-        .auto-progress { text-align: center; color: #888; font-size: 0.8rem; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -341,12 +337,12 @@
 
         // --- دوال localStorage ---
         function loadProgress() {
-            const raw = localStorage.getItem('lab_progress_v3');
+            const raw = localStorage.getItem('lab_progress_v4');
             return raw ? JSON.parse(raw) : { completed: [] };
         }
-        function saveProgress(data) { localStorage.setItem('lab_progress_v3', JSON.stringify(data)); }
-        function isWelcomeShown() { return localStorage.getItem('lab_welcome_v3') === 'true'; }
-        function setWelcomeShown() { localStorage.setItem('lab_welcome_v3', 'true'); }
+        function saveProgress(data) { localStorage.setItem('lab_progress_v4', JSON.stringify(data)); }
+        function isWelcomeShown() { return localStorage.getItem('lab_welcome_v4') === 'true'; }
+        function setWelcomeShown() { localStorage.setItem('lab_welcome_v4', 'true'); }
 
         function getCompletedCount(type) {
             const progress = loadProgress();
@@ -369,7 +365,7 @@
             saveProgress(progress);
         }
 
-        // --- مخطط بياني ---
+        // --- مخطط بياني دائري ---
         function createDonutChart(percent) {
             const radius = 50;
             const circumference = 2 * Math.PI * radius;
@@ -441,15 +437,11 @@
                 </div>
                 <div class="glass-card">
                     <h2>📘 المحاضرات النظرية</h2>
-                    <div class="lecture-list">
-                        ${theoList.map(renderLectureItem).join('')}
-                    </div>
+                    <div class="lecture-list">${theoList.map(renderLectureItem).join('')}</div>
                 </div>
                 <div class="glass-card">
                     <h2>🧪 المحاضرات العملية</h2>
-                    <div class="lecture-list">
-                        ${pracList.map(renderLectureItem).join('')}
-                    </div>
+                    <div class="lecture-list">${pracList.map(renderLectureItem).join('')}</div>
                 </div>
                 <div class="back-link"><button onclick="showWelcome()">⬅️ العودة لصفحة الترحيب</button></div>
                 <div class="note">تطبيق تيليجرام المصغر • الأجهزة والتقنيات المختبرية</div>
@@ -504,7 +496,7 @@
                 questions: [...quizData[lectureId]],
                 currentIndex: 0,
                 answers: new Array(quizData[lectureId].length).fill(null),
-                quizDone: false
+                quizDone: false // هل تم التحقق من السؤال الحالي
             };
             renderQuizModal();
         };
@@ -513,7 +505,7 @@
             const q = currentQuiz.questions[currentQuiz.currentIndex];
             const selectedAnswer = currentQuiz.answers[currentQuiz.currentIndex];
             const isLast = currentQuiz.currentIndex === currentQuiz.questions.length - 1;
-            const canCheck = selectedAnswer !== null && currentQuiz.answers[currentQuiz.currentIndex] !== undefined;
+            const canCheck = selectedAnswer !== null;
 
             const modal = document.createElement('div');
             modal.className = 'quiz-modal';
@@ -527,13 +519,13 @@
                             ${opt}
                         </label>
                     `).join('')}
-                    <div style="display:flex; gap:10px; margin-top:15px; justify-content:center;">
-                        ${currentQuiz.currentIndex > 0 ? '<button class="btn-secondary" id="prevBtn">السابق</button>' : ''}
+                    <div style="display:flex; gap:10px; margin-top:15px; justify-content:center; flex-wrap:wrap;">
+                        ${currentQuiz.currentIndex > 0 ? '<button class="btn-secondary" id="prevBtn">⬅️ السابق</button>' : ''}
                         <button class="btn-primary" id="checkBtn" ${!canCheck ? 'disabled' : ''}>تحقق</button>
-                        ${isLast ? '<button class="btn-primary" id="finishBtn" style="display:none;">إنهاء</button>' : '<button class="btn-primary" id="nextBtn" style="display:none;">التالي ⏩</button>'}
+                        ${currentQuiz.quizDone ? (isLast ? '<button class="btn-primary" id="finishBtn">إنهاء الاختبار</button>' : '<button class="btn-primary" id="nextBtn">التالي ⏩</button>') : ''}
                     </div>
                     <div id="feedbackArea"></div>
-                    <button style="margin-top:12px; width:100%; background:#eee;" class="btn-secondary" onclick="closeQuiz()">إلغاء</button>
+                    <button style="margin-top:12px; width:100%; background:#eee;" class="btn-secondary" onclick="closeQuiz()">إلغاء الاختبار</button>
                 </div>
             `;
             document.body.appendChild(modal);
@@ -550,7 +542,7 @@
             const checkBtn = modal.querySelector('#checkBtn');
             if (checkBtn) {
                 checkBtn.addEventListener('click', () => {
-                    checkAnswer();
+                    if (!currentQuiz.quizDone) checkAnswer();
                 });
             }
 
@@ -560,29 +552,42 @@
                     prevQuestion();
                 });
             }
+
+            // أزرار التالي/إنهاء (قد تكون ظاهرة بعد التحقق)
+            const nextBtn = modal.querySelector('#nextBtn');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    moveToNextQuestion();
+                });
+            }
+            const finishBtn = modal.querySelector('#finishBtn');
+            if (finishBtn) {
+                finishBtn.addEventListener('click', () => {
+                    finishQuiz();
+                });
+            }
         }
 
-        window.selectAnswer = function(idx) {
+        function selectAnswer(idx) {
             if (currentQuiz.quizDone) return; // لا تغيير بعد التحقق
             currentQuiz.answers[currentQuiz.currentIndex] = idx;
-            // تحديث الخيارات بصريًا دون إعادة بناء المودال
+            // تحديث بصري
             const modal = document.querySelector('.quiz-modal');
             if (!modal) return;
             const options = modal.querySelectorAll('.quiz-option');
             options.forEach(opt => opt.classList.remove('selected'));
             const selectedOption = modal.querySelector(`.quiz-option[data-option-index="${idx}"]`);
             if (selectedOption) selectedOption.classList.add('selected');
-            // تفعيل زر تحقق
             const checkBtn = modal.querySelector('#checkBtn');
             if (checkBtn) checkBtn.disabled = false;
-        };
+        }
 
         function checkAnswer() {
             if (currentQuiz.quizDone) return;
             const q = currentQuiz.questions[currentQuiz.currentIndex];
             const chosen = currentQuiz.answers[currentQuiz.currentIndex];
             if (chosen === null || chosen === undefined) return;
-            const correctIdx = q.correct - 1; // correct is 1-indexed
+            const correctIdx = q.correct - 1; // 1-indexed to 0-indexed
             const isCorrect = (chosen === correctIdx);
             currentQuiz.quizDone = true; // قفل السؤال
 
@@ -598,40 +603,46 @@
             const feedbackArea = modal.querySelector('#feedbackArea');
             if (isCorrect) {
                 feedbackArea.innerHTML = '<div class="feedback-icon">✅</div><p style="text-align:center;color:#2e7d32;">إجابة صحيحة!</p>';
-                // تأثير كونفيتي بسيط
                 createConfetti(modal.querySelector('.quiz-content'));
             } else {
-                feedbackArea.innerHTML = '<div class="feedback-icon">❌</div><p style="text-align:center;color:#d32f2f;">إجابة خاطئة! الجواب الصحيح: ' + q.opts[correctIdx] + '</p>';
+                feedbackArea.innerHTML = '<div class="feedback-icon">❌</div><p style="text-align:center;color:#d32f2f;">إجابة خاطئة! الصحيح: ' + q.opts[correctIdx] + '</p>';
             }
 
-            // إظهار زر التالي أو إنهاء، وإخفاء تحقق
+            // إظهار زر التالي أو إنهاء وإخفاء تحقق
             const checkBtn = modal.querySelector('#checkBtn');
             if (checkBtn) checkBtn.style.display = 'none';
             const prevBtn = modal.querySelector('#prevBtn');
-            if (prevBtn) prevBtn.style.display = 'none';
+            if (prevBtn) prevBtn.style.display = 'none'; // نخفي السابق أثناء التحقق
 
             const isLast = currentQuiz.currentIndex === currentQuiz.questions.length - 1;
-            if (isLast) {
-                const finishBtn = modal.querySelector('#finishBtn');
-                if (finishBtn) {
-                    finishBtn.style.display = 'block';
-                    finishBtn.addEventListener('click', finishQuiz);
-                }
-            } else {
-                const nextBtn = modal.querySelector('#nextBtn');
-                if (nextBtn) {
-                    nextBtn.style.display = 'block';
-                    nextBtn.addEventListener('click', () => {
-                        moveToNextQuestion();
-                    });
-                }
-            }
+            // إعادة بناء الأزرار
+            const buttonContainer = modal.querySelector('.quiz-content > div:last-child'); // الأزرار
+            // سنقوم بإنشاء زر التالي/إنهاء ديناميكياً
+            const existingNext = modal.querySelector('#nextBtn');
+            const existingFinish = modal.querySelector('#finishBtn');
+            if (existingNext) existingNext.remove();
+            if (existingFinish) existingFinish.remove();
 
-            // الانتقال التلقائي بعد 2 ثانية إذا لم يكن الأخير
+            const newBtn = document.createElement('button');
+            newBtn.className = 'btn-primary';
+            if (isLast) {
+                newBtn.id = 'finishBtn';
+                newBtn.textContent = 'إنهاء الاختبار';
+                newBtn.addEventListener('click', finishQuiz);
+            } else {
+                newBtn.id = 'nextBtn';
+                newBtn.textContent = 'التالي ⏩';
+                newBtn.addEventListener('click', moveToNextQuestion);
+            }
+            // إدراج الزر بعد زر التحقق (الذي أصبح مخفيًا)
+            const checkBtnParent = checkBtn.parentNode;
+            checkBtnParent.appendChild(newBtn);
+
+            // انتقال تلقائي بعد 2.5 ثانية إذا لم يكن الأخير
             if (!isLast) {
                 autoNextTimer = setTimeout(() => {
                     moveToNextQuestion();
-                }, 2000);
+                }, 2500);
             }
         }
 
@@ -643,23 +654,15 @@
             renderQuizModal();
         }
 
-        window.nextQuestion = function() {
-            // يدوي
+        function prevQuestion() {
             if (autoNextTimer) clearTimeout(autoNextTimer);
-            closeQuiz();
-            currentQuiz.currentIndex++;
-            currentQuiz.quizDone = false;
-            renderQuizModal();
-        };
-
-        window.prevQuestion = function() {
             closeQuiz();
             currentQuiz.currentIndex--;
             currentQuiz.quizDone = false;
             renderQuizModal();
-        };
+        }
 
-        window.finishQuiz = function() {
+        function finishQuiz() {
             if (autoNextTimer) clearTimeout(autoNextTimer);
             let correct = 0;
             currentQuiz.questions.forEach((q, i) => {
@@ -674,7 +677,7 @@
                 alert(`😞 لم تنجح (${correct}/10). تحتاج 7/10. حاول مرة أخرى.`);
             }
             renderMainPage();
-        };
+        }
 
         window.closeQuiz = function() {
             if (autoNextTimer) clearTimeout(autoNextTimer);
@@ -683,7 +686,7 @@
             currentQuiz = null;
         };
 
-        // تأثير كونفيتي بسيط باستخدام div
+        // تأثير كونفيتي بسيط
         function createConfetti(container) {
             const colors = ['#ff0','#f00','#0f0','#00f','#ff00ff','#00ffff'];
             for (let i=0; i<20; i++) {
@@ -701,7 +704,7 @@
             }
         }
 
-        // أنيميشن CSS للكونفيتي
+        // إضافة أنيميشن الكونفيتي
         const styleSheet = document.createElement("style");
         styleSheet.textContent = `
             @keyframes confettiFall {
