@@ -28,9 +28,6 @@
             padding: 20px;
             position: relative;
             z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
         .glass-card {
             background: rgba(255, 255, 255, 0.92);
@@ -46,8 +43,7 @@
             padding: 30px 20px;
         }
         .welcome-card img {
-            width: 90px;
-            height: 90px;
+            width: 90px; height: 90px;
             border-radius: 50%;
             border: 3px solid #0088cc;
             margin-bottom: 15px;
@@ -92,9 +88,7 @@
         .progress-fill { height: 100%; background: #0088cc; transition: width 0.5s; }
         .lecture-list { margin-top: 15px; }
         .lecture-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between;
             background: rgba(255,255,255,0.7);
             border-radius: 14px;
             padding: 10px 14px;
@@ -105,6 +99,8 @@
         .lecture-info { display: flex; align-items: center; gap: 8px; }
         .lecture-info .status { font-weight: bold; }
         .lecture-buttons { display: flex; gap: 6px; }
+
+        /* نماذج الاختبار */
         .quiz-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7);
@@ -117,9 +113,10 @@
             padding: 20px;
             width: 90%;
             max-width: 500px;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            position: relative;
         }
         .quiz-content h3 { color: #0d47a1; margin-bottom: 15px; text-align: center; }
         .quiz-option {
@@ -134,21 +131,38 @@
             text-align: right;
         }
         .quiz-option.selected { border-color: #0088cc; background: #e3f2fd; }
+        .quiz-option.correct { border-color: #2e7d32; background: #c8e6c9; animation: correctPulse 0.5s; }
+        .quiz-option.wrong { border-color: #d32f2f; background: #ffcdd2; animation: shake 0.5s; }
         .quiz-btn {
-            background: #0088cc;
-            color: #fff;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            width: 100%;
-            font-weight: bold;
-            margin-top: 12px;
-            cursor: pointer;
+            background: #0088cc; color: #fff; border: none;
+            padding: 12px; border-radius: 12px; width: 100%;
+            font-weight: bold; margin-top: 12px; cursor: pointer;
         }
         .quiz-btn:disabled { opacity: 0.5; }
+        .feedback-icon {
+            text-align: center; font-size: 2.5rem; margin: 10px 0;
+            animation: popIn 0.4s ease;
+        }
+        @keyframes correctPulse {
+            0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); }
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%,60% { transform: translateX(-5px); }
+            40%,80% { transform: translateX(5px); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .confetti {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 10;
+        }
         .note { text-align: center; font-size: 0.7rem; color: #ddd; margin-top: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .back-link { text-align: center; margin-top: 10px; }
         .back-link button { background: none; border: none; color: #0088cc; text-decoration: underline; font-size: 0.9rem; cursor: pointer; }
+        .auto-progress { text-align: center; color: #888; font-size: 0.8rem; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -165,7 +179,7 @@
         const TOTAL_THEORETICAL = 7;
         const TOTAL_PRACTICAL = 6;
 
-        // --- بنوك الأسئلة لكل محاضرة (كما أرسلتها) ---
+        // --- بنوك الأسئلة (كما أرسلتها) ---
         const quizData = {
             "theoretical-1": [
                 { q: "What is a laboratory instrument?", opts: ["Device used for cooking", "Device used for laboratory tests", "Device used for transportation", "Device used for entertainment"], correct: 2 },
@@ -327,23 +341,21 @@
 
         // --- دوال localStorage ---
         function loadProgress() {
-            const raw = localStorage.getItem('lab_progress_v2');
-            return raw ? JSON.parse(raw) : { completed: [] }; // array of lecture IDs
+            const raw = localStorage.getItem('lab_progress_v3');
+            return raw ? JSON.parse(raw) : { completed: [] };
         }
-        function saveProgress(data) { localStorage.setItem('lab_progress_v2', JSON.stringify(data)); }
-        function isWelcomeShown() { return localStorage.getItem('lab_welcome_v2') === 'true'; }
-        function setWelcomeShown() { localStorage.setItem('lab_welcome_v2', 'true'); }
+        function saveProgress(data) { localStorage.setItem('lab_progress_v3', JSON.stringify(data)); }
+        function isWelcomeShown() { return localStorage.getItem('lab_welcome_v3') === 'true'; }
+        function setWelcomeShown() { localStorage.setItem('lab_welcome_v3', 'true'); }
 
         function getCompletedCount(type) {
             const progress = loadProgress();
             return progress.completed.filter(id => id.startsWith(type)).length;
         }
-
         function isLectureCompleted(lectureId) {
             const progress = loadProgress();
             return progress.completed.includes(lectureId);
         }
-
         function markLectureCompleted(lectureId) {
             const progress = loadProgress();
             if (!progress.completed.includes(lectureId)) {
@@ -351,14 +363,13 @@
                 saveProgress(progress);
             }
         }
-
         function markLectureIncomplete(lectureId) {
             const progress = loadProgress();
             progress.completed = progress.completed.filter(id => id !== lectureId);
             saveProgress(progress);
         }
 
-        // --- المخطط البياني ---
+        // --- مخطط بياني ---
         function createDonutChart(percent) {
             const radius = 50;
             const circumference = 2 * Math.PI * radius;
@@ -376,7 +387,7 @@
             `;
         }
 
-        // --- عرض الصفحة الرئيسية ---
+        // --- الصفحة الرئيسية ---
         function renderMainPage() {
             const theoCompleted = getCompletedCount('theoretical');
             const pracCompleted = getCompletedCount('practical');
@@ -384,18 +395,15 @@
             const totalLectures = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
             const pct = Math.round((totalCompleted / totalLectures) * 100);
 
-            // بناء قوائم المحاضرات
             const theoList = [];
             for (let i = 1; i <= TOTAL_THEORETICAL; i++) {
                 const id = `theoretical-${i}`;
-                const completed = isLectureCompleted(id);
-                theoList.push({ id, name: `محاضرة ${i} نظري`, completed });
+                theoList.push({ id, name: `محاضرة ${i} نظري`, completed: isLectureCompleted(id) });
             }
             const pracList = [];
             for (let i = 1; i <= TOTAL_PRACTICAL; i++) {
                 const id = `practical-${i}`;
-                const completed = isLectureCompleted(id);
-                pracList.push({ id, name: `محاضرة ${i} عملي`, completed });
+                pracList.push({ id, name: `محاضرة ${i} عملي`, completed: isLectureCompleted(id) });
             }
 
             const renderLectureItem = (lecture) => `
@@ -449,14 +457,13 @@
             document.getElementById('app').innerHTML = html;
         }
 
-        // --- صفحة الترحيب ---
         function showWelcome() {
             const html = `
                 <div class="glass-card welcome-card">
                     <img src="${userPhoto}" alt="صورة">
                     <h1>أهلًا ${userName}! 👋</h1>
                     <p>مرحبًا بك في <strong>منظّم دراسة الأجهزة والتقنيات المختبرية</strong> 🔬</p>
-                    <p>يمكنك إكمال المحاضرات مباشرة أو عبر اختبارات MCQ مخصصة.</p>
+                    <p>يمكنك إكمال المحاضرات مباشرة أو عبر اختبارات MCQ تفاعلية.</p>
                     <button class="btn-primary" onclick="startApp()">✨ ابدأ الآن</button>
                 </div>
             `;
@@ -468,24 +475,20 @@
             renderMainPage();
         };
 
-        // --- إكمال مباشر ---
         window.completeLectureDirect = function(lectureId) {
             markLectureCompleted(lectureId);
             renderMainPage();
         };
 
-        // --- إلغاء الإكمال ---
         window.toggleLecture = function(lectureId, complete) {
-            if (complete) {
-                markLectureCompleted(lectureId);
-            } else {
-                markLectureIncomplete(lectureId);
-            }
+            if (complete) markLectureCompleted(lectureId);
+            else markLectureIncomplete(lectureId);
             renderMainPage();
         };
 
-        // --- نظام الاختبار ---
-        let currentQuiz = { lectureId: '', questions: [], currentIndex: 0, answers: [] };
+        // --- نظام الاختبار التفاعلي ---
+        let currentQuiz = null;
+        let autoNextTimer = null;
 
         window.startQuiz = function(lectureId) {
             if (isLectureCompleted(lectureId)) {
@@ -498,79 +501,217 @@
             }
             currentQuiz = {
                 lectureId: lectureId,
-                questions: [...quizData[lectureId]], // نسخة من الأسئلة
+                questions: [...quizData[lectureId]],
                 currentIndex: 0,
-                answers: []
+                answers: new Array(quizData[lectureId].length).fill(null),
+                quizDone: false
             };
             renderQuizModal();
         };
 
         function renderQuizModal() {
             const q = currentQuiz.questions[currentQuiz.currentIndex];
+            const selectedAnswer = currentQuiz.answers[currentQuiz.currentIndex];
+            const isLast = currentQuiz.currentIndex === currentQuiz.questions.length - 1;
+            const canCheck = selectedAnswer !== null && currentQuiz.answers[currentQuiz.currentIndex] !== undefined;
+
             const modal = document.createElement('div');
             modal.className = 'quiz-modal';
             modal.innerHTML = `
-                <div class="quiz-content">
+                <div class="quiz-content" id="quizInner">
                     <h3>سؤال ${currentQuiz.currentIndex + 1} / ${currentQuiz.questions.length}</h3>
                     <p style="margin-bottom:10px;"><strong>${q.q}</strong></p>
                     ${q.opts.map((opt, idx) => `
-                        <label class="quiz-option ${currentQuiz.answers[currentQuiz.currentIndex] === idx ? 'selected' : ''}">
-                            <input type="radio" name="quizOpt" value="${idx}" style="display:none;"
-                                onchange="selectAnswer(${idx})" ${currentQuiz.answers[currentQuiz.currentIndex] === idx ? 'checked' : ''}>
+                        <label class="quiz-option ${selectedAnswer === idx ? 'selected' : ''}" data-option-index="${idx}">
+                            <input type="radio" name="quizOpt" style="display:none;">
                             ${opt}
                         </label>
                     `).join('')}
-                    <div style="display:flex; gap:10px; margin-top:15px;">
-                        ${currentQuiz.currentIndex > 0 ? '<button class="btn-secondary" onclick="prevQuestion()">السابق</button>' : ''}
-                        ${currentQuiz.currentIndex < currentQuiz.questions.length - 1 ?
-                            `<button class="btn-primary" onclick="nextQuestion()" ${currentQuiz.answers[currentQuiz.currentIndex] === undefined ? 'disabled' : ''}>التالي</button>` :
-                            `<button class="btn-primary" onclick="finishQuiz()" ${currentQuiz.answers[currentQuiz.currentIndex] === undefined ? 'disabled' : ''}>إنهاء</button>`
-                        }
+                    <div style="display:flex; gap:10px; margin-top:15px; justify-content:center;">
+                        ${currentQuiz.currentIndex > 0 ? '<button class="btn-secondary" id="prevBtn">السابق</button>' : ''}
+                        <button class="btn-primary" id="checkBtn" ${!canCheck ? 'disabled' : ''}>تحقق</button>
+                        ${isLast ? '<button class="btn-primary" id="finishBtn" style="display:none;">إنهاء</button>' : '<button class="btn-primary" id="nextBtn" style="display:none;">التالي ⏩</button>'}
                     </div>
-                    <button style="margin-top:8px; width:100%; background:#eee;" class="btn-secondary" onclick="closeQuiz()">إلغاء</button>
+                    <div id="feedbackArea"></div>
+                    <button style="margin-top:12px; width:100%; background:#eee;" class="btn-secondary" onclick="closeQuiz()">إلغاء</button>
                 </div>
             `;
             document.body.appendChild(modal);
+
+            // ربط الأحداث
+            const options = modal.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.addEventListener('click', (e) => {
+                    const idx = parseInt(opt.dataset.optionIndex);
+                    selectAnswer(idx);
+                });
+            });
+
+            const checkBtn = modal.querySelector('#checkBtn');
+            if (checkBtn) {
+                checkBtn.addEventListener('click', () => {
+                    checkAnswer();
+                });
+            }
+
+            const prevBtn = modal.querySelector('#prevBtn');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    prevQuestion();
+                });
+            }
         }
 
         window.selectAnswer = function(idx) {
+            if (currentQuiz.quizDone) return; // لا تغيير بعد التحقق
             currentQuiz.answers[currentQuiz.currentIndex] = idx;
+            // تحديث الخيارات بصريًا دون إعادة بناء المودال
+            const modal = document.querySelector('.quiz-modal');
+            if (!modal) return;
+            const options = modal.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            const selectedOption = modal.querySelector(`.quiz-option[data-option-index="${idx}"]`);
+            if (selectedOption) selectedOption.classList.add('selected');
+            // تفعيل زر تحقق
+            const checkBtn = modal.querySelector('#checkBtn');
+            if (checkBtn) checkBtn.disabled = false;
         };
 
-        window.nextQuestion = function() {
+        function checkAnswer() {
+            if (currentQuiz.quizDone) return;
+            const q = currentQuiz.questions[currentQuiz.currentIndex];
+            const chosen = currentQuiz.answers[currentQuiz.currentIndex];
+            if (chosen === null || chosen === undefined) return;
+            const correctIdx = q.correct - 1; // correct is 1-indexed
+            const isCorrect = (chosen === correctIdx);
+            currentQuiz.quizDone = true; // قفل السؤال
+
+            const modal = document.querySelector('.quiz-modal');
+            if (!modal) return;
+            const options = modal.querySelectorAll('.quiz-option');
+            options.forEach((opt, idx) => {
+                opt.style.pointerEvents = 'none'; // منع تغيير الاختيار
+                if (idx === correctIdx) opt.classList.add('correct');
+                else if (idx === chosen && !isCorrect) opt.classList.add('wrong');
+            });
+
+            const feedbackArea = modal.querySelector('#feedbackArea');
+            if (isCorrect) {
+                feedbackArea.innerHTML = '<div class="feedback-icon">✅</div><p style="text-align:center;color:#2e7d32;">إجابة صحيحة!</p>';
+                // تأثير كونفيتي بسيط
+                createConfetti(modal.querySelector('.quiz-content'));
+            } else {
+                feedbackArea.innerHTML = '<div class="feedback-icon">❌</div><p style="text-align:center;color:#d32f2f;">إجابة خاطئة! الجواب الصحيح: ' + q.opts[correctIdx] + '</p>';
+            }
+
+            // إظهار زر التالي أو إنهاء، وإخفاء تحقق
+            const checkBtn = modal.querySelector('#checkBtn');
+            if (checkBtn) checkBtn.style.display = 'none';
+            const prevBtn = modal.querySelector('#prevBtn');
+            if (prevBtn) prevBtn.style.display = 'none';
+
+            const isLast = currentQuiz.currentIndex === currentQuiz.questions.length - 1;
+            if (isLast) {
+                const finishBtn = modal.querySelector('#finishBtn');
+                if (finishBtn) {
+                    finishBtn.style.display = 'block';
+                    finishBtn.addEventListener('click', finishQuiz);
+                }
+            } else {
+                const nextBtn = modal.querySelector('#nextBtn');
+                if (nextBtn) {
+                    nextBtn.style.display = 'block';
+                    nextBtn.addEventListener('click', () => {
+                        moveToNextQuestion();
+                    });
+                }
+            }
+
+            // الانتقال التلقائي بعد 2 ثانية إذا لم يكن الأخير
+            if (!isLast) {
+                autoNextTimer = setTimeout(() => {
+                    moveToNextQuestion();
+                }, 2000);
+            }
+        }
+
+        function moveToNextQuestion() {
+            if (autoNextTimer) clearTimeout(autoNextTimer);
             closeQuiz();
             currentQuiz.currentIndex++;
+            currentQuiz.quizDone = false;
+            renderQuizModal();
+        }
+
+        window.nextQuestion = function() {
+            // يدوي
+            if (autoNextTimer) clearTimeout(autoNextTimer);
+            closeQuiz();
+            currentQuiz.currentIndex++;
+            currentQuiz.quizDone = false;
             renderQuizModal();
         };
 
         window.prevQuestion = function() {
             closeQuiz();
             currentQuiz.currentIndex--;
+            currentQuiz.quizDone = false;
             renderQuizModal();
         };
 
         window.finishQuiz = function() {
+            if (autoNextTimer) clearTimeout(autoNextTimer);
             let correct = 0;
             currentQuiz.questions.forEach((q, i) => {
-                // correct is 1-indexed, answers[i] is 0-indexed
-                if (currentQuiz.answers[i] === q.correct - 1) correct++;
+                const chosen = currentQuiz.answers[i];
+                if (chosen !== null && chosen === q.correct - 1) correct++;
             });
             closeQuiz();
             if (correct >= 7) {
                 markLectureCompleted(currentQuiz.lectureId);
-                alert(`✅ أحسنت! نجحت (${correct}/10). تم إكمال المحاضرة.`);
+                alert(`🎉 مبروك! نجحت (${correct}/10). تم إكمال المحاضرة.`);
             } else {
-                alert(`❌ لم تنجح (${correct}/10). تحتاج 7/10. حاول مجدداً أو استخدم "إكمال مباشر".`);
+                alert(`😞 لم تنجح (${correct}/10). تحتاج 7/10. حاول مرة أخرى.`);
             }
             renderMainPage();
         };
 
         window.closeQuiz = function() {
+            if (autoNextTimer) clearTimeout(autoNextTimer);
             const modal = document.querySelector('.quiz-modal');
             if (modal) modal.remove();
+            currentQuiz = null;
         };
 
-        // نقطة البداية
+        // تأثير كونفيتي بسيط باستخدام div
+        function createConfetti(container) {
+            const colors = ['#ff0','#f00','#0f0','#00f','#ff00ff','#00ffff'];
+            for (let i=0; i<20; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'absolute';
+                confetti.style.width = '8px';
+                confetti.style.height = '8px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+                confetti.style.left = Math.random()*100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.borderRadius = '50%';
+                confetti.style.animation = `confettiFall ${1+Math.random()}s ease forwards`;
+                container.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000);
+            }
+        }
+
+        // أنيميشن CSS للكونفيتي
+        const styleSheet = document.createElement("style");
+        styleSheet.textContent = `
+            @keyframes confettiFall {
+                0% { transform: translateY(0) rotate(0deg); opacity:1; }
+                100% { transform: translateY(200px) rotate(720deg); opacity:0; }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // بدء التطبيق
         if (isWelcomeShown()) {
             renderMainPage();
         } else {
