@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>الأجهزة والتقنيات المختبرية</title>
+    <title>متابعة مادة الامتحان - لغة إنجليزية</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -11,7 +11,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #1c1e21;
             min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             position: relative;
         }
@@ -19,7 +19,7 @@
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.5);
             z-index: -1;
         }
         .container {
@@ -30,7 +30,7 @@
             z-index: 1;
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.93);
             backdrop-filter: blur(15px);
             border-radius: 24px;
             padding: 20px;
@@ -39,33 +39,36 @@
             width: 100%;
         }
         .welcome-card { text-align: center; padding: 30px 20px; }
-        .welcome-card img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #0088cc; margin-bottom: 15px; }
-        .welcome-card h1 { font-size: 1.7rem; color: #0d47a1; margin-bottom: 8px; }
+        .welcome-card img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #1a73e8; margin-bottom: 15px; }
+        .welcome-card h1 { font-size: 1.7rem; color: #1a73e8; margin-bottom: 8px; }
         .welcome-card p { color: #444; margin: 15px 0; line-height: 1.6; }
         .btn-primary {
-            background: #0088cc; color: #fff; border: none; padding: 12px 25px; border-radius: 30px;
+            background: #1a73e8; color: #fff; border: none; padding: 12px 25px; border-radius: 30px;
             font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: transform 0.2s, background 0.2s;
-            box-shadow: 0 6px 15px rgba(0,136,204,0.4); margin: 3px; text-align: center;
+            box-shadow: 0 6px 15px rgba(26,115,232,0.4); margin: 3px; text-align: center;
         }
-        .btn-primary:active { transform: scale(0.96); background: #005f8a; }
+        .btn-primary:active { transform: scale(0.96); background: #1557b0; }
         .btn-secondary {
-            background: #e0e0e0; color: #333; border: none; padding: 10px 18px; border-radius: 30px;
+            background: #e8eaed; color: #333; border: none; padding: 10px 18px; border-radius: 30px;
             font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s; margin: 3px;
         }
-        .btn-secondary:active { background: #bdbdbd; }
+        .btn-secondary:active { background: #d2d4d7; }
         .user { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #0088cc; }
-        h2 { font-size: 1.3rem; margin-bottom: 12px; color: #0d47a1; }
-        .chart-container { display: flex; justify-content: center; margin: 10px 0 15px; }
-        .lecture-list { margin-top: 15px; }
-        .lecture-item {
+        .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #1a73e8; }
+        h2 { font-size: 1.3rem; margin-bottom: 12px; color: #1a73e8; }
+        .section-list { margin-top: 15px; }
+        .section-item {
             display: flex; align-items: center; justify-content: space-between;
-            background: rgba(255,255,255,0.7); border-radius: 14px; padding: 10px 14px;
+            background: rgba(255,255,255,0.8); border-radius: 14px; padding: 12px 16px;
             margin-bottom: 8px; flex-wrap: wrap; gap: 8px;
         }
-        .lecture-info { display: flex; align-items: center; gap: 8px; }
-        .lecture-info .status { font-weight: bold; }
-        .lecture-buttons { display: flex; gap: 6px; }
+        .section-info { display: flex; align-items: center; gap: 8px; }
+        .section-info .status { font-weight: bold; }
+        .section-buttons { display: flex; gap: 6px; }
+        .progress-overview { margin-top: 15px; }
+        .progress-bar { height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 8px 0; }
+        .progress-fill { height: 100%; background: #1a73e8; transition: width 0.5s; }
+
         /* نماذج الاختبار */
         .quiz-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -76,22 +79,30 @@
             max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             position: relative;
         }
-        .quiz-content h3 { color: #0d47a1; margin-bottom: 15px; text-align: center; }
-        .quiz-option {
-            display: block; background: #f5f5f5; border: 2px solid transparent; border-radius: 12px;
-            padding: 12px; margin: 8px 0; cursor: pointer; transition: 0.2s; text-align: right;
+        .quiz-content h3 { color: #1a73e8; margin-bottom: 8px; text-align: center; }
+        .quiz-content .question-text { font-size: 1.1rem; margin: 12px 0; text-align: center; font-weight: 500; }
+        .true-false-btns {
+            display: flex; gap: 15px; justify-content: center; margin: 20px 0;
         }
-        .quiz-option.selected { border-color: #0088cc; background: #e3f2fd; }
-        .quiz-option.correct { border-color: #2e7d32; background: #c8e6c9; animation: correctPulse 0.5s; }
-        .quiz-option.wrong { border-color: #d32f2f; background: #ffcdd2; animation: shake 0.5s; }
+        .tf-btn {
+            flex: 1; padding: 15px; border-radius: 16px; border: 3px solid transparent;
+            font-size: 1.3rem; font-weight: bold; cursor: pointer; transition: all 0.2s;
+            text-align: center;
+        }
+        .tf-btn.true-btn { background: #e6f4ea; color: #1e7e34; border-color: #c8e6c9; }
+        .tf-btn.false-btn { background: #fce8e6; color: #c5221f; border-color: #f5c6cb; }
+        .tf-btn.true-btn.selected { background: #1e7e34; color: #fff; border-color: #1e7e34; }
+        .tf-btn.false-btn.selected { background: #c5221f; color: #fff; border-color: #c5221f; }
+        .tf-btn.correct-answer { background: #1e7e34 !important; color: #fff !important; border-color: #1e7e34 !important; animation: correctPulse 0.5s; }
+        .tf-btn.wrong-answer { background: #c5221f !important; color: #fff !important; border-color: #c5221f !important; animation: shake 0.5s; }
         .quiz-btn {
-            background: #0088cc; color: #fff; border: none; padding: 12px; border-radius: 12px;
+            background: #1a73e8; color: #fff; border: none; padding: 12px; border-radius: 12px;
             width: 100%; font-weight: bold; margin-top: 12px; cursor: pointer;
         }
         .quiz-btn:disabled { opacity: 0.5; }
         .feedback-icon { text-align: center; font-size: 2.5rem; margin: 10px 0; animation: popIn 0.4s ease; }
         @keyframes correctPulse {
-            0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); }
+            0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); }
         }
         @keyframes shake {
             0%,100% { transform: translateX(0); }
@@ -103,7 +114,8 @@
         }
         .note { text-align: center; font-size: 0.7rem; color: #ddd; margin-top: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .back-link { text-align: center; margin-top: 10px; }
-        .back-link button { background: none; border: none; color: #0088cc; text-decoration: underline; font-size: 0.9rem; cursor: pointer; }
+        .back-link button { background: none; border: none; color: #1a73e8; text-decoration: underline; font-size: 0.9rem; cursor: pointer; }
+        .total-grade { text-align: center; margin-top: 15px; padding: 15px; background: #e8f0fe; border-radius: 16px; }
     </style>
 </head>
 <body>
@@ -115,253 +127,160 @@
 
         const user = tg.initDataUnsafe?.user;
         const userName = user ? (user.first_name || 'مستخدم') : 'مستخدم';
-        const userPhoto = user?.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0088cc&color=fff`;
+        const userPhoto = user?.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=1a73e8&color=fff`;
 
-        const TOTAL_THEORETICAL = 7;
-        const TOTAL_PRACTICAL = 6;
+        // --- تعريف الأقسام (sections) ---
+        const sections = [
+            { id: "grammar-countable", name: "Countable & Uncountable Nouns", icon: "📚", category: "قواعد" },
+            { id: "grammar-present-simple", name: "Present Simple", icon: "🕒", category: "قواعد" },
+            { id: "grammar-present-cont", name: "Present Continuous", icon: "⏳", category: "قواعد" },
+            { id: "grammar-past-simple", name: "Past Simple", icon: "📅", category: "قواعد" },
+            { id: "crime-types", name: "أنواع الجرائم", icon: "⚖️", category: "جرائم" },
+            { id: "writing-intro-routine", name: "الإنشاء (تقديم النفس + روتين)", icon: "✍️", category: "إنشاء" },
+            { id: "five-sentences", name: "خمس جمل من الاختصاص", icon: "🔬", category: "جمل" },
+            { id: "paragraph", name: "الباركراف العلمي", icon: "📄", category: "باركراف" }
+        ];
 
-        // --- بنوك الأسئلة (كما أرسلتها) ---
+        // --- أسئلة كل قسم ---
         const quizData = {
-            "theoretical-1": [
-                { q: "What is a laboratory instrument?", opts: ["Device used for cooking", "Device used for laboratory tests", "Device used for transportation", "Device used for entertainment"], correct: 2 },
-                { q: "What does an instrument measure?", opts: ["Food only", "Physical quantities", "Emotions", "Music"], correct: 2 },
-                { q: "Which of the following is a physical quantity?", opts: ["Temperature", "Pressure", "Distance", "All of the above"], correct: 4 },
-                { q: "What is a medical instrument used for?", opts: ["Painting", "Diagnosing or treating diseases", "Heating chemicals", "Cleaning glassware"], correct: 2 },
-                { q: "Laboratory equipment is mainly used to:", opts: ["Play games", "Perform experiments and gather data", "Design buildings", "Store food"], correct: 2 },
-                { q: "Which of the following is considered classical laboratory equipment?", opts: ["Bunsen burner", "Microscope", "Spectrophotometer", "All of the above"], correct: 4 },
-                { q: "What is a scientific instrument?", opts: ["Tool for decoration", "Tool designed for careful and exact work", "Tool for transportation", "Tool for sports"], correct: 2 },
-                { q: "Laboratory techniques are based on the:", opts: ["Artistic method", "Scientific method", "Economic method", "Political method"], correct: 2 },
-                { q: "Larger and more sophisticated laboratory equipment is usually called:", opts: ["Medical devices", "Scientific instruments", "Hand tools", "Electrical tools"], correct: 2 },
-                { q: "Laboratory equipment may include:", opts: ["Glassware", "Electrical devices", "Measuring tools", "All of the above"], correct: 4 }
+            "grammar-countable": [
+                { q: "كلمة Book اسم معدود.", answer: true },
+                { q: "كلمة Water يمكن جمعها بـ (s).", answer: false },
+                { q: "نستخدم a/an مع الاسم المفرد المعدود.", answer: true },
+                { q: "كلمة Rice اسم غير معدود.", answer: true },
+                { q: "الصفات يمكن جمعها.", answer: false }
             ],
-            "theoretical-2": [
-                { q: "What is the main function of a microscope?", opts: ["Heating samples", "Magnifying small objects", "Measuring weight", "Separating particles"], correct: 2 },
-                { q: "Which microscope is used for stained specimens?", opts: ["Dark-field microscope", "Bright-field microscope", "Phase contrast microscope", "TEM"], correct: 2 },
-                { q: "Which microscope is useful for transparent microorganisms?", opts: ["UV microscope", "Electron microscope", "Phase contrast microscope", "SEM"], correct: 3 },
-                { q: "Fluorescence microscopy depends on:", opts: ["Heat radiation", "Visible light emission from fluorescent materials", "Sound waves", "Magnetic fields"], correct: 2 },
-                { q: "What does SEM stand for?", opts: ["Simple Electron Microscope", "Scanning Electron Microscope", "Standard Electron Microscope", "Scientific Electron Microscope"], correct: 2 },
-                { q: "What does TEM stand for?", opts: ["Total Electron Microscope", "Thermal Electron Microscope", "Transmission Electron Microscope", "Transparent Electron Microscope"], correct: 3 },
-                { q: "What is the function of the eyepiece (ocular)?", opts: ["Rotate objectives", "Magnify the image again", "Hold the specimen", "Produce heat"], correct: 2 },
-                { q: "Objective lenses are located:", opts: ["Furthest from specimen", "Closest to specimen", "Inside the rotor", "Under the stage only"], correct: 2 },
-                { q: "What is the role of the diaphragm?", opts: ["Adjust light amount", "Measure voltage", "Increase temperature", "Hold slides"], correct: 1 },
-                { q: "Which microscope uses ultraviolet radiation?", opts: ["TEM", "SEM", "UV microscope", "Bright-field microscope"], correct: 3 }
+            "grammar-present-simple": [
+                { q: "المضارع البسيط يستخدم للروتين اليومي.", answer: true },
+                { q: "مع He/She/It نضيف (s) للفعل.", answer: true },
+                { q: "نستخدم does مع I و You.", answer: false },
+                { q: "الجملة: “She plays football.” صحيحة.", answer: true },
+                { q: "المضارع البسيط يستخدم للحقائق العلمية.", answer: true }
             ],
-            "theoretical-3": [
-                { q: "PCR stands for:", opts: ["Protein Cell Reaction", "Polymerase Chain Reaction", "Plasma Cell Reaction", "Primer Chain Reaction"], correct: 2 },
-                { q: "What is the purpose of PCR?", opts: ["Destroy DNA", "Amplify DNA", "Separate proteins", "Measure pH"], correct: 2 },
-                { q: "During denaturation, DNA becomes:", opts: ["Double-stranded", "Single-stranded", "Circular", "Crystallized"], correct: 2 },
-                { q: "What is the function of primers?", opts: ["Destroy DNA", "Identify target DNA sequence", "Reduce temperature", "Stain proteins"], correct: 2 },
-                { q: "Which enzyme synthesizes new DNA strands?", opts: ["Ligase", "Helicase", "Taq Polymerase", "Amylase"], correct: 3 },
-                { q: "What temperature is commonly used for denaturation?", opts: ["25°C", "50°C", "72°C", "95°C"], correct: 4 },
-                { q: "Annealing usually occurs between:", opts: ["0–10°C", "20–30°C", "50–65°C", "90–100°C"], correct: 3 },
-                { q: "How many cycles are commonly repeated in PCR?", opts: ["1–5", "10–15", "25–40", "100–200"], correct: 3 },
-                { q: "PCR amplification is considered:", opts: ["Linear", "Exponential", "Static", "Negative"], correct: 2 },
-                { q: "PCR is widely used in:", opts: ["Forensic science", "Medical diagnostics", "Molecular biology", "All of the above"], correct: 4 }
+            "grammar-present-cont": [
+                { q: "المضارع المستمر يدل على حدث يحدث الآن.", answer: true },
+                { q: "الصيغة الصحيحة: I am studying.", answer: true },
+                { q: "نستخدم المضارع المستمر مع الحقائق الثابتة دائماً.", answer: false },
+                { q: "الصيغة: She is playing صحيحة.", answer: true },
+                { q: "المضارع المستمر يستخدم للأحداث المؤقتة.", answer: true }
             ],
-            "theoretical-4": [
-                { q: "Real-Time PCR is also called:", opts: ["qPCR", "SEM", "PAGE", "ELISA"], correct: 1 },
-                { q: "Real-Time PCR can:", opts: ["Quantify DNA", "Destroy DNA", "Measure proteins only", "Replace microscopy"], correct: 1 },
-                { q: "What is used to detect amplified DNA in Real-Time PCR?", opts: ["Fluorescent dyes", "Oil immersion", "Centrifugal force", "Heat sensors"], correct: 1 },
-                { q: "Which device automates temperature changes in PCR?", opts: ["Spectrophotometer", "Thermal cycler", "Centrifuge", "Microscope"], correct: 2 },
-                { q: "Which step separates DNA strands?", opts: ["Annealing", "Extension", "Denaturation", "Hybridization"], correct: 3 },
-                { q: "During annealing, primers:", opts: ["Destroy DNA", "Bind to target DNA", "Measure fluorescence", "Separate proteins"], correct: 2 },
-                { q: "Which enzyme extends DNA strands?", opts: ["Taq Polymerase", "Lipase", "Protease", "Catalase"], correct: 1 },
-                { q: "Real-Time PCR measures DNA during:", opts: ["Extraction only", "Amplification process", "Gel electrophoresis only", "Centrifugation"], correct: 2 },
-                { q: "Real-Time PCR reduces contamination because tubes remain:", opts: ["Heated", "Open", "Closed", "Frozen"], correct: 3 },
-                { q: "Which signal increases as DNA doubles?", opts: ["Electrical signal", "Magnetic signal", "Fluorescent signal", "Sound signal"], correct: 3 }
+            "grammar-past-simple": [
+                { q: "الماضي البسيط يدل على حدث انتهى بالماضي.", answer: true },
+                { q: "نستخدم did في السؤال.", answer: true },
+                { q: "الفعل الماضي من Go هو Went.", answer: true },
+                { q: "Yesterday يدل على المضارع.", answer: false },
+                { q: "الجملة “I saw Ali yesterday.” صحيحة.", answer: true }
             ],
-            "theoretical-5": [
-                { q: "Electrophoresis is the movement of molecules through a:", opts: ["Liquid metal", "Gel medium", "Microscope lens", "Rotor"], correct: 2 },
-                { q: "DNA molecules are negatively charged because of the:", opts: ["Protein layer", "Phosphate backbone", "Agarose gel", "Electrode"], correct: 2 },
-                { q: "DNA migrates toward the:", opts: ["Negative electrode", "Positive electrode", "Cathode only", "Rotor center"], correct: 2 },
-                { q: "Smaller DNA fragments migrate:", opts: ["Slower", "Faster", "Equally", "Randomly"], correct: 2 },
-                { q: "What is the function of agarose gel?", opts: ["Heat DNA", "Act as molecular sieve", "Destroy fragments", "Increase contamination"], correct: 2 },
-                { q: "Which factor affects migration speed?", opts: ["Voltage", "Molecule size", "Buffer pH", "All of the above"], correct: 4 },
-                { q: "Increasing voltage generally causes:", opts: ["Slower migration", "Faster migration", "No movement", "DNA precipitation"], correct: 2 },
-                { q: "PAGE is mainly used for:", opts: ["Protein separation", "Blood typing", "Heating samples", "DNA extraction only"], correct: 1 },
-                { q: "Capillary electrophoresis is commonly used for:", opts: ["STR profiling", "Measuring temperature", "Microscopy", "Cell culture"], correct: 1 },
-                { q: "PFGE is used for separating:", opts: ["Small proteins only", "Very large DNA molecules", "Water molecules", "Lipids only"], correct: 2 }
+            "crime-types": [
+                { q: "Theft يعني السرقة.", answer: true },
+                { q: "Murder يعني قتل غير متعمد.", answer: false },
+                { q: "Arson هو حرق المباني أو الممتلكات.", answer: true },
+                { q: "Kidnapping يعني خطف شخص.", answer: true },
+                { q: "Vandalism يعني تدمير ممتلكات الآخرين.", answer: true }
             ],
-            "theoretical-6": [
-                { q: "Spectrophotometry measures:", opts: ["Light absorption", "Sound waves", "Heat only", "Gravity"], correct: 1 },
-                { q: "Which instrument is used in spectrophotometry?", opts: ["Microscope", "Spectrophotometer", "Centrifuge", "Rotor"], correct: 2 },
-                { q: "What is the function of the monochromator?", opts: ["Increase pressure", "Select wavelength of light", "Heat the sample", "Rotate samples"], correct: 2 },
-                { q: "UV-visible spectrophotometer works in the:", opts: ["Infrared region only", "Ultraviolet and visible regions", "X-ray region only", "Microwave region only"], correct: 2 },
-                { q: "What is the role of the photometer?", opts: ["Detect light intensity", "Increase temperature", "Hold the sample", "Spin the sample"], correct: 1 },
-                { q: "If a solution absorbs all visible light, it appears:", opts: ["White", "Transparent", "Black", "Green"], correct: 3 },
-                { q: "A solution appears green because it absorbs:", opts: ["Blue light", "Red light", "Green light", "Yellow light"], correct: 2 },
-                { q: "Spectrophotometry is commonly used in:", opts: ["Chemistry", "Biology", "Forensic science", "All of the above"], correct: 4 },
-                { q: "Spectrophotometry can determine:", opts: ["Concentration of substances", "DNA size only", "Blood type only", "Cell shape only"], correct: 1 },
-                { q: "Which type of light is commonly used in UV spectrophotometry?", opts: ["Ultraviolet light", "Infrared light", "Gamma rays", "Radio waves"], correct: 1 }
+            "writing-intro-routine": [
+                { q: "هل كتبت تقديم النفس؟", answer: true },
+                { q: "هل كتبت الروتين اليومي؟", answer: true },
+                { q: "هل استخدمت المضارع البسيط؟", answer: true },
+                { q: "هل راجعت القواعد والإملاء؟", answer: true },
+                { q: "هل أصبحت قادراً على كتابة الإنشاء بدون حفظ كامل؟", answer: true }
             ],
-            "theoretical-7": [
-                { q: "Immunoassays are based on:", opts: ["Heat transfer", "Antigen-antibody interaction", "Electrical current", "Centrifugal force"], correct: 2 },
-                { q: "What does RIA stand for?", opts: ["Radio Immunoassay", "Rapid Immune Analysis", "Rotational Immune Assay", "Reactive Immunology Analysis"], correct: 1 },
-                { q: "ELISA stands for:", opts: ["Enzyme-Linked Immunosorbent Assay", "Enzyme Light Immune Sample Analysis", "Electrophoresis Linked Assay", "Electronic Light Immunoassay"], correct: 1 },
-                { q: "One advantage of ELISA is that it is:", opts: ["Slow", "Radioactive", "Rapid and sensitive", "Difficult to perform"], correct: 3 },
-                { q: "Which material is commonly used as the solid surface in ELISA?", opts: ["Agarose gel", "Polystyrene plate", "Glass rod", "Metal plate"], correct: 2 },
-                { q: "Centrifuge separates particles according to:", opts: ["Color only", "Density and size", "Taste", "Temperature only"], correct: 2 },
-                { q: "What does RCF stand for?", opts: ["Relative Centrifugal Force", "Rapid Centrifuge Function", "Rotor Control Factor", "Rotational Current Force"], correct: 1 },
-                { q: "Which centrifugation method separates particles based on size?", opts: ["Differential centrifugation", "ELISA", "PCR", "Spectrophotometry"], correct: 1 },
-                { q: "Which rotor is most useful for density gradients?", opts: ["Fixed-angle rotor", "Swinging-bucket rotor", "Static rotor", "Magnetic rotor"], correct: 2 },
-                { q: "In isopycnic separation, particles stop moving when:", opts: ["Temperature increases", "Rotor stops", "Density equals surrounding solution", "Voltage decreases"], correct: 3 }
+            "five-sentences": [
+                { q: "هل كتبت 5 جمل كاملة؟", answer: true },
+                { q: "هل جميع الجمل بالمضارع البسيط؟", answer: true },
+                { q: "هل الجمل مرتبطة بالأدلة الجنائية؟", answer: true },
+                { q: "هل أضفت (s) مع He/She/It؟", answer: true },
+                { q: "هل راجعت الأخطاء الإملائية؟", answer: true }
             ],
-            "practical-1": [
-                { q: "What is a microscope?", opts: ["Device for heating samples", "Device for magnifying small objects", "Device for weighing chemicals", "Device for centrifugation"], correct: 2 },
-                { q: "Which microscope is used for stained specimens?", opts: ["Dark-field microscope", "Phase contrast microscope", "Bright-field microscope", "Electron microscope"], correct: 3 },
-                { q: "Which microscope is used for unstained samples against a dark background?", opts: ["UV microscope", "Bright-field microscope", "Dark-field microscope", "TEM"], correct: 3 },
-                { q: "What is the function of the condenser lens?", opts: ["Increase temperature", "Concentrate light onto the specimen", "Rotate objectives", "Hold the slide"], correct: 2 },
-                { q: "Why is immersion oil used with the 100x objective?", opts: ["To cool the microscope", "To reduce magnification", "To improve image resolution", "To clean the lens"], correct: 3 },
-                { q: "What does SEM stand for?", opts: ["Standard Electron Microscope", "Scanning Electron Microscope", "Simple Electron Microscope", "Scientific Electron Microscope"], correct: 2 },
-                { q: "Which microscope is useful for transparent microorganisms?", opts: ["Bright-field microscope", "Phase contrast microscope", "UV microscope", "TEM"], correct: 2 },
-                { q: "What is the function of the diaphragm?", opts: ["Adjust amount of light", "Rotate lenses", "Measure pH", "Hold objective lenses"], correct: 1 },
-                { q: "Which microscope uses ultraviolet radiation?", opts: ["TEM", "SEM", "UV microscope", "Dark-field microscope"], correct: 3 },
-                { q: "Which knobs are used for focusing?", opts: ["Fine and coarse adjustment knobs", "Stage and condenser knobs", "Objective and ocular knobs", "Voltage and timer knobs"], correct: 1 }
-            ],
-            "practical-2": [
-                { q: "What is the first step in DNA extraction?", opts: ["PCR", "Purification", "Lysis", "Sequencing"], correct: 3 },
-                { q: "What is the purpose of lysis?", opts: ["Amplify DNA", "Break cell membranes", "Measure DNA", "Heat DNA"], correct: 2 },
-                { q: "What is removed during purification?", opts: ["Primers", "Contaminants and proteins", "RNA only", "Enzymes only"], correct: 2 },
-                { q: "Why is DNA concentrated after extraction?", opts: ["To destroy DNA", "To dilute DNA", "To prepare DNA for PCR", "To stain DNA"], correct: 3 },
-                { q: "What does TE buffer stand for?", opts: ["Tris-EDTA", "Thermal Enzyme", "Total Extraction", "Tris-Electrophoresis"], correct: 1 },
-                { q: "What is the function of TE buffer?", opts: ["Destroy proteins", "Stabilize DNA", "Increase contamination", "Separate fragments"], correct: 2 },
-                { q: "Forensic samples are often described as:", opts: ["Sterile", "Pure", "Dirty", "Artificial"], correct: 3 },
-                { q: "Which of the following is considered a contaminant?", opts: ["Dirt", "Protein", "Dye", "All of the above"], correct: 4 },
-                { q: "Which step separates DNA from cellular debris?", opts: ["Lysis", "Purification", "PCR", "Sequencing"], correct: 2 },
-                { q: "DNA is usually stored in:", opts: ["Ethanol only", "Water or TE buffer", "Acid solution", "Agarose gel"], correct: 2 }
-            ],
-            "practical-3": [
-                { q: "What does PCR stand for?", opts: ["Protein Chain Reaction", "Polymerase Chain Reaction", "Plasma Chain Reaction", "Primer Cell Reaction"], correct: 2 },
-                { q: "What is the main purpose of PCR?", opts: ["Destroy DNA", "Amplify DNA", "Measure proteins", "Separate cells"], correct: 2 },
-                { q: "What is the function of primers?", opts: ["Cut DNA", "Tag target DNA sequences", "Destroy enzymes", "Stain DNA"], correct: 2 },
-                { q: "What is the role of Taq Polymerase?", opts: ["Break DNA strands", "Build new DNA strands", "Measure fluorescence", "Separate proteins"], correct: 2 },
-                { q: "What happens during denaturation?", opts: ["DNA becomes double stranded", "DNA strands separate", "Primers bind DNA", "Proteins precipitate"], correct: 2 },
-                { q: "What temperature is commonly used for annealing?", opts: ["4°C", "25°C", "50–65°C", "100°C"], correct: 3 },
-                { q: "What is the extension temperature?", opts: ["37°C", "50°C", "72°C", "95°C"], correct: 3 },
-                { q: "Which device performs PCR cycles automatically?", opts: ["Spectrophotometer", "Thermal cycler", "Centrifuge", "Microscope"], correct: 2 },
-                { q: "How many cycles are commonly used in PCR?", opts: ["1–5", "5–10", "25–40", "100–200"], correct: 3 },
-                { q: "What is the purpose of final extension?", opts: ["Destroy incomplete DNA", "Finish incomplete DNA copies", "Cool the sample", "Remove primers"], correct: 2 }
-            ],
-            "practical-4": [
-                { q: "What is another name for Real Time PCR?", opts: ["qPCR", "TEM", "ELISA", "PAGE"], correct: 1 },
-                { q: "What is a major advantage of Real Time PCR?", opts: ["Requires open tubes", "Prevents contamination", "Slower analysis", "No fluorescence used"], correct: 2 },
-                { q: "What does CT mean?", opts: ["Centrifuge Temperature", "Cycle Threshold", "Critical Temperature", "Chemical Target"], correct: 2 },
-                { q: "What detects amplification in Real Time PCR?", opts: ["Heat only", "Fluorescent signal", "Oil immersion", "Gravity"], correct: 2 },
-                { q: "Which problem is common in conventional PCR?", opts: ["Low contamination", "High contamination risk", "No DNA amplification", "Fast analysis"], correct: 2 },
-                { q: "Which substance may inhibit PCR?", opts: ["Hemoglobin", "Soil", "Urea", "All of the above"], correct: 4 },
-                { q: "What is the function of Internal Controls (IC)?", opts: ["Increase contamination", "Detect false negatives", "Destroy DNA", "Reduce fluorescence"], correct: 2 },
-                { q: "Why is Real Time PCR faster?", opts: ["No post-processing required", "Uses less DNA", "No thermal cycler needed", "Uses no primers"], correct: 1 },
-                { q: "Real Time PCR tubes are:", opts: ["Opened after cycling", "Closed during analysis", "Made of glass only", "Reused immediately"], correct: 2 },
-                { q: "What can Real Time PCR measure accurately?", opts: ["DNA quantity", "Blood pressure", "Protein size", "Cell shape"], correct: 1 }
-            ],
-            "practical-5": [
-                { q: "Electrophoresis separates molecules based on:", opts: ["Color only", "Shape only", "Charge and size", "Temperature only"], correct: 3 },
-                { q: "DNA migrates toward the:", opts: ["Negative electrode", "Positive electrode", "Cathode only", "Rotor"], correct: 2 },
-                { q: "Why does DNA carry a negative charge?", opts: ["Protein coating", "Phosphate backbone", "Heat exposure", "UV light"], correct: 2 },
-                { q: "What is the function of agarose gel?", opts: ["Heat DNA", "Act as molecular sieve", "Destroy proteins", "Increase contamination"], correct: 2 },
-                { q: "Which fragments move faster?", opts: ["Large fragments", "Small fragments", "Circular fragments only", "Proteins only"], correct: 2 },
-                { q: "Increasing voltage causes:", opts: ["Slower migration", "Faster migration", "DNA destruction only", "No change"], correct: 2 },
-                { q: "What affects molecule charge state?", opts: ["Rotor speed", "Buffer pH", "Lens quality", "Immersion oil"], correct: 2 },
-                { q: "Which electrophoresis type is commonly used in forensics?", opts: ["Agarose gel electrophoresis", "Distillation", "Filtration", "Centrifugation"], correct: 1 },
-                { q: "STR profiling is used for:", opts: ["Protein analysis", "DNA identification", "Measuring pH", "Blood pressure"], correct: 2 },
-                { q: "CODIS database stores:", opts: ["Protein structures", "STR profiles", "Spectrophotometer readings", "Chemical formulas"], correct: 2 }
-            ],
-            "practical-6": [
-                { q: "Centrifugation separates substances based on:", opts: ["Color", "Density", "Temperature", "pH"], correct: 2 },
-                { q: "What is the pellet?", opts: ["Upper liquid layer", "Sedimented particles", "Rotor component", "Air bubble"], correct: 2 },
-                { q: "What is the supernatant?", opts: ["Bottom layer", "Sediment", "Liquid above pellet", "Rotor tube"], correct: 3 },
-                { q: "Which parameter is more important than RPM?", opts: ["Voltage", "RCF", "Temperature", "Pressure"], correct: 2 },
-                { q: "What may happen with an unbalanced rotor?", opts: ["Faster separation only", "Catastrophic failure", "Better resolution", "Reduced vibration"], correct: 2 },
-                { q: "Paired tubes must be balanced within:", opts: ["±5 g", "±1 g", "±0.1 g", "±10 g"], correct: 3 },
-                { q: "Which centrifuge is used for DNA/RNA pellets?", opts: ["Clinical centrifuge", "Microcentrifuge", "PFGE", "Spectrophotometer"], correct: 2 },
-                { q: "What does RCF measure?", opts: ["Rotor color", "Actual centrifugal force", "Temperature", "DNA concentration"], correct: 2 },
-                { q: "Which rotor type swings horizontally during rotation?", opts: ["Fixed-angle rotor", "Vertical rotor", "Swinging-bucket rotor", "Static rotor"], correct: 3 },
-                { q: "Which is a forensic application of centrifugation?", opts: ["DNA extraction", "Blood typing", "Toxicology analysis", "All of the above"], correct: 4 }
+            "paragraph": [
+                { q: "هل كتبت باركراف من حوالي 6 أسطر؟", answer: true },
+                { q: "هل اخترت موضوع علمي من الأدلة الجنائية؟", answer: true },
+                { q: "هل استخدمت كلمات علمية مناسبة؟", answer: true },
+                { q: "هل الكتابة واضحة ومرتبة؟", answer: true },
+                { q: "هل راجعت القواعد والإملاء؟", answer: true }
             ]
         };
 
         // --- دوال localStorage ---
         function loadProgress() {
-            const raw = localStorage.getItem('lab_progress_v6');
+            const raw = localStorage.getItem('eng_progress_v1');
             return raw ? JSON.parse(raw) : { completed: [] };
         }
-        function saveProgress(data) { localStorage.setItem('lab_progress_v6', JSON.stringify(data)); }
-        function isWelcomeShown() { return localStorage.getItem('lab_welcome_v6') === 'true'; }
-        function setWelcomeShown() { localStorage.setItem('lab_welcome_v6', 'true'); }
+        function saveProgress(data) { localStorage.setItem('eng_progress_v1', JSON.stringify(data)); }
+        function isWelcomeShown() { return localStorage.getItem('eng_welcome_v1') === 'true'; }
+        function setWelcomeShown() { localStorage.setItem('eng_welcome_v1', 'true'); }
 
-        function getCompletedCount(type) {
+        function isSectionCompleted(sectionId) {
             const progress = loadProgress();
-            return progress.completed.filter(id => id.startsWith(type)).length;
+            return progress.completed.includes(sectionId);
         }
-        function isLectureCompleted(lectureId) {
+        function markSectionCompleted(sectionId) {
             const progress = loadProgress();
-            return progress.completed.includes(lectureId);
-        }
-        function markLectureCompleted(lectureId) {
-            const progress = loadProgress();
-            if (!progress.completed.includes(lectureId)) {
-                progress.completed.push(lectureId);
+            if (!progress.completed.includes(sectionId)) {
+                progress.completed.push(sectionId);
                 saveProgress(progress);
             }
         }
-        function markLectureIncomplete(lectureId) {
+        function markSectionIncomplete(sectionId) {
             const progress = loadProgress();
-            progress.completed = progress.completed.filter(id => id !== lectureId);
+            progress.completed = progress.completed.filter(id => id !== sectionId);
             saveProgress(progress);
         }
 
-        // --- مخطط بياني دائري ---
-        function createDonutChart(percent) {
-            const radius = 50;
-            const circumference = 2 * Math.PI * radius;
-            const offset = circumference - (percent / 100) * circumference;
-            return `
-                <svg width="140" height="140" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="${radius}" fill="none" stroke="#e0e0e0" stroke-width="12" />
-                    <circle cx="60" cy="60" r="${radius}" fill="none" stroke="#0088cc" stroke-width="12"
-                            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
-                            stroke-linecap="round" transform="rotate(-90 60 60)"
-                            style="transition: stroke-dashoffset 0.8s ease;" />
-                    <text x="60" y="55" text-anchor="middle" fill="#0d47a1" font-size="22" font-weight="bold">${percent}%</text>
-                    <text x="60" y="75" text-anchor="middle" fill="#555" font-size="12">مكتمل</text>
-                </svg>
+        function getTotalScore() {
+            const progress = loadProgress();
+            // كل قسم مكتمل يمنح 5 نقاط (لأن كل قسم من 5 أسئلة)
+            return progress.completed.length * 5;
+        }
+        function getTotalPossible() {
+            return sections.length * 5; // 8 أقسام × 5 = 40
+        }
+        function getGradeText(score, total) {
+            if (score >= 25) return 'ممتاز';
+            else if (score >= 15) return 'جيد جداً';
+            else if (score >= 10) return 'جيد';
+            else return 'يحتاج مراجعة قوية قبل الامتحان';
+        }
+
+        // --- صفحة الترحيب ---
+        function showWelcome() {
+            const html = `
+                <div class="glass-card welcome-card">
+                    <img src="${userPhoto}" alt="صورة">
+                    <h1>أهلًا ${userName}! 👋</h1>
+                    <p>مرحبًا بك في <strong>متابعة مادة الامتحان - لغة إنجليزية</strong> 🇬🇧</p>
+                    <p>اختبر فهمك عبر أسئلة (صح ✓ / خطأ ✗) لجميع أقسام المادة.</p>
+                    <button class="btn-primary" onclick="startApp()">✨ ابدأ الآن</button>
+                </div>
             `;
+            document.getElementById('app').innerHTML = html;
         }
 
         // --- الصفحة الرئيسية ---
         function renderMainPage() {
-            const theoCompleted = getCompletedCount('theoretical');
-            const pracCompleted = getCompletedCount('practical');
-            const totalCompleted = theoCompleted + pracCompleted;
-            const totalLectures = TOTAL_THEORETICAL + TOTAL_PRACTICAL;
-            const pct = Math.round((totalCompleted / totalLectures) * 100);
+            const completedSections = loadProgress().completed;
+            const totalScore = getTotalScore();
+            const totalPossible = getTotalPossible();
+            const grade = getGradeText(totalScore, totalPossible);
+            const pct = Math.round((completedSections.length / sections.length) * 100);
 
-            const theoList = [];
-            for (let i = 1; i <= TOTAL_THEORETICAL; i++) {
-                const id = `theoretical-${i}`;
-                theoList.push({ id, name: `محاضرة ${i} نظري`, completed: isLectureCompleted(id) });
-            }
-            const pracList = [];
-            for (let i = 1; i <= TOTAL_PRACTICAL; i++) {
-                const id = `practical-${i}`;
-                pracList.push({ id, name: `محاضرة ${i} عملي`, completed: isLectureCompleted(id) });
-            }
-
-            const renderLectureItem = (lecture) => `
-                <div class="lecture-item">
-                    <div class="lecture-info">
-                        <span class="status">${lecture.completed ? '✅' : '⬜'}</span>
-                        <span>${lecture.name}</span>
+            const sectionsHtml = sections.map(section => {
+                const completed = isSectionCompleted(section.id);
+                return `
+                    <div class="section-item">
+                        <div class="section-info">
+                            <span class="status">${completed ? '✅' : '⬜'}</span>
+                            <span>${section.icon} ${section.name} <small style="color:#888;">(${section.category})</small></span>
+                        </div>
+                        <div class="section-buttons">
+                            ${completed ?
+                                `<button class="btn-secondary" onclick="toggleSection('${section.id}', false)">❌ إلغاء</button>` :
+                                `<button class="btn-primary" onclick="startQuiz('${section.id}')">📝 اختبار</button>`
+                            }
+                        </div>
                     </div>
-                    <div class="lecture-buttons">
-                        ${lecture.completed ?
-                            `<button class="btn-secondary" onclick="toggleLecture('${lecture.id}', false)">❌ إلغاء الإكمال</button>` :
-                            `<button class="btn-secondary" onclick="completeLectureDirect('${lecture.id}')">✓ إكمال مباشر</button>
-                             <button class="btn-primary" onclick="startQuiz('${lecture.id}')">📝 اختبار</button>`
-                        }
-                    </div>
-                </div>
-            `;
+                `;
+            }).join('');
 
             const html = `
                 <div class="user">
@@ -371,38 +290,23 @@
                         <div style="font-size:0.8rem; opacity:0.8;">@${user?.username || 'لا يوجد'}</div>
                     </div>
                 </div>
-                <div class="glass-card" style="text-align:center;">
-                    <h2>📊 نسبة الإكمال</h2>
-                    <div class="chart-container">${createDonutChart(pct)}</div>
-                    <p>${totalCompleted} من ${totalLectures} محاضرة</p>
-                    <div style="display:flex; justify-content:center; gap:20px; margin-top:10px;">
-                        <div><strong>نظري:</strong> ${theoCompleted}/${TOTAL_THEORETICAL}</div>
-                        <div><strong>عملي:</strong> ${pracCompleted}/${TOTAL_PRACTICAL}</div>
+                <div class="glass-card">
+                    <h2>📊 تقييم التقدم</h2>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${pct}%"></div>
+                    </div>
+                    <p style="text-align:center;">${completedSections.length} / ${sections.length} أقسام مكتملة</p>
+                    <div class="total-grade">
+                        <strong>الدرجة الإجمالية: ${totalScore} / ${totalPossible}</strong><br>
+                        <span style="font-size:1.2rem;">${grade}</span>
                     </div>
                 </div>
                 <div class="glass-card">
-                    <h2>📘 المحاضرات النظرية</h2>
-                    <div class="lecture-list">${theoList.map(renderLectureItem).join('')}</div>
-                </div>
-                <div class="glass-card">
-                    <h2>🧪 المحاضرات العملية</h2>
-                    <div class="lecture-list">${pracList.map(renderLectureItem).join('')}</div>
+                    <h2>📋 أقسام المادة</h2>
+                    <div class="section-list">${sectionsHtml}</div>
                 </div>
                 <div class="back-link"><button onclick="showWelcome()">⬅️ العودة لصفحة الترحيب</button></div>
-                <div class="note">تطبيق تيليجرام المصغر • الأجهزة والتقنيات المختبرية</div>
-            `;
-            document.getElementById('app').innerHTML = html;
-        }
-
-        function showWelcome() {
-            const html = `
-                <div class="glass-card welcome-card">
-                    <img src="${userPhoto}" alt="صورة">
-                    <h1>أهلًا ${userName}! 👋</h1>
-                    <p>مرحبًا بك في <strong>منظّم دراسة الأجهزة والتقنيات المختبرية</strong> 🔬</p>
-                    <p>يمكنك إكمال المحاضرات مباشرة أو عبر اختبارات MCQ تفاعلية.</p>
-                    <button class="btn-primary" onclick="startApp()">✨ ابدأ الآن</button>
-                </div>
+                <div class="note">تطبيق تيليجرام المصغر • متابعة مادة الامتحان - لغة إنجليزية</div>
             `;
             document.getElementById('app').innerHTML = html;
         }
@@ -412,46 +316,39 @@
             renderMainPage();
         };
 
-        window.completeLectureDirect = function(lectureId) {
-            markLectureCompleted(lectureId);
+        window.toggleSection = function(sectionId, complete) {
+            if (complete) markSectionCompleted(sectionId);
+            else markSectionIncomplete(sectionId);
             renderMainPage();
         };
 
-        window.toggleLecture = function(lectureId, complete) {
-            if (complete) markLectureCompleted(lectureId);
-            else markLectureIncomplete(lectureId);
-            renderMainPage();
-        };
-
-        // --- نظام الاختبار التفاعلي (بدون خروج تلقائي، مع إصلاح التنقل) ---
+        // --- نظام الاختبار (صح/خطأ) ---
         let currentQuiz = null;
 
-        // إزالة المودال فقط دون إلغاء الاختبار
         function removeQuizModal() {
             const modal = document.querySelector('.quiz-modal');
             if (modal) modal.remove();
         }
 
-        // إلغاء الاختبار بالكامل
         function cancelQuiz() {
             removeQuizModal();
             currentQuiz = null;
         }
 
-        window.startQuiz = function(lectureId) {
-            if (isLectureCompleted(lectureId)) {
-                alert('هذه المحاضرة مكتملة بالفعل. يمكنك إلغاء الإكمال ثم إعادة الاختبار.');
+        window.startQuiz = function(sectionId) {
+            if (isSectionCompleted(sectionId)) {
+                alert('هذا القسم مكتمل بالفعل. يمكنك إلغاء الإكمال ثم إعادة الاختبار.');
                 return;
             }
-            if (!quizData[lectureId]) {
-                alert('لا توجد أسئلة لهذه المحاضرة بعد.');
+            if (!quizData[sectionId]) {
+                alert('لا توجد أسئلة لهذا القسم بعد.');
                 return;
             }
             currentQuiz = {
-                lectureId: lectureId,
-                questions: [...quizData[lectureId]],
+                sectionId: sectionId,
+                questions: [...quizData[sectionId]],
                 currentIndex: 0,
-                answers: new Array(quizData[lectureId].length).fill(null),
+                answers: new Array(quizData[sectionId].length).fill(null),
                 quizDone: false
             };
             renderQuizModal();
@@ -461,23 +358,20 @@
             if (!currentQuiz) return;
             const q = currentQuiz.questions[currentQuiz.currentIndex];
             const selectedAnswer = currentQuiz.answers[currentQuiz.currentIndex];
-            const canCheck = selectedAnswer !== null;
 
             const modal = document.createElement('div');
             modal.className = 'quiz-modal';
             modal.innerHTML = `
-                <div class="quiz-content" id="quizInner">
+                <div class="quiz-content">
                     <h3>سؤال ${currentQuiz.currentIndex + 1} / ${currentQuiz.questions.length}</h3>
-                    <p style="margin-bottom:10px;"><strong>${q.q}</strong></p>
-                    ${q.opts.map((opt, idx) => `
-                        <label class="quiz-option ${selectedAnswer === idx ? 'selected' : ''}" data-option-index="${idx}">
-                            <input type="radio" name="quizOpt" style="display:none;">
-                            ${opt}
-                        </label>
-                    `).join('')}
-                    <div style="display:flex; gap:10px; margin-top:15px; justify-content:center; flex-wrap:wrap;">
+                    <p class="question-text">${q.q}</p>
+                    <div class="true-false-btns">
+                        <button class="tf-btn true-btn ${selectedAnswer === true ? 'selected' : ''}" id="trueBtn">✓ صح</button>
+                        <button class="tf-btn false-btn ${selectedAnswer === false ? 'selected' : ''}" id="falseBtn">✗ خطأ</button>
+                    </div>
+                    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
                         ${currentQuiz.currentIndex > 0 ? '<button class="btn-secondary" id="prevBtn">⬅️ السابق</button>' : ''}
-                        <button class="btn-primary" id="checkBtn" ${!canCheck ? 'disabled' : ''}>تحقق</button>
+                        <button class="btn-primary" id="checkBtn" ${selectedAnswer === null ? 'disabled' : ''}>تحقق</button>
                     </div>
                     <div id="feedbackArea"></div>
                     <button style="margin-top:12px; width:100%; background:#eee;" class="btn-secondary" onclick="cancelQuiz(); renderMainPage();">إلغاء الاختبار</button>
@@ -485,40 +379,37 @@
             `;
             document.body.appendChild(modal);
 
-            // ربط الأحداث
-            const options = modal.querySelectorAll('.quiz-option');
-            options.forEach(opt => {
-                opt.addEventListener('click', (e) => {
-                    const idx = parseInt(opt.dataset.optionIndex);
-                    selectAnswer(idx);
-                });
-            });
+            document.getElementById('trueBtn').addEventListener('click', () => selectAnswer(true));
+            document.getElementById('falseBtn').addEventListener('click', () => selectAnswer(false));
 
-            const checkBtn = modal.querySelector('#checkBtn');
+            const checkBtn = document.getElementById('checkBtn');
             if (checkBtn) {
                 checkBtn.addEventListener('click', () => {
                     if (!currentQuiz.quizDone) checkAnswer();
                 });
             }
 
-            const prevBtn = modal.querySelector('#prevBtn');
+            const prevBtn = document.getElementById('prevBtn');
             if (prevBtn) {
-                prevBtn.addEventListener('click', () => {
-                    prevQuestion();
-                });
+                prevBtn.addEventListener('click', () => prevQuestion());
             }
         }
 
-        function selectAnswer(idx) {
+        function selectAnswer(value) {
             if (!currentQuiz || currentQuiz.quizDone) return;
-            currentQuiz.answers[currentQuiz.currentIndex] = idx;
+            currentQuiz.answers[currentQuiz.currentIndex] = value;
             const modal = document.querySelector('.quiz-modal');
             if (!modal) return;
-            const options = modal.querySelectorAll('.quiz-option');
-            options.forEach(opt => opt.classList.remove('selected'));
-            const selectedOption = modal.querySelector(`.quiz-option[data-option-index="${idx}"]`);
-            if (selectedOption) selectedOption.classList.add('selected');
+            const trueBtn = modal.querySelector('#trueBtn');
+            const falseBtn = modal.querySelector('#falseBtn');
             const checkBtn = modal.querySelector('#checkBtn');
+
+            trueBtn.classList.remove('selected');
+            falseBtn.classList.remove('selected');
+
+            if (value === true) trueBtn.classList.add('selected');
+            else falseBtn.classList.add('selected');
+
             if (checkBtn) checkBtn.disabled = false;
         }
 
@@ -527,34 +418,38 @@
             const q = currentQuiz.questions[currentQuiz.currentIndex];
             const chosen = currentQuiz.answers[currentQuiz.currentIndex];
             if (chosen === null || chosen === undefined) return;
-            const correctIdx = q.correct - 1;
-            const isCorrect = (chosen === correctIdx);
+            const isCorrect = (chosen === q.answer);
             currentQuiz.quizDone = true;
 
             const modal = document.querySelector('.quiz-modal');
             if (!modal) return;
-            const options = modal.querySelectorAll('.quiz-option');
-            options.forEach((opt, idx) => {
-                opt.style.pointerEvents = 'none';
-                if (idx === correctIdx) opt.classList.add('correct');
-                else if (idx === chosen && !isCorrect) opt.classList.add('wrong');
-            });
+            const trueBtn = modal.querySelector('#trueBtn');
+            const falseBtn = modal.querySelector('#falseBtn');
+
+            trueBtn.style.pointerEvents = 'none';
+            falseBtn.style.pointerEvents = 'none';
+
+            if (q.answer === true) trueBtn.classList.add('correct-answer');
+            else falseBtn.classList.add('correct-answer');
+
+            if (!isCorrect) {
+                if (chosen === true) trueBtn.classList.add('wrong-answer');
+                else falseBtn.classList.add('wrong-answer');
+            }
 
             const feedbackArea = modal.querySelector('#feedbackArea');
             if (isCorrect) {
-                feedbackArea.innerHTML = '<div class="feedback-icon">✅</div><p style="text-align:center;color:#2e7d32;">إجابة صحيحة!</p>';
+                feedbackArea.innerHTML = '<div class="feedback-icon">✅</div><p style="text-align:center;color:#1e7e34;">إجابة صحيحة!</p>';
                 createConfetti(modal.querySelector('.quiz-content'));
             } else {
-                feedbackArea.innerHTML = '<div class="feedback-icon">❌</div><p style="text-align:center;color:#d32f2f;">إجابة خاطئة! الصحيح: ' + q.opts[correctIdx] + '</p>';
+                feedbackArea.innerHTML = '<div class="feedback-icon">❌</div><p style="text-align:center;color:#c5221f;">إجابة خاطئة! الصحيح: ' + (q.answer ? '✓ صح' : '✗ خطأ') + '</p>';
             }
 
-            // إخفاء زر تحقق و زر السابق
             const checkBtn = modal.querySelector('#checkBtn');
             if (checkBtn) checkBtn.style.display = 'none';
             const prevBtn = modal.querySelector('#prevBtn');
             if (prevBtn) prevBtn.style.display = 'none';
 
-            // إضافة زر "التالي" أو "إنهاء الاختبار"
             const isLast = currentQuiz.currentIndex === currentQuiz.questions.length - 1;
             const nextBtn = document.createElement('button');
             nextBtn.className = 'btn-primary';
@@ -565,13 +460,11 @@
                 nextBtn.textContent = 'التالي ⏩';
                 nextBtn.addEventListener('click', moveToNextQuestion);
             }
-            const buttonContainer = checkBtn.parentNode;
-            buttonContainer.appendChild(nextBtn);
+            checkBtn.parentNode.appendChild(nextBtn);
         }
 
         function moveToNextQuestion() {
-            // الانتقال إلى السؤال التالي دون إلغاء الاختبار
-            removeQuizModal(); // إزالة المودال الحالي فقط
+            removeQuizModal();
             currentQuiz.currentIndex++;
             currentQuiz.quizDone = false;
             renderQuizModal();
@@ -588,23 +481,25 @@
             let correct = 0;
             currentQuiz.questions.forEach((q, i) => {
                 const chosen = currentQuiz.answers[i];
-                if (chosen !== null && chosen === q.correct - 1) correct++;
+                if (chosen === q.answer) correct++;
             });
             const total = currentQuiz.questions.length;
-            cancelQuiz(); // إلغاء الاختبار نهائياً
-            const message = `نتيجتك: ${correct} صحيحة من ${total}\n` + (correct >= 7 ? '🎉 مبروك! لقد نجحت وتم إكمال المحاضرة.' : '😞 لم تنجح. تحتاج 7/10 على الأقل.');
+            const sectionId = currentQuiz.sectionId;
+            cancelQuiz();
+
+            const message = `نتيجتك في هذا القسم: ${correct} / ${total}\n` +
+                (correct === total ? '🎉 ممتاز! أحسنت الإجابة على جميع الأسئلة.' :
+                 correct >= 3 ? '✅ جيد. تم إكمال القسم.' :
+                 '⚠️ يُنصح بمراجعة هذا القسم مرة أخرى.');
+
             alert(message);
-            if (correct >= 7) {
-                markLectureCompleted(currentQuiz.lectureId);
-            }
-            currentQuiz = null;
+
+            // دائمًا نكمل القسم حتى لو لم يحصل على الدرجة الكاملة (لأنها أسئلة متابعة)
+            markSectionCompleted(sectionId);
             renderMainPage();
         }
 
-        // إغلاق الاختبار من زر الإلغاء
-        // نستخدم cancelQuiz مع العودة للصفحة الرئيسية (بالفعل في الزر)
-
-        // تأثير كونفيتي بسيط
+        // --- تأثير كونفيتي ---
         function createConfetti(container) {
             const colors = ['#ff0','#f00','#0f0','#00f','#ff00ff','#00ffff'];
             for (let i=0; i<20; i++) {
