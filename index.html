@@ -30,15 +30,13 @@
             margin-bottom:16px;
             box-shadow:0 12px 32px rgba(0,0,0,0.22);
             width:100%;
-            transition:transform 0.25s;
         }
         .welcome-card{text-align:center;padding:35px 22px;}
         .welcome-card .logo-icon{
             width:95px;height:95px;border-radius:50%;
             background:linear-gradient(135deg,#1a237e,#3949ab);
             display:flex;align-items:center;justify-content:center;
-            margin:0 auto 18px;
-            font-size:3rem;
+            margin:0 auto 18px;font-size:3rem;
             box-shadow:0 10px 25px rgba(26,35,126,0.4);
             animation:float 3s ease-in-out infinite;
         }
@@ -66,19 +64,18 @@
         .user-row .user-name{font-size:1.05rem;font-weight:bold;color:#1a237e;}
         .user-row .user-handle{font-size:0.78rem;opacity:0.75;}
         h2{font-size:1.35rem;margin-bottom:14px;color:#1a237e;display:flex;align-items:center;gap:8px;}
-        /* رسم بياني شريطي */
         .bar-chart{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:140px;margin:10px 0;padding:0 10px;}
         .bar-col{display:flex;flex-direction:column;align-items:center;flex:1;max-width:30px;}
         .bar-fill-container{width:100%;height:110px;display:flex;flex-direction:column-reverse;background:#e0e0e0;border-radius:8px 8px 0 0;overflow:hidden;}
         .bar-fill{width:100%;background:linear-gradient(0deg,#1a237e,#c9a96e);transition:height 0.6s ease;border-radius:8px 8px 0 0;}
-        .bar-label{font-size:0.6rem;color:#888;margin-top:4px;writing-mode:horizontal-tb;text-align:center;width:100%;overflow:hidden;}
+        .bar-label{font-size:0.6rem;color:#888;margin-top:4px;text-align:center;width:100%;}
         .bar-value{font-size:0.65rem;font-weight:bold;color:#1a237e;margin-top:2px;}
         .sections-grid{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
         .section-card{
             display:flex;align-items:center;justify-content:space-between;
             background:rgba(255,255,255,0.85);border-radius:18px;padding:14px 16px;
             cursor:pointer;transition:all 0.25s;border:2px solid transparent;
-            flex-wrap:wrap;gap:10px;position:relative;
+            flex-wrap:wrap;gap:10px;
         }
         .section-card.completed{border-color:#2e7d32;background:rgba(232,245,233,0.95);}
         .section-card .sec-left{display:flex;align-items:center;gap:12px;}
@@ -88,7 +85,6 @@
         .sec-badge{padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:bold;white-space:nowrap;}
         .badge-start{background:#1a237e;color:#fff;}
         .badge-done{background:#c8e6c9;color:#2e7d32;}
-        .badge-retry{background:#fff3e0;color:#e65100;}
         .quiz-modal{
             position:fixed;top:0;left:0;width:100%;height:100%;
             background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:999;
@@ -136,204 +132,149 @@ const userName=user?user.first_name||'مستخدم':'مستخدم';
 const userPhoto=user?.photo_url||`https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=1a237e&color=fff`;
 
 const sectionsData=[
-    {
-        id:"grammar-nouns",name:"علامات الاسم والمعارف",icon:"📝",category:"قواعد",totalPoints:10,
-        questions:[
-            {type:"mcq",q:"أيُّ ممَّا يأتي يُعد من علامات الاسم؟",opts:["سوف","التنوين","لم","لن"],correct:2},
-            {type:"mcq",q:"الكلمة التي دخلت عليها (ال) التعريف هي:",opts:["كتاب","يكتب","الكتاب","اكتب"],correct:3},
-            {type:"mcq",q:"أيُّ الجمل الآتية تحتوي على اسم مجرور؟",opts:["نجح الطالب","ذهبتُ إلى المدرسة","يكتب محمد","لن أتأخر"],correct:2},
-            {type:"mcq",q:"كلمة (هذا) تُعد:",opts:["ضمير","اسم إشارة","اسم موصول","علم"],correct:2},
-            {type:"mcq",q:"كلمة (الذي) تُعد:",opts:["اسم موصول","علم","فعل","حرف"],correct:1},
-            {type:"tf",q:"العلم هو اسم يدل على شيء غير محدد.",answer:false},
-            {type:"tf",q:"الاسم قد يأتي بعد حرف الجر.",answer:true},
-            {type:"tf",q:"الضمير من أنواع المعارف.",answer:true},
-            {type:"tf",q:"المنادى لا يُعد من علامات الاسم.",answer:false},
-            {type:"tf",q:"المضاف إلى معرفة يُعد معرفة.",answer:true}
-        ]
-    },
-    {
-        id:"grammar-mansubat",name:"المجرورات والمنصوبات",icon:"📖",category:"قواعد",totalPoints:8,
-        questions:[
-            {type:"mcq",q:"الاسم الواقع بعد حرف الجر يسمى:",opts:["مفعول به","مجرور بحرف الجر","حال","تمييز"],correct:2},
-            {type:"mcq",q:"في جملة (كتابُ الطالبِ) كلمة الطالبِ:",opts:["فاعل","مضاف إليه","حال","بدل"],correct:2},
-            {type:"mcq",q:"أيُّ مما يأتي من المنصوبات؟",opts:["المفعول به","المبتدأ","الفاعل","الخبر"],correct:1},
-            {type:"mcq",q:"من أنواع التوابع للمجرور:",opts:["الفاعل","العطف","المبتدأ","الخبر"],correct:2},
-            {type:"tf",q:"الحال من المنصوبات.",answer:true},
-            {type:"tf",q:"التمييز من المجرورات.",answer:false},
-            {type:"tf",q:"النعت قد يكون تابعًا للمجرور.",answer:true},
-            {type:"tf",q:"المستثنى من المنصوبات.",answer:true}
-        ]
-    },
-    {
-        id:"grammar-mudare",name:"نصب وجزم الفعل المضارع",icon:"⏳",category:"قواعد",totalPoints:12,
-        questions:[
-            {type:"mcq",q:"الحرف الذي ينصب الفعل المضارع هو:",opts:["لم","لن","لا الناهية","لما"],correct:2},
-            {type:"mcq",q:"في جملة (أريد أن أتعلم) الفعل المضارع منصوب بـ:",opts:["لم","أنْ","لا","كي لا"],correct:2},
-            {type:"mcq",q:"الأداة التي تجزم فعلاً واحدًا هي:",opts:["إنْ","مهما","لم","من"],correct:3},
-            {type:"mcq",q:"في جملة (لا تكذب) نوع الأداة:",opts:["ناصبة","جازمة","حرف جر","حرف نداء"],correct:2},
-            {type:"mcq",q:"أداة الشرط التي تجزم فعلين هي:",opts:["لن","كي","إنْ","حتى"],correct:3},
-            {type:"mcq",q:"(اجتهد فتنجح) الفاء هنا:",opts:["فاء السببية","فاء العطف","فاء الاستئناف","فاء القسم"],correct:1},
-            {type:"tf",q:"لنْ من أدوات الجزم.",answer:false},
-            {type:"tf",q:"لا الناهية تجزم الفعل المضارع.",answer:true},
-            {type:"tf",q:"حتى قد تنصب الفعل المضارع.",answer:true},
-            {type:"tf",q:"أدوات الشرط تجزم فعلين.",answer:true},
-            {type:"tf",q:"لمّا من أدوات النصب.",answer:false},
-            {type:"tf",q:"واو المعية تأتي بعد طلب أو نفي.",answer:true}
-        ]
-    },
-    {
-        id:"grammar-numbers",name:"الأعداد",icon:"🔢",category:"قواعد",totalPoints:8,
-        questions:[
-            {type:"mcq",q:"العددان (1 و2):",opts:["يخالفان المعدود","يوافقان المعدود","لا يتغيران","لا علاقة لهما بالمعدود"],correct:2},
-            {type:"mcq",q:"الأعداد من 3 إلى 10:",opts:["توافق المعدود","تخالف المعدود","تبقى ثابتة","تُجمع دائمًا"],correct:2},
-            {type:"mcq",q:"العدد المناسب لكلمة (رجال):",opts:["ثلاث رجال","ثلاثة رجال","ثلاثَ رجال","ثلاثةُ رجل"],correct:2},
-            {type:"mcq",q:"ألفاظ العقود مثل عشرون:",opts:["تتغير حسب المعدود","لا تتغير","مؤنثة دائمًا","مذكرة دائمًا"],correct:2},
-            {type:"tf",q:"العدد (إحدى عشرة) يوافق المعدود.",answer:true},
-            {type:"tf",q:"المئة والألف مفردتان دائمًا.",answer:true},
-            {type:"tf",q:"العدد من 13 إلى 19 يتفق جزآه مع المعدود.",answer:false},
-            {type:"tf",q:"عشرون امرأةً استعمال صحيح.",answer:true}
-        ]
-    },
-    {
-        id:"hifz-isra",name:"سورة الإسراء",icon:"🕌",category:"حفظ",totalPoints:4,
-        questions:[
-            {type:"yesno",q:"هل حفظت الآيات المطلوبة من سورة الإسراء؟"},
-            {type:"yesno",q:"هل راجعت تفسير ومعاني الآيات؟"},
-            {type:"yesno",q:"هل تستطيع قراءة الآيات دون توقف طويل؟"},
-            {type:"yesno",q:"هل حفظت ترتيب الأفكار الواردة في الآيات؟"}
-        ]
-    },
-    {
-        id:"adab-khitaba",name:"الخطابة والرسائل والمقالة",icon:"🎤",category:"أدب",totalPoints:12,
-        questions:[
-            {type:"mcq",q:"الخطابة تهدف إلى:",opts:["التسلية فقط","الإقناع والتأثير","السرد القصصي فقط","وصف الطبيعة"],correct:2},
-            {type:"mcq",q:"من أركان الخطابة:",opts:["الجمهور","الوزن","القافية","البحر الشعري"],correct:1},
-            {type:"mcq",q:"الرسائل الإدارية والسياسية تُسمى:",opts:["رسائل إخوانية","رسائل ديوانية","رسائل شعرية","رسائل خيالية"],correct:2},
-            {type:"mcq",q:"المقالة هي:",opts:["قصيدة شعرية","قطعة نثرية قصيرة نسبيًا","رواية طويلة","مسرحية"],correct:2},
-            {type:"mcq",q:"من أسباب ظهور المقالة الحديثة:",opts:["اختفاء الصحافة","انتشار الصحافة والمجلات","ضعف القراءة","قلة النشر"],correct:2},
-            {type:"mcq",q:"من خصائص المقالة:",opts:["الغموض الشديد","وضوح الأسلوب","كثرة الشخصيات","الاعتماد على الحوار فقط"],correct:2},
-            {type:"tf",q:"الرسائل الإخوانية ذات طابع شخصي.",answer:true},
-            {type:"tf",q:"المقالة الحديثة لا تعبّر عن الرأي.",answer:false},
-            {type:"tf",q:"الخطابة تعتمد على التأثير بالجمهور.",answer:true},
-            {type:"tf",q:"من خصائص المقالة وحدة الموضوع.",answer:true},
-            {type:"tf",q:"المسرحية نوع من المقالة.",answer:false},
-            {type:"tf",q:"من أسباب ظهور المقالة تطور وسائل النشر.",answer:true}
-        ]
-    },
-    {
-        id:"adab-masrah",name:"المسرحية والمعاجم",icon:"🎭",category:"أدب",totalPoints:10,
-        questions:[
-            {type:"mcq",q:"المسرحية تعتمد بشكل أساسي على:",opts:["الحوار","السجع","الوزن","القافية"],correct:1},
-            {type:"mcq",q:"من عناصر المسرحية:",opts:["الشخصيات","البحور الشعرية","القافية","الروي"],correct:1},
-            {type:"mcq",q:"الصراع في المسرحية يُعد:",opts:["عنصرًا ثانويًا","محرك الأحداث","عنصرًا غير مهم","خاصًا بالشعر فقط"],correct:2},
-            {type:"mcq",q:"كتاب (الصحاح تاج اللغة وصحاح العربية) مؤلفه:",opts:["الزمخشري","الجوهري","الفيومي","الرازي"],correct:2},
-            {type:"mcq",q:"كتاب (أساس البلاغة) يعود إلى:",opts:["الجوهري","الزمخشري","الرازي","الفيومي"],correct:2},
-            {type:"tf",q:"الزمان والمكان من عناصر المسرحية.",answer:true},
-            {type:"tf",q:"المسرحية تُقرأ فقط ولا تُمثل.",answer:false},
-            {type:"tf",q:"مختار الصحاح من معاجم مدرسة الصحاح.",answer:true},
-            {type:"tf",q:"الحل يمثل نهاية المسرحية.",answer:true},
-            {type:"tf",q:"الشخصيات ليست عنصرًا مهمًا في المسرحية.",answer:false}
-        ]
-    },
-    {
-        id:"adab-sard",name:"السرد والشخصيات",icon:"📜",category:"أدب",totalPoints:10,
-        questions:[
-            {type:"mcq",q:"السرد الخطي يعني:",opts:["عرض الأحداث بترتيب زمني","العودة للماضي","استباق المستقبل","حذف الأحداث"],correct:1},
-            {type:"mcq",q:"العودة إلى أحداث ماضية تسمى:",opts:["الاستباق","الاسترجاع","السرد الخطي","الوصف"],correct:2},
-            {type:"mcq",q:"الراوي الذي يحكي بضمير (أنا) يسمى:",opts:["السرد بضمير الغائب","السرد بضمير المتكلم","الراوي الخارجي","الراوي الثابت"],correct:2},
-            {type:"mcq",q:"الشخصية التي تتغير مع الأحداث تسمى:",opts:["ثابتة","نامية","ثانوية","رمزية"],correct:2},
-            {type:"mcq",q:"الشخصية التي تدور حولها الأحداث هي:",opts:["الثانوية","الرئيسية","الثابتة","الرمزية"],correct:2},
-            {type:"tf",q:"الاستباق يعني التقدم لأحداث مستقبلية.",answer:true},
-            {type:"tf",q:"الشخصية الثابتة تتطور كثيرًا.",answer:false},
-            {type:"tf",q:"السرد أسلوب في الحكي والقص.",answer:true},
-            {type:"tf",q:"الشخصية الرمزية ترمز إلى فكرة أو قيمة.",answer:true},
-            {type:"tf",q:"السرد بضمير الغائب يكون الراوي داخل الأحداث دائمًا.",answer:false}
-        ]
-    },
-    {
-        id:"adab-tibaq",name:"الطباق والمقابلة",icon:"⚖️",category:"أدب",totalPoints:8,
-        questions:[
-            {type:"mcq",q:"الطباق هو:",opts:["الجمع بين الشيء وضده","تشبيه شيئين","حذف كلمة","تكرار الحروف"],correct:1},
-            {type:"mcq",q:"المقابلة أوسع من الطباق لأنها:",opts:["تشمل أكثر من ضدين","خاصة بالشعر","لا تحتوي تضادًا","تعتمد على السجع"],correct:1},
-            {type:"mcq",q:"(يحيي ويميت) مثال على:",opts:["طباق إيجاب","طباق سلب","مقابلة","تشبيه"],correct:1},
-            {type:"mcq",q:"(يعلمون ولا يعلمون) مثال على:",opts:["مقابلة","طباق سلب","استعارة","جناس"],correct:2},
-            {type:"tf",q:"الطباق من المحسنات البديعية المعنوية.",answer:true},
-            {type:"tf",q:"المقابلة لا تحتوي على تضاد.",answer:false},
-            {type:"tf",q:"طباق السلب يعتمد على النفي.",answer:true},
-            {type:"tf",q:"الطباق والمقابلة من أساليب البلاغة.",answer:true}
-        ]
-    },
-    {
-        id:"qasaid-mutanabbi",name:"قصيدة ميمية المتنبي",icon:"🎵",category:"قصائد",totalPoints:4,
-        questions:[
-            {type:"yesno",q:"هل حفظت الأبيات المطلوبة من القصيدة؟"},
-            {type:"yesno",q:"هل راجعت معاني الكلمات الصعبة؟"},
-            {type:"yesno",q:"هل تستطيع تمييز الشاعر والقصيدة؟"},
-            {type:"yesno",q:"هل تدربت على قراءة الأبيات بصوت واضح؟"}
-        ]
-    },
-    {
-        id:"qasaid-matar",name:"قصيدة أنشودة المطر",icon:"🌧️",category:"قصائد",totalPoints:4,
-        questions:[
-            {type:"yesno",q:"هل حفظت المقطع المطلوب من القصيدة؟"},
-            {type:"yesno",q:"هل فهمت الفكرة العامة للمقطع؟"},
-            {type:"yesno",q:"هل راجعت اسم الشاعر؟"},
-            {type:"yesno",q:"هل تستطيع إكمال الأبيات دون النظر للكتاب؟"}
-        ]
-    }
+    {id:"grammar-nouns",name:"علامات الاسم والمعارف",icon:"📝",category:"قواعد",totalPoints:10,questions:[
+        {type:"mcq",q:"أيُّ ممَّا يأتي يُعد من علامات الاسم؟",opts:["سوف","التنوين","لم","لن"],correct:2},
+        {type:"mcq",q:"الكلمة التي دخلت عليها (ال) التعريف هي:",opts:["كتاب","يكتب","الكتاب","اكتب"],correct:3},
+        {type:"mcq",q:"أيُّ الجمل الآتية تحتوي على اسم مجرور؟",opts:["نجح الطالب","ذهبتُ إلى المدرسة","يكتب محمد","لن أتأخر"],correct:2},
+        {type:"mcq",q:"كلمة (هذا) تُعد:",opts:["ضمير","اسم إشارة","اسم موصول","علم"],correct:2},
+        {type:"mcq",q:"كلمة (الذي) تُعد:",opts:["اسم موصول","علم","فعل","حرف"],correct:1},
+        {type:"tf",q:"العلم هو اسم يدل على شيء غير محدد.",answer:false},
+        {type:"tf",q:"الاسم قد يأتي بعد حرف الجر.",answer:true},
+        {type:"tf",q:"الضمير من أنواع المعارف.",answer:true},
+        {type:"tf",q:"المنادى لا يُعد من علامات الاسم.",answer:false},
+        {type:"tf",q:"المضاف إلى معرفة يُعد معرفة.",answer:true}
+    ]},
+    {id:"grammar-mansubat",name:"المجرورات والمنصوبات",icon:"📖",category:"قواعد",totalPoints:8,questions:[
+        {type:"mcq",q:"الاسم الواقع بعد حرف الجر يسمى:",opts:["مفعول به","مجرور بحرف الجر","حال","تمييز"],correct:2},
+        {type:"mcq",q:"في جملة (كتابُ الطالبِ) كلمة الطالبِ:",opts:["فاعل","مضاف إليه","حال","بدل"],correct:2},
+        {type:"mcq",q:"أيُّ مما يأتي من المنصوبات؟",opts:["المفعول به","المبتدأ","الفاعل","الخبر"],correct:1},
+        {type:"mcq",q:"من أنواع التوابع للمجرور:",opts:["الفاعل","العطف","المبتدأ","الخبر"],correct:2},
+        {type:"tf",q:"الحال من المنصوبات.",answer:true},
+        {type:"tf",q:"التمييز من المجرورات.",answer:false},
+        {type:"tf",q:"النعت قد يكون تابعًا للمجرور.",answer:true},
+        {type:"tf",q:"المستثنى من المنصوبات.",answer:true}
+    ]},
+    {id:"grammar-mudare",name:"نصب وجزم الفعل المضارع",icon:"⏳",category:"قواعد",totalPoints:12,questions:[
+        {type:"mcq",q:"الحرف الذي ينصب الفعل المضارع هو:",opts:["لم","لن","لا الناهية","لما"],correct:2},
+        {type:"mcq",q:"في جملة (أريد أن أتعلم) الفعل المضارع منصوب بـ:",opts:["لم","أنْ","لا","كي لا"],correct:2},
+        {type:"mcq",q:"الأداة التي تجزم فعلاً واحدًا هي:",opts:["إنْ","مهما","لم","من"],correct:3},
+        {type:"mcq",q:"في جملة (لا تكذب) نوع الأداة:",opts:["ناصبة","جازمة","حرف جر","حرف نداء"],correct:2},
+        {type:"mcq",q:"أداة الشرط التي تجزم فعلين هي:",opts:["لن","كي","إنْ","حتى"],correct:3},
+        {type:"mcq",q:"(اجتهد فتنجح) الفاء هنا:",opts:["فاء السببية","فاء العطف","فاء الاستئناف","فاء القسم"],correct:1},
+        {type:"tf",q:"لنْ من أدوات الجزم.",answer:false},
+        {type:"tf",q:"لا الناهية تجزم الفعل المضارع.",answer:true},
+        {type:"tf",q:"حتى قد تنصب الفعل المضارع.",answer:true},
+        {type:"tf",q:"أدوات الشرط تجزم فعلين.",answer:true},
+        {type:"tf",q:"لمّا من أدوات النصب.",answer:false},
+        {type:"tf",q:"واو المعية تأتي بعد طلب أو نفي.",answer:true}
+    ]},
+    {id:"grammar-numbers",name:"الأعداد",icon:"🔢",category:"قواعد",totalPoints:8,questions:[
+        {type:"mcq",q:"العددان (1 و2):",opts:["يخالفان المعدود","يوافقان المعدود","لا يتغيران","لا علاقة لهما بالمعدود"],correct:2},
+        {type:"mcq",q:"الأعداد من 3 إلى 10:",opts:["توافق المعدود","تخالف المعدود","تبقى ثابتة","تُجمع دائمًا"],correct:2},
+        {type:"mcq",q:"العدد المناسب لكلمة (رجال):",opts:["ثلاث رجال","ثلاثة رجال","ثلاثَ رجال","ثلاثةُ رجل"],correct:2},
+        {type:"mcq",q:"ألفاظ العقود مثل عشرون:",opts:["تتغير حسب المعدود","لا تتغير","مؤنثة دائمًا","مذكرة دائمًا"],correct:2},
+        {type:"tf",q:"العدد (إحدى عشرة) يوافق المعدود.",answer:true},
+        {type:"tf",q:"المئة والألف مفردتان دائمًا.",answer:true},
+        {type:"tf",q:"العدد من 13 إلى 19 يتفق جزآه مع المعدود.",answer:false},
+        {type:"tf",q:"عشرون امرأةً استعمال صحيح.",answer:true}
+    ]},
+    {id:"hifz-isra",name:"سورة الإسراء",icon:"🕌",category:"حفظ",totalPoints:4,questions:[
+        {type:"yesno",q:"هل حفظت الآيات المطلوبة من سورة الإسراء؟"},
+        {type:"yesno",q:"هل راجعت تفسير ومعاني الآيات؟"},
+        {type:"yesno",q:"هل تستطيع قراءة الآيات دون توقف طويل؟"},
+        {type:"yesno",q:"هل حفظت ترتيب الأفكار الواردة في الآيات؟"}
+    ]},
+    {id:"adab-khitaba",name:"الخطابة والرسائل والمقالة",icon:"🎤",category:"أدب",totalPoints:12,questions:[
+        {type:"mcq",q:"الخطابة تهدف إلى:",opts:["التسلية فقط","الإقناع والتأثير","السرد القصصي فقط","وصف الطبيعة"],correct:2},
+        {type:"mcq",q:"من أركان الخطابة:",opts:["الجمهور","الوزن","القافية","البحر الشعري"],correct:1},
+        {type:"mcq",q:"الرسائل الإدارية والسياسية تُسمى:",opts:["رسائل إخوانية","رسائل ديوانية","رسائل شعرية","رسائل خيالية"],correct:2},
+        {type:"mcq",q:"المقالة هي:",opts:["قصيدة شعرية","قطعة نثرية قصيرة نسبيًا","رواية طويلة","مسرحية"],correct:2},
+        {type:"mcq",q:"من أسباب ظهور المقالة الحديثة:",opts:["اختفاء الصحافة","انتشار الصحافة والمجلات","ضعف القراءة","قلة النشر"],correct:2},
+        {type:"mcq",q:"من خصائص المقالة:",opts:["الغموض الشديد","وضوح الأسلوب","كثرة الشخصيات","الاعتماد على الحوار فقط"],correct:2},
+        {type:"tf",q:"الرسائل الإخوانية ذات طابع شخصي.",answer:true},
+        {type:"tf",q:"المقالة الحديثة لا تعبّر عن الرأي.",answer:false},
+        {type:"tf",q:"الخطابة تعتمد على التأثير بالجمهور.",answer:true},
+        {type:"tf",q:"من خصائص المقالة وحدة الموضوع.",answer:true},
+        {type:"tf",q:"المسرحية نوع من المقالة.",answer:false},
+        {type:"tf",q:"من أسباب ظهور المقالة تطور وسائل النشر.",answer:true}
+    ]},
+    {id:"adab-masrah",name:"المسرحية والمعاجم",icon:"🎭",category:"أدب",totalPoints:10,questions:[
+        {type:"mcq",q:"المسرحية تعتمد بشكل أساسي على:",opts:["الحوار","السجع","الوزن","القافية"],correct:1},
+        {type:"mcq",q:"من عناصر المسرحية:",opts:["الشخصيات","البحور الشعرية","القافية","الروي"],correct:1},
+        {type:"mcq",q:"الصراع في المسرحية يُعد:",opts:["عنصرًا ثانويًا","محرك الأحداث","عنصرًا غير مهم","خاصًا بالشعر فقط"],correct:2},
+        {type:"mcq",q:"كتاب (الصحاح تاج اللغة وصحاح العربية) مؤلفه:",opts:["الزمخشري","الجوهري","الفيومي","الرازي"],correct:2},
+        {type:"mcq",q:"كتاب (أساس البلاغة) يعود إلى:",opts:["الجوهري","الزمخشري","الرازي","الفيومي"],correct:2},
+        {type:"tf",q:"الزمان والمكان من عناصر المسرحية.",answer:true},
+        {type:"tf",q:"المسرحية تُقرأ فقط ولا تُمثل.",answer:false},
+        {type:"tf",q:"مختار الصحاح من معاجم مدرسة الصحاح.",answer:true},
+        {type:"tf",q:"الحل يمثل نهاية المسرحية.",answer:true},
+        {type:"tf",q:"الشخصيات ليست عنصرًا مهمًا في المسرحية.",answer:false}
+    ]},
+    {id:"adab-sard",name:"السرد والشخصيات",icon:"📜",category:"أدب",totalPoints:10,questions:[
+        {type:"mcq",q:"السرد الخطي يعني:",opts:["عرض الأحداث بترتيب زمني","العودة للماضي","استباق المستقبل","حذف الأحداث"],correct:1},
+        {type:"mcq",q:"العودة إلى أحداث ماضية تسمى:",opts:["الاستباق","الاسترجاع","السرد الخطي","الوصف"],correct:2},
+        {type:"mcq",q:"الراوي الذي يحكي بضمير (أنا) يسمى:",opts:["السرد بضمير الغائب","السرد بضمير المتكلم","الراوي الخارجي","الراوي الثابت"],correct:2},
+        {type:"mcq",q:"الشخصية التي تتغير مع الأحداث تسمى:",opts:["ثابتة","نامية","ثانوية","رمزية"],correct:2},
+        {type:"mcq",q:"الشخصية التي تدور حولها الأحداث هي:",opts:["الثانوية","الرئيسية","الثابتة","الرمزية"],correct:2},
+        {type:"tf",q:"الاستباق يعني التقدم لأحداث مستقبلية.",answer:true},
+        {type:"tf",q:"الشخصية الثابتة تتطور كثيرًا.",answer:false},
+        {type:"tf",q:"السرد أسلوب في الحكي والقص.",answer:true},
+        {type:"tf",q:"الشخصية الرمزية ترمز إلى فكرة أو قيمة.",answer:true},
+        {type:"tf",q:"السرد بضمير الغائب يكون الراوي داخل الأحداث دائمًا.",answer:false}
+    ]},
+    {id:"adab-tibaq",name:"الطباق والمقابلة",icon:"⚖️",category:"أدب",totalPoints:8,questions:[
+        {type:"mcq",q:"الطباق هو:",opts:["الجمع بين الشيء وضده","تشبيه شيئين","حذف كلمة","تكرار الحروف"],correct:1},
+        {type:"mcq",q:"المقابلة أوسع من الطباق لأنها:",opts:["تشمل أكثر من ضدين","خاصة بالشعر","لا تحتوي تضادًا","تعتمد على السجع"],correct:1},
+        {type:"mcq",q:"(يحيي ويميت) مثال على:",opts:["طباق إيجاب","طباق سلب","مقابلة","تشبيه"],correct:1},
+        {type:"mcq",q:"(يعلمون ولا يعلمون) مثال على:",opts:["مقابلة","طباق سلب","استعارة","جناس"],correct:2},
+        {type:"tf",q:"الطباق من المحسنات البديعية المعنوية.",answer:true},
+        {type:"tf",q:"المقابلة لا تحتوي على تضاد.",answer:false},
+        {type:"tf",q:"طباق السلب يعتمد على النفي.",answer:true},
+        {type:"tf",q:"الطباق والمقابلة من أساليب البلاغة.",answer:true}
+    ]},
+    {id:"qasaid-mutanabbi",name:"قصيدة ميمية المتنبي",icon:"🎵",category:"قصائد",totalPoints:4,questions:[
+        {type:"yesno",q:"هل حفظت الأبيات المطلوبة من القصيدة؟"},
+        {type:"yesno",q:"هل راجعت معاني الكلمات الصعبة؟"},
+        {type:"yesno",q:"هل تستطيع تمييز الشاعر والقصيدة؟"},
+        {type:"yesno",q:"هل تدربت على قراءة الأبيات بصوت واضح؟"}
+    ]},
+    {id:"qasaid-matar",name:"قصيدة أنشودة المطر",icon:"🌧️",category:"قصائد",totalPoints:4,questions:[
+        {type:"yesno",q:"هل حفظت المقطع المطلوب من القصيدة؟"},
+        {type:"yesno",q:"هل فهمت الفكرة العامة للمقطع؟"},
+        {type:"yesno",q:"هل راجعت اسم الشاعر؟"},
+        {type:"yesno",q:"هل تستطيع إكمال الأبيات دون النظر للكتاب؟"}
+    ]}
 ];
 
-// ========== localStorage ==========
-function loadProgress(){
-    const raw=localStorage.getItem('arabic_progress_v3');
-    return raw?JSON.parse(raw):{completed:{}};
-}
-function saveProgress(data){localStorage.setItem('arabic_progress_v3',JSON.stringify(data));}
+function loadProgress(){const r=localStorage.getItem('arabic_progress_v4');return r?JSON.parse(r):{completed:{}};}
+function saveProgress(d){localStorage.setItem('arabic_progress_v4',JSON.stringify(d));}
 function isSectionDone(id){const p=loadProgress();return !!p.completed[id];}
 function getSectionScore(id){const p=loadProgress();return p.completed[id]||0;}
 function markSectionDone(id,score){const p=loadProgress();p.completed[id]=score;saveProgress(p);}
 function markSectionUndone(id){const p=loadProgress();delete p.completed[id];saveProgress(p);}
 function getTotalEarned(){const p=loadProgress();let s=0;for(const k in p.completed)s+=p.completed[k];return s;}
 function getTotalPossible(){return sectionsData.reduce((a,b)=>a+b.totalPoints,0);}
-function getCompletedCount(){const p=loadProgress();return Object.keys(p.completed).length;}
-function getGradeText(score,total){
-    const pct=score/total;
-    if(pct>=0.9)return '🏆 ممتاز';
-    if(pct>=0.7)return '👍 جيد جداً';
-    if(pct>=0.5)return '✅ جيد';
-    return '📚 يحتاج مراجعة';
-}
+function getCompletedCount(){return Object.keys(loadProgress().completed).length;}
+function getGradeText(score,total){const pct=score/total;if(pct>=0.9)return'🏆 ممتاز';if(pct>=0.7)return'👍 جيد جداً';if(pct>=0.5)return'✅ جيد';return'📚 يحتاج مراجعة';}
 
-// ========== رسم بياني شريطي ==========
 function createBarChart(sections){
     let html='<div class="bar-chart">';
     sections.forEach(sec=>{
         const score=getSectionScore(sec.id);
         const max=sec.totalPoints;
         const pct=(score/max)*100;
-        const height=Math.max(2, (pct/100)*110); // 110px max
-        html+=`
-        <div class="bar-col">
-            <div class="bar-fill-container">
-                <div class="bar-fill" style="height:${height}px;"></div>
-            </div>
-            <div class="bar-label">${sec.icon}</div>
-            <div class="bar-value">${score}/${max}</div>
-        </div>`;
+        const height=Math.max(2,(pct/100)*110);
+        html+=`<div class="bar-col"><div class="bar-fill-container"><div class="bar-fill" style="height:${height}px;"></div></div><div class="bar-label">${sec.icon}</div><div class="bar-value">${score}/${max}</div></div>`;
     });
     html+='</div>';
     return html;
 }
 
-// ========== الترحيب ==========
 function showWelcome(){
-    const total=getTotalPossible();
-    const earned=getTotalEarned();
-    const done=getCompletedCount();
-    const html=`
+    const total=getTotalPossible(),earned=getTotalEarned(),done=getCompletedCount();
+    document.getElementById('app').innerHTML=`
         <div class="glass-card welcome-card">
-            <div class="logo-icon">📚</div>
-            <h1>أهلًا ${userName}! 👋</h1>
+            <div class="logo-icon">📚</div><h1>أهلًا ${userName}! 👋</h1>
             <p>مرحبًا بك في <strong>متابعة مادة اللغة العربية</strong><br>اختبر فهمك عبر اختبارات شاملة لكل أقسام المادة.</p>
             <div class="welcome-stats">
                 <div class="welcome-stat"><div class="stat-num">${sectionsData.length}</div><div class="stat-lbl">قسم</div></div>
@@ -342,97 +283,43 @@ function showWelcome(){
                 <div class="welcome-stat"><div class="stat-num">${earned}</div><div class="stat-lbl">نقطة مكتسبة</div></div>
             </div>
             <button class="btn-primary" onclick="startApp()">✨ ابدأ المتابعة</button>
-        </div>
-    `;
-    document.getElementById('app').innerHTML=html;
+        </div>`;
 }
 
-// ========== الصفحة الرئيسية ==========
 function renderMainPage(){
-    const total=getTotalPossible();
-    const earned=getTotalEarned();
-    const pct=Math.round((earned/total)*100);
-    const grade=getGradeText(earned,total);
-    const doneCount=getCompletedCount();
-
+    const total=getTotalPossible(),earned=getTotalEarned(),pct=Math.round((earned/total)*100);
+    const grade=getGradeText(earned,total),doneCount=getCompletedCount();
     const sectionsHtml=sectionsData.map(sec=>{
-        const done=isSectionDone(sec.id);
-        const score=getSectionScore(sec.id);
-        let badge;
-        if(done){badge=`<span class="sec-badge badge-done">✅ ${score}/${sec.totalPoints}</span>`;}
-        else{badge=`<span class="sec-badge badge-start">📝 ابدأ</span>`;}
-        const bgColor=done?'rgba(232,245,233,0.95)':'rgba(255,255,255,0.85)';
-        return `
-            <div class="section-card ${done?'completed':''}" style="background:${bgColor};" onclick="${done?`retrySection('${sec.id}')`:`startSection('${sec.id}')`}">
-                <div class="sec-left">
-                    <div class="sec-icon" style="background:${done?'#c8e6c9':'#e8eaf6'};">${sec.icon}</div>
-                    <div>
-                        <div class="sec-name">${sec.name}</div>
-                        <div class="sec-meta">${sec.category} • ${sec.totalPoints} نقطة</div>
-                    </div>
-                </div>
-                ${badge}
-            </div>`;
+        const done=isSectionDone(sec.id),score=getSectionScore(sec.id);
+        return`<div class="section-card ${done?'completed':''}" style="background:${done?'rgba(232,245,233,0.95)':'rgba(255,255,255,0.85)'};" onclick="${done?`retrySection('${sec.id}')`:`startSection('${sec.id}')`}">
+            <div class="sec-left"><div class="sec-icon" style="background:${done?'#c8e6c9':'#e8eaf6'};">${sec.icon}</div><div><div class="sec-name">${sec.name}</div><div class="sec-meta">${sec.category} • ${sec.totalPoints} نقطة</div></div></div>
+            <span class="sec-badge ${done?'badge-done':'badge-start'}">${done?`✅ ${score}/${sec.totalPoints}`:'📝 ابدأ'}</span>
+        </div>`;
     }).join('');
-
-    // رسم بياني شامل
-    const chartHtml=createBarChart(sectionsData);
-
-    const html=`
-        <div class="user-row">
-            <img src="${userPhoto}" alt="">
-            <div>
-                <div class="user-name">${userName}</div>
-                <div class="user-handle">@${user?.username||'لا يوجد'}</div>
-            </div>
-        </div>
+    document.getElementById('app').innerHTML=`
+        <div class="user-row"><img src="${userPhoto}" alt=""><div><div class="user-name">${userName}</div><div class="user-handle">@${user?.username||'لا يوجد'}</div></div></div>
         <div class="glass-card" style="text-align:center;">
             <h2>📊 تقدّمك في المادة</h2>
-            ${chartHtml}
-            <div style="margin-top:12px; font-size:1rem; font-weight:bold; color:#1a237e;">${earned} / ${total} نقطة (${pct}%)</div>
-            <div style="font-size:0.9rem; color:#555;">${grade}</div>
-            <div style="margin-top:8px; font-size:0.8rem; color:#888;">${doneCount} من ${sectionsData.length} أقسام مكتملة</div>
+            ${createBarChart(sectionsData)}
+            <div style="margin-top:12px;font-size:1rem;font-weight:bold;color:#1a237e;">${earned} / ${total} نقطة (${pct}%)</div>
+            <div style="font-size:0.9rem;color:#555;">${grade}</div>
+            <div style="margin-top:8px;font-size:0.8rem;color:#888;">${doneCount} من ${sectionsData.length} أقسام مكتملة</div>
         </div>
-        <div class="glass-card">
-            <h2>📋 أقسام المادة</h2>
-            <div class="sections-grid">${sectionsHtml}</div>
-        </div>
+        <div class="glass-card"><h2>📋 أقسام المادة</h2><div class="sections-grid">${sectionsHtml}</div></div>
         <div class="back-link"><button onclick="showWelcome()">⬅️ العودة لصفحة الترحيب</button></div>
-        <div class="note">تطبيق تيليجرام المصغر • متابعة مادة اللغة العربية</div>
-    `;
-    document.getElementById('app').innerHTML=html;
+        <div class="note">تطبيق تيليجرام المصغر • متابعة مادة اللغة العربية</div>`;
 }
 
-window.startApp=function(){
-    if(!localStorage.getItem('arabic_welcome_v3'))localStorage.setItem('arabic_welcome_v3','true');
-    renderMainPage();
-};
-window.retrySection=function(id){
-    if(confirm('هل تريد إعادة هذا القسم؟ سيتم حذف نتيجتك السابقة.')){
-        markSectionUndone(id);
-        renderMainPage();
-        startSection(id);
-    }
-};
+window.startApp=function(){if(!localStorage.getItem('arabic_welcome_v4'))localStorage.setItem('arabic_welcome_v4','true');renderMainPage();};
+window.retrySection=function(id){if(confirm('هل تريد إعادة هذا القسم؟ سيتم حذف نتيجتك السابقة.')){markSectionUndone(id);renderMainPage();startSection(id);}};
 
-// ========== نظام الاختبارات ==========
 let currentQuiz=null;
-
 function removeModal(){const m=document.querySelector('.quiz-modal');if(m)m.remove();}
 function cancelQuiz(){removeModal();currentQuiz=null;}
 
 window.startSection=function(id){
-    const sec=sectionsData.find(s=>s.id===id);
-    if(!sec)return;
-    currentQuiz={
-        sectionId:id,
-        questions:[...sec.questions],
-        currentIndex:0,
-        answers:new Array(sec.questions.length).fill(null),
-        quizDone:false,
-        sectionName:sec.name,
-        totalPoints:sec.totalPoints
-    };
+    const sec=sectionsData.find(s=>s.id===id);if(!sec)return;
+    currentQuiz={sectionId:id,questions:[...sec.questions],currentIndex:0,answers:new Array(sec.questions.length).fill(null),quizDone:false,sectionName:sec.name,totalPoints:sec.totalPoints};
     renderModal();
 };
 
@@ -440,63 +327,20 @@ function renderModal(){
     if(!currentQuiz)return;
     const q=currentQuiz.questions[currentQuiz.currentIndex];
     const chosen=currentQuiz.answers[currentQuiz.currentIndex];
-    const isLast=currentQuiz.currentIndex===currentQuiz.questions.length-1;
     const canCheck=chosen!==null;
     let answerArea='';
+    if(q.type==='mcq')answerArea=q.opts.map((opt,idx)=>`<label class="quiz-option ${chosen===idx?'selected':''}" data-oi="${idx}"><input type="radio" name="qz" style="display:none;">${opt}</label>`).join('');
+    else if(q.type==='tf')answerArea=`<div class="tf-btns"><button class="tf-btn true-btn ${chosen===true?'selected':''}" id="trueBtn">✓ صح</button><button class="tf-btn false-btn ${chosen===false?'selected':''}" id="falseBtn">✗ خطأ</button></div>`;
+    else if(q.type==='yesno')answerArea=`<div class="tf-btns"><button class="tf-btn true-btn ${chosen===true?'selected':''}" id="trueBtn">👍 نعم</button><button class="tf-btn false-btn ${chosen===false?'selected':''}" id="falseBtn">👎 لا</button></div>`;
 
-    if(q.type==='mcq'){
-        answerArea=q.opts.map((opt,idx)=>`
-            <label class="quiz-option ${chosen===idx?'selected':''}" data-oi="${idx}">
-                <input type="radio" name="qz" style="display:none;">${opt}
-            </label>`).join('');
-    }else if(q.type==='tf'){
-        answerArea=`
-            <div class="tf-btns">
-                <button class="tf-btn true-btn ${chosen===true?'selected':''}" id="trueBtn">✓ صح</button>
-                <button class="tf-btn false-btn ${chosen===false?'selected':''}" id="falseBtn">✗ خطأ</button>
-            </div>`;
-    }else if(q.type==='yesno'){
-        answerArea=`
-            <div class="tf-btns">
-                <button class="tf-btn true-btn ${chosen===true?'selected':''}" id="trueBtn">👍 نعم</button>
-                <button class="tf-btn false-btn ${chosen===false?'selected':''}" id="falseBtn">👎 لا</button>
-            </div>`;
-    }
-
-    const modal=document.createElement('div');
-    modal.className='quiz-modal';
-    modal.innerHTML=`
-        <div class="quiz-content">
-            <h3>${currentQuiz.sectionName}</h3>
-            <div class="q-type-label">سؤال ${currentQuiz.currentIndex+1} / ${currentQuiz.questions.length}</div>
-            <div class="q-text">${q.q}</div>
-            ${answerArea}
-            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
-                ${currentQuiz.currentIndex>0?'<button class="btn-secondary" id="prevBtnQ">⬅️ السابق</button>':''}
-                <button class="btn-primary" id="checkBtnQ" ${!canCheck?'disabled':''}>تحقق</button>
-            </div>
-            <div id="feedbackAreaQ"></div>
-            <button style="margin-top:12px;width:100%;background:#eee;" class="btn-secondary" onclick="cancelQuiz();renderMainPage();">إلغاء</button>
-        </div>`;
+    const modal=document.createElement('div');modal.className='quiz-modal';
+    modal.innerHTML=`<div class="quiz-content"><h3>${currentQuiz.sectionName}</h3><div class="q-type-label">سؤال ${currentQuiz.currentIndex+1} / ${currentQuiz.questions.length}</div><div class="q-text">${q.q}</div>${answerArea}<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;">${currentQuiz.currentIndex>0?'<button class="btn-secondary" id="prevBtnQ">⬅️ السابق</button>':''}<button class="btn-primary" id="checkBtnQ" ${!canCheck?'disabled':''}>تحقق</button></div><div id="feedbackAreaQ"></div><button style="margin-top:12px;width:100%;background:#eee;" class="btn-secondary" onclick="cancelQuiz();renderMainPage();">إلغاء</button></div>`;
     document.body.appendChild(modal);
 
-    if(q.type==='mcq'){
-        modal.querySelectorAll('.quiz-option').forEach(opt=>{
-            opt.addEventListener('click',()=>{
-                const idx=parseInt(opt.dataset.oi);
-                selectAnswer(idx);
-            });
-        });
-    }else{
-        const tb=modal.querySelector('#trueBtn');
-        const fb=modal.querySelector('#falseBtn');
-        if(tb)tb.addEventListener('click',()=>selectAnswer(true));
-        if(fb)fb.addEventListener('click',()=>selectAnswer(false));
-    }
-    const cb=modal.querySelector('#checkBtnQ');
-    if(cb)cb.addEventListener('click',()=>{if(!currentQuiz.quizDone)checkAnswer();});
-    const pb=modal.querySelector('#prevBtnQ');
-    if(pb)pb.addEventListener('click',prevQuestion);
+    if(q.type==='mcq')modal.querySelectorAll('.quiz-option').forEach(o=>o.addEventListener('click',()=>selectAnswer(parseInt(o.dataset.oi))));
+    else{const tb=modal.querySelector('#trueBtn'),fb=modal.querySelector('#falseBtn');if(tb)tb.addEventListener('click',()=>selectAnswer(true));if(fb)fb.addEventListener('click',()=>selectAnswer(false));}
+    modal.querySelector('#checkBtnQ').addEventListener('click',()=>{if(!currentQuiz.quizDone)checkAnswer();});
+    const pb=modal.querySelector('#prevBtnQ');if(pb)pb.addEventListener('click',prevQuestion);
 }
 
 function selectAnswer(val){
@@ -504,112 +348,58 @@ function selectAnswer(val){
     currentQuiz.answers[currentQuiz.currentIndex]=val;
     const modal=document.querySelector('.quiz-modal');if(!modal)return;
     const q=currentQuiz.questions[currentQuiz.currentIndex];
-    if(q.type==='mcq'){
-        modal.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));
-        const s=modal.querySelector(`.quiz-option[data-oi="${val}"]`);
-        if(s)s.classList.add('selected');
-    }else{
-        const tb=modal.querySelector('#trueBtn');const fb=modal.querySelector('#falseBtn');
-        if(tb)tb.classList.remove('selected');if(fb)fb.classList.remove('selected');
-        if(val===true&&tb)tb.classList.add('selected');
-        if(val===false&&fb)fb.classList.add('selected');
-    }
+    if(q.type==='mcq'){modal.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));const s=modal.querySelector(`.quiz-option[data-oi="${val}"]`);if(s)s.classList.add('selected');}
+    else{const tb=modal.querySelector('#trueBtn'),fb=modal.querySelector('#falseBtn');if(tb)tb.classList.remove('selected');if(fb)fb.classList.remove('selected');if(val===true&&tb)tb.classList.add('selected');if(val===false&&fb)fb.classList.add('selected');}
     const cb=modal.querySelector('#checkBtnQ');if(cb)cb.disabled=false;
 }
 
 function checkAnswer(){
     if(!currentQuiz||currentQuiz.quizDone)return;
-    const q=currentQuiz.questions[currentQuiz.currentIndex];
-    const chosen=currentQuiz.answers[currentQuiz.currentIndex];
+    const q=currentQuiz.questions[currentQuiz.currentIndex],chosen=currentQuiz.answers[currentQuiz.currentIndex];
     if(chosen===null||chosen===undefined)return;
-    let isCorrect;
-    if(q.type==='mcq')isCorrect=(chosen===q.correct-1);
-    else if(q.type==='tf')isCorrect=(chosen===q.answer);
-    else isCorrect=true; // yesno always "correct" but records choice
-
+    let isCorrect;if(q.type==='mcq')isCorrect=(chosen===q.correct-1);else if(q.type==='tf')isCorrect=(chosen===q.answer);else isCorrect=true;
     currentQuiz.quizDone=true;
     const modal=document.querySelector('.quiz-modal');if(!modal)return;
-
-    if(q.type==='mcq'){
-        modal.querySelectorAll('.quiz-option').forEach((o,idx)=>{
-            o.style.pointerEvents='none';
-            if(idx===q.correct-1)o.classList.add('correct');
-            else if(idx===chosen&&!isCorrect)o.classList.add('wrong');
-        });
-    }else{
-        const tb=modal.querySelector('#trueBtn');const fb=modal.querySelector('#falseBtn');
-        if(tb)tb.style.pointerEvents='none';if(fb)fb.style.pointerEvents='none';
-        if(q.type==='tf'){
-            const correctVal=q.answer;
-            if(correctVal===true&&tb)tb.classList.add('correct-highlight');
-            if(correctVal===false&&fb)fb.classList.add('correct-highlight');
-            if(!isCorrect){
-                if(chosen===true&&tb)tb.classList.add('wrong-highlight');
-                if(chosen===false&&fb)fb.classList.add('wrong-highlight');
-            }
-        }else{
-            // yesno
-            if(chosen===true&&tb)tb.classList.add('correct-highlight');
-            if(chosen===false&&fb)fb.classList.add('correct-highlight');
-        }
-    }
-
-    const fa=modal.querySelector('#feedbackAreaQ');
-    if(isCorrect||q.type==='yesno'){
-        fa.innerHTML='<div class="feedback-icon">✅</div><p style="text-align:center;color:#2e7d32;">تم التسجيل!</p>';
-        createConfetti(modal.querySelector('.quiz-content'));
-    }else{
-        let correctStr='';
-        if(q.type==='mcq')correctStr=q.opts[q.correct-1];
-        else correctStr=q.answer?'✓ صح':'✗ خطأ';
-        fa.innerHTML='<div class="feedback-icon">❌</div><p style="text-align:center;color:#c62828;">الإجابة الصحيحة: '+correctStr+'</p>';
-    }
-
+    if(q.type==='mcq')modal.querySelectorAll('.quiz-option').forEach((o,idx)=>{o.style.pointerEvents='none';if(idx===q.correct-1)o.classList.add('correct');else if(idx===chosen&&!isCorrect)o.classList.add('wrong');});
+    else{const tb=modal.querySelector('#trueBtn'),fb=modal.querySelector('#falseBtn');if(tb)tb.style.pointerEvents='none';if(fb)fb.style.pointerEvents='none';if(q.type==='tf'){const cv=q.answer;if(cv===true&&tb)tb.classList.add('correct-highlight');if(cv===false&&fb)fb.classList.add('correct-highlight');if(!isCorrect){if(chosen===true&&tb)tb.classList.add('wrong-highlight');if(chosen===false&&fb)fb.classList.add('wrong-highlight');}}else{if(chosen===true&&tb)tb.classList.add('correct-highlight');if(chosen===false&&fb)fb.classList.add('correct-highlight');}}
+    const fa=modal.querySelector('#feedbackAreaQ');fa.innerHTML=isCorrect||q.type==='yesno'?'<div class="feedback-icon">✅</div><p style="text-align:center;color:#2e7d32;">تم التسجيل!</p>':'<div class="feedback-icon">❌</div><p style="text-align:center;color:#c62828;">الإجابة الصحيحة: '+(q.type==='mcq'?q.opts[q.correct-1]:q.answer?'✓ صح':'✗ خطأ')+'</p>';
+    if(isCorrect||q.type==='yesno')createConfetti(modal.querySelector('.quiz-content'));
     const cb=modal.querySelector('#checkBtnQ');if(cb)cb.style.display='none';
-    const pb=modal.querySelector('#prevBtnQ');if(pb)pb.style.display='none';
+    const prev=modal.querySelector('#prevBtnQ');if(prev)prev.style.display='none';
     const isLast=currentQuiz.currentIndex===currentQuiz.questions.length-1;
-    const nb=document.createElement('button');nb.className='btn-primary';
-    nb.textContent=isLast?'إنهاء الاختبار':'التالي ⏩';
-    nb.addEventListener('click',isLast?finishQuiz:moveNext);
-    cb.parentNode.appendChild(nb);
+    const nb=document.createElement('button');nb.className='btn-primary';nb.textContent=isLast?'إنهاء الاختبار':'التالي ⏩';
+    nb.addEventListener('click',isLast?finishQuiz:moveNext);cb.parentNode.appendChild(nb);
 }
 
 function moveNext(){removeModal();currentQuiz.currentIndex++;currentQuiz.quizDone=false;renderModal();}
 function prevQuestion(){removeModal();currentQuiz.currentIndex--;currentQuiz.quizDone=false;renderModal();}
 
 function finishQuiz(){
+    // حفظ المراجع قبل الحذف
+    const quizRef=currentQuiz;
     let score=0;
-    currentQuiz.questions.forEach((q,i)=>{
-        const chosen=currentQuiz.answers[i];
+    quizRef.questions.forEach((q,i)=>{
+        const chosen=quizRef.answers[i];
         if(q.type==='mcq'){if(chosen===q.correct-1)score++;}
         else if(q.type==='tf'){if(chosen===q.answer)score++;}
-        else{if(chosen===true)score++;} // yesno
+        else{if(chosen===true)score++;}
     });
-    const total=currentQuiz.questions.length;
-    const scaledScore=Math.round((score/total)*currentQuiz.totalPoints);
-    cancelQuiz();
-    markSectionDone(currentQuiz.sectionId,scaledScore);
-    const pct=Math.round((scaledScore/currentQuiz.totalPoints)*100);
-    alert(`📊 نتيجة ${currentQuiz.sectionName}:\n${scaledScore} / ${currentQuiz.totalPoints} نقطة (${pct}%)\nإجابات صحيحة: ${score} من ${total}`);
+    const total=quizRef.questions.length;
+    const scaledScore=Math.round((score/total)*quizRef.totalPoints);
+    // إزالة المودال أولاً
+    removeModal();
+    // حفظ النتيجة
+    markSectionDone(quizRef.sectionId,scaledScore);
+    currentQuiz=null;
+    const pct=Math.round((scaledScore/quizRef.totalPoints)*100);
+    alert(`📊 نتيجة ${quizRef.sectionName}:\n${scaledScore} / ${quizRef.totalPoints} نقطة (${pct}%)\nإجابات صحيحة: ${score} من ${total}`);
     renderMainPage();
 }
 
-// ========== تأثير كونفيتي ==========
-function createConfetti(container){
-    const colors=['#ff0','#f00','#0f0','#00f','#ff00ff','#00ffff','#c9a96e','#1a237e'];
-    for(let i=0;i<25;i++){
-        const c=document.createElement('div');
-        c.style.cssText=`position:absolute;width:8px;height:8px;background:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}%;top:-10px;border-radius:50%;animation:confettiFall ${1+Math.random()}s ease forwards;`;
-        container.appendChild(c);
-        setTimeout(()=>c.remove(),2000);
-    }
-}
-const st=document.createElement('style');
-st.textContent=`@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(200px) rotate(720deg);opacity:0}}`;
-document.head.appendChild(st);
+function createConfetti(c){const colors=['#ff0','#f00','#0f0','#00f','#ff00ff','#00ffff','#c9a96e','#1a237e'];for(let i=0;i<25;i++){const d=document.createElement('div');d.style.cssText=`position:absolute;width:8px;height:8px;background:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}%;top:-10px;border-radius:50%;animation:confettiFall ${1+Math.random()}s ease forwards;`;c.appendChild(d);setTimeout(()=>d.remove(),2000);}}
+const st=document.createElement('style');st.textContent='@keyframes confettiFall{0%{transform:translateY(0)rotate(0deg);opacity:1}100%{transform:translateY(200px)rotate(720deg);opacity:0}}';document.head.appendChild(st);
 
-// بدء التطبيق
-if(localStorage.getItem('arabic_welcome_v3')){renderMainPage();}else{showWelcome();}
+if(localStorage.getItem('arabic_welcome_v4')){renderMainPage();}else{showWelcome();}
 </script>
 </body>
 </html>
