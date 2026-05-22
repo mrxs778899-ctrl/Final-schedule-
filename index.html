@@ -3,535 +3,646 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>متابعة مادة الامتحان - لغة إنجليزية</title>
+    <title>متابعة مادة اللغة العربية</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #1c1e21;
-            min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
-            background-size: cover;
-            position: relative;
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            color:#1c1e21;
+            min-height:100vh;
+            background:url('https://images.unsplash.com/photo-1509023464722-18d996393ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size:cover;
+            position:relative;
         }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: -1;
+        body::before{
+            content:'';
+            position:fixed;top:0;left:0;right:0;bottom:0;
+            background:rgba(0,0,0,0.55);
+            z-index:-1;
         }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
+        .container{max-width:520px;margin:0 auto;padding:20px;position:relative;z-index:1;}
+        .glass-card{
+            background:rgba(255,255,255,0.94);
+            backdrop-filter:blur(20px);
+            border-radius:28px;
+            padding:22px;
+            margin-bottom:16px;
+            box-shadow:0 12px 32px rgba(0,0,0,0.22);
+            width:100%;
+            transition:transform 0.25s;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.93);
-            backdrop-filter: blur(15px);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-            width: 100%;
+        /* ===== الترحيب ===== */
+        .welcome-card{text-align:center;padding:35px 22px;}
+        .welcome-card .logo-icon{
+            width:95px;height:95px;border-radius:50%;
+            background:linear-gradient(135deg,#1a237e,#3949ab);
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto 18px;
+            font-size:3rem;
+            box-shadow:0 10px 25px rgba(26,35,126,0.4);
+            animation:float 3s ease-in-out infinite;
         }
-        .welcome-card { text-align: center; padding: 30px 20px; }
-        .welcome-card img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #1a73e8; margin-bottom: 15px; }
-        .welcome-card h1 { font-size: 1.7rem; color: #1a73e8; margin-bottom: 8px; }
-        .welcome-card p { color: #444; margin: 15px 0; line-height: 1.6; }
-        .btn-primary {
-            background: #1a73e8; color: #fff; border: none; padding: 12px 25px; border-radius: 30px;
-            font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: transform 0.2s, background 0.2s;
-            box-shadow: 0 6px 15px rgba(26,115,232,0.4); margin: 3px; text-align: center;
+        @keyframes float{
+            0%,100%{transform:translateY(0)}
+            50%{transform:translateY(-8px)}
         }
-        .btn-primary:active { transform: scale(0.96); background: #1557b0; }
-        .btn-secondary {
-            background: #e8eaed; color: #333; border: none; padding: 10px 18px; border-radius: 30px;
-            font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s; margin: 3px;
+        .welcome-card h1{font-size:1.8rem;color:#1a237e;margin-bottom:10px;}
+        .welcome-card p{color:#444;margin:15px 0;line-height:1.7;font-size:0.95rem;}
+        .welcome-card .welcome-stats{display:flex;justify-content:center;gap:18px;margin:18px 0;flex-wrap:wrap;}
+        .welcome-card .welcome-stat{
+            background:#f5f5f5;border-radius:16px;padding:14px 18px;text-align:center;min-width:70px;
         }
-        .btn-secondary:active { background: #d2d4d7; }
-        .user { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .user img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #1a73e8; }
-        h2 { font-size: 1.3rem; margin-bottom: 12px; color: #1a73e8; }
-        .section-list { margin-top: 15px; }
-        .section-item {
-            display: flex; align-items: center; justify-content: space-between;
-            background: rgba(255,255,255,0.8); border-radius: 14px; padding: 12px 16px;
-            margin-bottom: 8px; flex-wrap: wrap; gap: 8px;
+        .welcome-card .welcome-stat .stat-num{font-size:1.6rem;font-weight:bold;color:#1a237e;}
+        .welcome-card .welcome-stat .stat-lbl{font-size:0.7rem;color:#888;margin-top:4px;}
+        .btn-primary{
+            background:linear-gradient(135deg,#1a237e,#3949ab);
+            color:#fff;border:none;padding:14px 30px;border-radius:30px;
+            font-size:1rem;font-weight:bold;cursor:pointer;transition:all 0.25s;
+            box-shadow:0 8px 20px rgba(26,35,126,0.4);margin:4px;text-align:center;
         }
-        .section-info { display: flex; align-items: center; gap: 8px; }
-        .section-info .status { font-weight: bold; }
-        .section-buttons { display: flex; gap: 6px; }
-        .progress-overview { margin-top: 15px; }
-        .progress-bar { height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 8px 0; }
-        .progress-fill { height: 100%; background: #1a73e8; transition: width 0.5s; }
-
-        /* نماذج الاختبار */
-        .quiz-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 999;
+        .btn-primary:active{transform:scale(0.95);opacity:0.9;}
+        .btn-secondary{
+            background:#e8eaed;color:#333;border:none;padding:10px 18px;border-radius:30px;
+            font-size:0.85rem;font-weight:bold;cursor:pointer;transition:0.2s;margin:3px;
         }
-        .quiz-content {
-            background: #fff; border-radius: 24px; padding: 20px; width: 90%;
-            max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            position: relative;
+        .btn-secondary:active{background:#d2d4d7;}
+        /* ===== رأس المستخدم ===== */
+        .user-row{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+        .user-row img{width:50px;height:50px;border-radius:50%;border:3px solid #c9a96e;box-shadow:0 4px 10px rgba(0,0,0,0.15);}
+        .user-row .user-name{font-size:1.05rem;font-weight:bold;color:#1a237e;}
+        .user-row .user-handle{font-size:0.78rem;opacity:0.75;}
+        h2{font-size:1.35rem;margin-bottom:14px;color:#1a237e;display:flex;align-items:center;gap:8px;}
+        /* ===== حلقة التقدم ===== */
+        .progress-hero{
+            display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;
+            margin:10px 0 5px;
         }
-        .quiz-content h3 { color: #1a73e8; margin-bottom: 8px; text-align: center; }
-        .quiz-content .question-text { font-size: 1.1rem; margin: 12px 0; text-align: center; font-weight: 500; }
-        .true-false-btns {
-            display: flex; gap: 15px; justify-content: center; margin: 20px 0;
+        .progress-ring-container{position:relative;width:130px;height:130px;flex-shrink:0;}
+        .progress-ring{transform:rotate(-90deg);width:130px;height:130px;}
+        .progress-ring .bg-circle{fill:none;stroke:#e0e0e0;stroke-width:10;}
+        .progress-ring .fg-circle{
+            fill:none;stroke:#c9a96e;stroke-width:10;stroke-linecap:round;
+            transition:stroke-dashoffset 0.9s ease;
         }
-        .tf-btn {
-            flex: 1; padding: 15px; border-radius: 16px; border: 3px solid transparent;
-            font-size: 1.3rem; font-weight: bold; cursor: pointer; transition: all 0.2s;
-            text-align: center;
+        .progress-ring-text{
+            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            text-align:center;font-size:1.7rem;font-weight:bold;color:#1a237e;
         }
-        .tf-btn.true-btn { background: #e6f4ea; color: #1e7e34; border-color: #c8e6c9; }
-        .tf-btn.false-btn { background: #fce8e6; color: #c5221f; border-color: #f5c6cb; }
-        .tf-btn.true-btn.selected { background: #1e7e34; color: #fff; border-color: #1e7e34; }
-        .tf-btn.false-btn.selected { background: #c5221f; color: #fff; border-color: #c5221f; }
-        .tf-btn.correct-answer { background: #1e7e34 !important; color: #fff !important; border-color: #1e7e34 !important; animation: correctPulse 0.5s; }
-        .tf-btn.wrong-answer { background: #c5221f !important; color: #fff !important; border-color: #c5221f !important; animation: shake 0.5s; }
-        .quiz-btn {
-            background: #1a73e8; color: #fff; border: none; padding: 12px; border-radius: 12px;
-            width: 100%; font-weight: bold; margin-top: 12px; cursor: pointer;
+        .progress-ring-text small{display:block;font-size:0.65rem;color:#888;font-weight:normal;}
+        .progress-info{flex:1;min-width:150px;}
+        .progress-info .big-grade{font-size:1.4rem;font-weight:bold;color:#1a237e;margin-bottom:4px;}
+        .progress-info .grade-desc{font-size:0.85rem;color:#666;margin-bottom:8px;}
+        .progress-info .mini-bar{height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden;margin-top:6px;}
+        .progress-info .mini-bar-fill{height:100%;background:linear-gradient(90deg,#c9a96e,#1a237e);border-radius:5px;transition:width 0.6s;}
+        /* ===== شبكة الأقسام ===== */
+        .sections-grid{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+        .section-card{
+            display:flex;align-items:center;justify-content:space-between;
+            background:rgba(255,255,255,0.85);border-radius:18px;padding:14px 16px;
+            cursor:pointer;transition:all 0.25s;border:2px solid transparent;
+            flex-wrap:wrap;gap:10px;
+            position:relative;overflow:hidden;
         }
-        .quiz-btn:disabled { opacity: 0.5; }
-        .feedback-icon { text-align: center; font-size: 2.5rem; margin: 10px 0; animation: popIn 0.4s ease; }
-        @keyframes correctPulse {
-            0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); }
+        .section-card:hover{border-color:#c9a96e;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.1);}
+        .section-card.completed{border-color:#2e7d32;background:rgba(232,245,233,0.95);}
+        .section-card .sec-left{display:flex;align-items:center;gap:12px;}
+        .section-card .sec-icon{
+            width:44px;height:44px;border-radius:14px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:1.5rem;flex-shrink:0;
         }
-        @keyframes shake {
-            0%,100% { transform: translateX(0); }
-            20%,60% { transform: translateX(-5px); }
-            40%,80% { transform: translateX(5px); }
+        .section-card .sec-name{font-weight:bold;font-size:0.95rem;color:#1a237e;}
+        .section-card .sec-meta{font-size:0.72rem;color:#888;}
+        .section-card .sec-badge{
+            padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:bold;
+            white-space:nowrap;
         }
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; }
+        .badge-start{background:#1a237e;color:#fff;}
+        .badge-done{background:#c8e6c9;color:#2e7d32;}
+        .badge-retry{background:#fff3e0;color:#e65100;}
+        /* ===== المودال ===== */
+        .quiz-modal{
+            position:fixed;top:0;left:0;width:100%;height:100%;
+            background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:999;
         }
-        .note { text-align: center; font-size: 0.7rem; color: #ddd; margin-top: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .back-link { text-align: center; margin-top: 10px; }
-        .back-link button { background: none; border: none; color: #1a73e8; text-decoration: underline; font-size: 0.9rem; cursor: pointer; }
-        .total-grade { text-align: center; margin-top: 15px; padding: 15px; background: #e8f0fe; border-radius: 16px; }
+        .quiz-content{
+            background:#fff;border-radius:28px;padding:22px;width:92%;
+            max-width:500px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,0.4);
+            position:relative;
+        }
+        .quiz-content h3{color:#1a237e;margin-bottom:6px;text-align:center;font-size:1.1rem;}
+        .quiz-content .q-text{font-size:1.05rem;margin:14px 0;text-align:center;font-weight:500;line-height:1.6;}
+        .quiz-content .q-type-label{text-align:center;font-size:0.75rem;color:#888;margin-bottom:4px;}
+        .quiz-option{
+            display:block;background:#f5f5f5;border:2px solid transparent;border-radius:14px;
+            padding:13px;margin:8px 0;cursor:pointer;transition:0.2s;text-align:right;font-size:0.95rem;
+        }
+        .quiz-option:hover{border-color:#c9a96e;}
+        .quiz-option.selected{border-color:#1a237e;background:#e8eaf6;}
+        .quiz-option.correct{border-color:#2e7d32;background:#c8e6c9!important;animation:pulse 0.5s;}
+        .quiz-option.wrong{border-color:#c62828;background:#ffcdd2!important;animation:shake 0.5s;}
+        .tf-btns{display:flex;gap:16px;justify-content:center;margin:18px 0;}
+        .tf-btn{
+            flex:1;padding:16px;border-radius:16px;border:3px solid transparent;
+            font-size:1.2rem;font-weight:bold;cursor:pointer;transition:all 0.2s;text-align:center;
+        }
+        .tf-btn.true-btn{background:#e8f5e9;color:#2e7d32;border-color:#c8e6c9;}
+        .tf-btn.false-btn{background:#ffebee;color:#c62828;border-color:#ffcdd2;}
+        .tf-btn.true-btn.selected{background:#2e7d32;color:#fff;border-color:#2e7d32;}
+        .tf-btn.false-btn.selected{background:#c62828;color:#fff;border-color:#c62828;}
+        .tf-btn.correct-highlight{background:#2e7d32!important;color:#fff!important;border-color:#2e7d32!important;animation:pulse 0.5s;}
+        .tf-btn.wrong-highlight{background:#c62828!important;color:#fff!important;border-color:#c62828!important;animation:shake 0.5s;}
+        .feedback-icon{text-align:center;font-size:2.8rem;margin:10px 0;animation:popIn 0.4s ease;}
+        @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
+        @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+        @keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+        .note{text-align:center;font-size:0.7rem;color:#ddd;margin-top:18px;text-shadow:0 1px 3px rgba(0,0,0,0.5);}
+        .back-link{text-align:center;margin-top:10px;}
+        .back-link button{background:none;border:none;color:#c9a96e;text-decoration:underline;font-size:0.9rem;cursor:pointer;}
     </style>
 </head>
 <body>
-    <div class="container" id="app"></div>
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+<div class="container" id="app"></div>
+<script>
+const tg=window.Telegram.WebApp;tg.ready();tg.expand();
+const user=tg.initDataUnsafe?.user;
+const userName=user?user.first_name||'مستخدم':'مستخدم';
+const userPhoto=user?.photo_url||`https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=1a237e&color=fff`;
 
-        const user = tg.initDataUnsafe?.user;
-        const userName = user ? (user.first_name || 'مستخدم') : 'مستخدم';
-        const userPhoto = user?.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=1a73e8&color=fff`;
+// ========== تعريف الأقسام ==========
+const sectionsData=[
+    {
+        id:"grammar-nouns",name:"علامات الاسم والمعارف",icon:"📝",category:"قواعد",totalPoints:10,
+        questions:[
+            {type:"mcq",q:"أيُّ ممَّا يأتي يُعد من علامات الاسم؟",opts:["سوف","التنوين","لم","لن"],correct:2},
+            {type:"mcq",q:"الكلمة التي دخلت عليها (ال) التعريف هي:",opts:["كتاب","يكتب","الكتاب","اكتب"],correct:3},
+            {type:"mcq",q:"أيُّ الجمل الآتية تحتوي على اسم مجرور؟",opts:["نجح الطالب","ذهبتُ إلى المدرسة","يكتب محمد","لن أتأخر"],correct:2},
+            {type:"mcq",q:"كلمة (هذا) تُعد:",opts:["ضمير","اسم إشارة","اسم موصول","علم"],correct:2},
+            {type:"mcq",q:"كلمة (الذي) تُعد:",opts:["اسم موصول","علم","فعل","حرف"],correct:1},
+            {type:"tf",q:"العلم هو اسم يدل على شيء غير محدد.",answer:false},
+            {type:"tf",q:"الاسم قد يأتي بعد حرف الجر.",answer:true},
+            {type:"tf",q:"الضمير من أنواع المعارف.",answer:true},
+            {type:"tf",q:"المنادى لا يُعد من علامات الاسم.",answer:false},
+            {type:"tf",q:"المضاف إلى معرفة يُعد معرفة.",answer:true}
+        ]
+    },
+    {
+        id:"grammar-mansubat",name:"المجرورات والمنصوبات",icon:"📖",category:"قواعد",totalPoints:8,
+        questions:[
+            {type:"mcq",q:"الاسم الواقع بعد حرف الجر يسمى:",opts:["مفعول به","مجرور بحرف الجر","حال","تمييز"],correct:2},
+            {type:"mcq",q:"في جملة (كتابُ الطالبِ) كلمة الطالبِ:",opts:["فاعل","مضاف إليه","حال","بدل"],correct:2},
+            {type:"mcq",q:"أيُّ مما يأتي من المنصوبات؟",opts:["المفعول به","المبتدأ","الفاعل","الخبر"],correct:1},
+            {type:"mcq",q:"من أنواع التوابع للمجرور:",opts:["الفاعل","العطف","المبتدأ","الخبر"],correct:2},
+            {type:"tf",q:"الحال من المنصوبات.",answer:true},
+            {type:"tf",q:"التمييز من المجرورات.",answer:false},
+            {type:"tf",q:"النعت قد يكون تابعًا للمجرور.",answer:true},
+            {type:"tf",q:"المستثنى من المنصوبات.",answer:true}
+        ]
+    },
+    {
+        id:"grammar-mudare",name:"نصب وجزم الفعل المضارع",icon:"⏳",category:"قواعد",totalPoints:12,
+        questions:[
+            {type:"mcq",q:"الحرف الذي ينصب الفعل المضارع هو:",opts:["لم","لن","لا الناهية","لما"],correct:2},
+            {type:"mcq",q:"في جملة (أريد أن أتعلم) الفعل المضارع منصوب بـ:",opts:["لم","أنْ","لا","كي لا"],correct:2},
+            {type:"mcq",q:"الأداة التي تجزم فعلاً واحدًا هي:",opts:["إنْ","مهما","لم","من"],correct:3},
+            {type:"mcq",q:"في جملة (لا تكذب) نوع الأداة:",opts:["ناصبة","جازمة","حرف جر","حرف نداء"],correct:2},
+            {type:"mcq",q:"أداة الشرط التي تجزم فعلين هي:",opts:["لن","كي","إنْ","حتى"],correct:3},
+            {type:"mcq",q:"(اجتهد فتنجح) الفاء هنا:",opts:["فاء السببية","فاء العطف","فاء الاستئناف","فاء القسم"],correct:1},
+            {type:"tf",q:"لنْ من أدوات الجزم.",answer:false},
+            {type:"tf",q:"لا الناهية تجزم الفعل المضارع.",answer:true},
+            {type:"tf",q:"حتى قد تنصب الفعل المضارع.",answer:true},
+            {type:"tf",q:"أدوات الشرط تجزم فعلين.",answer:true},
+            {type:"tf",q:"لمّا من أدوات النصب.",answer:false},
+            {type:"tf",q:"واو المعية تأتي بعد طلب أو نفي.",answer:true}
+        ]
+    },
+    {
+        id:"grammar-numbers",name:"الأعداد",icon:"🔢",category:"قواعد",totalPoints:8,
+        questions:[
+            {type:"mcq",q:"العددان (1 و2):",opts:["يخالفان المعدود","يوافقان المعدود","لا يتغيران","لا علاقة لهما بالمعدود"],correct:2},
+            {type:"mcq",q:"الأعداد من 3 إلى 10:",opts:["توافق المعدود","تخالف المعدود","تبقى ثابتة","تُجمع دائمًا"],correct:2},
+            {type:"mcq",q:"العدد المناسب لكلمة (رجال):",opts:["ثلاث رجال","ثلاثة رجال","ثلاثَ رجال","ثلاثةُ رجل"],correct:2},
+            {type:"mcq",q:"ألفاظ العقود مثل عشرون:",opts:["تتغير حسب المعدود","لا تتغير","مؤنثة دائمًا","مذكرة دائمًا"],correct:2},
+            {type:"tf",q:"العدد (إحدى عشرة) يوافق المعدود.",answer:true},
+            {type:"tf",q:"المئة والألف مفردتان دائمًا.",answer:true},
+            {type:"tf",q:"العدد من 13 إلى 19 يتفق جزآه مع المعدود.",answer:false},
+            {type:"tf",q:"عشرون امرأةً استعمال صحيح.",answer:true}
+        ]
+    },
+    {
+        id:"hifz-isra",name:"سورة الإسراء",icon:"🕌",category:"حفظ",totalPoints:4,
+        questions:[
+            {type:"yesno",q:"هل حفظت الآيات المطلوبة من سورة الإسراء؟"},
+            {type:"yesno",q:"هل راجعت تفسير ومعاني الآيات؟"},
+            {type:"yesno",q:"هل تستطيع قراءة الآيات دون توقف طويل؟"},
+            {type:"yesno",q:"هل حفظت ترتيب الأفكار الواردة في الآيات؟"}
+        ]
+    },
+    {
+        id:"adab-khitaba",name:"الخطابة والرسائل والمقالة",icon:"🎤",category:"أدب",totalPoints:12,
+        questions:[
+            {type:"mcq",q:"الخطابة تهدف إلى:",opts:["التسلية فقط","الإقناع والتأثير","السرد القصصي فقط","وصف الطبيعة"],correct:2},
+            {type:"mcq",q:"من أركان الخطابة:",opts:["الجمهور","الوزن","القافية","البحر الشعري"],correct:1},
+            {type:"mcq",q:"الرسائل الإدارية والسياسية تُسمى:",opts:["رسائل إخوانية","رسائل ديوانية","رسائل شعرية","رسائل خيالية"],correct:2},
+            {type:"mcq",q:"المقالة هي:",opts:["قصيدة شعرية","قطعة نثرية قصيرة نسبيًا","رواية طويلة","مسرحية"],correct:2},
+            {type:"mcq",q:"من أسباب ظهور المقالة الحديثة:",opts:["اختفاء الصحافة","انتشار الصحافة والمجلات","ضعف القراءة","قلة النشر"],correct:2},
+            {type:"mcq",q:"من خصائص المقالة:",opts:["الغموض الشديد","وضوح الأسلوب","كثرة الشخصيات","الاعتماد على الحوار فقط"],correct:2},
+            {type:"tf",q:"الرسائل الإخوانية ذات طابع شخصي.",answer:true},
+            {type:"tf",q:"المقالة الحديثة لا تعبّر عن الرأي.",answer:false},
+            {type:"tf",q:"الخطابة تعتمد على التأثير بالجمهور.",answer:true},
+            {type:"tf",q:"من خصائص المقالة وحدة الموضوع.",answer:true},
+            {type:"tf",q:"المسرحية نوع من المقالة.",answer:false},
+            {type:"tf",q:"من أسباب ظهور المقالة تطور وسائل النشر.",answer:true}
+        ]
+    },
+    {
+        id:"adab-masrah",name:"المسرحية والمعاجم",icon:"🎭",category:"أدب",totalPoints:10,
+        questions:[
+            {type:"mcq",q:"المسرحية تعتمد بشكل أساسي على:",opts:["الحوار","السجع","الوزن","القافية"],correct:1},
+            {type:"mcq",q:"من عناصر المسرحية:",opts:["الشخصيات","البحور الشعرية","القافية","الروي"],correct:1},
+            {type:"mcq",q:"الصراع في المسرحية يُعد:",opts:["عنصرًا ثانويًا","محرك الأحداث","عنصرًا غير مهم","خاصًا بالشعر فقط"],correct:2},
+            {type:"mcq",q:"كتاب (الصحاح تاج اللغة وصحاح العربية) مؤلفه:",opts:["الزمخشري","الجوهري","الفيومي","الرازي"],correct:2},
+            {type:"mcq",q:"كتاب (أساس البلاغة) يعود إلى:",opts:["الجوهري","الزمخشري","الرازي","الفيومي"],correct:2},
+            {type:"tf",q:"الزمان والمكان من عناصر المسرحية.",answer:true},
+            {type:"tf",q:"المسرحية تُقرأ فقط ولا تُمثل.",answer:false},
+            {type:"tf",q:"مختار الصحاح من معاجم مدرسة الصحاح.",answer:true},
+            {type:"tf",q:"الحل يمثل نهاية المسرحية.",answer:true},
+            {type:"tf",q:"الشخصيات ليست عنصرًا مهمًا في المسرحية.",answer:false}
+        ]
+    },
+    {
+        id:"adab-sard",name:"السرد والشخصيات",icon:"📜",category:"أدب",totalPoints:10,
+        questions:[
+            {type:"mcq",q:"السرد الخطي يعني:",opts:["عرض الأحداث بترتيب زمني","العودة للماضي","استباق المستقبل","حذف الأحداث"],correct:1},
+            {type:"mcq",q:"العودة إلى أحداث ماضية تسمى:",opts:["الاستباق","الاسترجاع","السرد الخطي","الوصف"],correct:2},
+            {type:"mcq",q:"الراوي الذي يحكي بضمير (أنا) يسمى:",opts:["السرد بضمير الغائب","السرد بضمير المتكلم","الراوي الخارجي","الراوي الثابت"],correct:2},
+            {type:"mcq",q:"الشخصية التي تتغير مع الأحداث تسمى:",opts:["ثابتة","نامية","ثانوية","رمزية"],correct:2},
+            {type:"mcq",q:"الشخصية التي تدور حولها الأحداث هي:",opts:["الثانوية","الرئيسية","الثابتة","الرمزية"],correct:2},
+            {type:"tf",q:"الاستباق يعني التقدم لأحداث مستقبلية.",answer:true},
+            {type:"tf",q:"الشخصية الثابتة تتطور كثيرًا.",answer:false},
+            {type:"tf",q:"السرد أسلوب في الحكي والقص.",answer:true},
+            {type:"tf",q:"الشخصية الرمزية ترمز إلى فكرة أو قيمة.",answer:true},
+            {type:"tf",q:"السرد بضمير الغائب يكون الراوي داخل الأحداث دائمًا.",answer:false}
+        ]
+    },
+    {
+        id:"adab-tibaq",name:"الطباق والمقابلة",icon:"⚖️",category:"أدب",totalPoints:8,
+        questions:[
+            {type:"mcq",q:"الطباق هو:",opts:["الجمع بين الشيء وضده","تشبيه شيئين","حذف كلمة","تكرار الحروف"],correct:1},
+            {type:"mcq",q:"المقابلة أوسع من الطباق لأنها:",opts:["تشمل أكثر من ضدين","خاصة بالشعر","لا تحتوي تضادًا","تعتمد على السجع"],correct:1},
+            {type:"mcq",q:"(يحيي ويميت) مثال على:",opts:["طباق إيجاب","طباق سلب","مقابلة","تشبيه"],correct:1},
+            {type:"mcq",q:"(يعلمون ولا يعلمون) مثال على:",opts:["مقابلة","طباق سلب","استعارة","جناس"],correct:2},
+            {type:"tf",q:"الطباق من المحسنات البديعية المعنوية.",answer:true},
+            {type:"tf",q:"المقابلة لا تحتوي على تضاد.",answer:false},
+            {type:"tf",q:"طباق السلب يعتمد على النفي.",answer:true},
+            {type:"tf",q:"الطباق والمقابلة من أساليب البلاغة.",answer:true}
+        ]
+    },
+    {
+        id:"qasaid-mutanabbi",name:"قصيدة ميمية المتنبي",icon:"🎵",category:"قصائد",totalPoints:4,
+        questions:[
+            {type:"yesno",q:"هل حفظت الأبيات المطلوبة من القصيدة؟"},
+            {type:"yesno",q:"هل راجعت معاني الكلمات الصعبة؟"},
+            {type:"yesno",q:"هل تستطيع تمييز الشاعر والقصيدة؟"},
+            {type:"yesno",q:"هل تدربت على قراءة الأبيات بصوت واضح؟"}
+        ]
+    },
+    {
+        id:"qasaid-matar",name:"قصيدة أنشودة المطر",icon:"🌧️",category:"قصائد",totalPoints:4,
+        questions:[
+            {type:"yesno",q:"هل حفظت المقطع المطلوب من القصيدة؟"},
+            {type:"yesno",q:"هل فهمت الفكرة العامة للمقطع؟"},
+            {type:"yesno",q:"هل راجعت اسم الشاعر؟"},
+            {type:"yesno",q:"هل تستطيع إكمال الأبيات دون النظر للكتاب؟"}
+        ]
+    }
+];
 
-        // --- تعريف الأقسام (sections) ---
-        const sections = [
-            { id: "grammar-countable", name: "Countable & Uncountable Nouns", icon: "📚", category: "قواعد" },
-            { id: "grammar-present-simple", name: "Present Simple", icon: "🕒", category: "قواعد" },
-            { id: "grammar-present-cont", name: "Present Continuous", icon: "⏳", category: "قواعد" },
-            { id: "grammar-past-simple", name: "Past Simple", icon: "📅", category: "قواعد" },
-            { id: "crime-types", name: "أنواع الجرائم", icon: "⚖️", category: "جرائم" },
-            { id: "writing-intro-routine", name: "الإنشاء (تقديم النفس + روتين)", icon: "✍️", category: "إنشاء" },
-            { id: "five-sentences", name: "خمس جمل من الاختصاص", icon: "🔬", category: "جمل" },
-            { id: "paragraph", name: "الباركراف العلمي", icon: "📄", category: "باركراف" }
-        ];
+// ========== دوال localStorage ==========
+function loadProgress(){
+    const raw=localStorage.getItem('arabic_progress_v2');
+    return raw?JSON.parse(raw):{completed:{}};
+}
+function saveProgress(data){localStorage.setItem('arabic_progress_v2',JSON.stringify(data));}
+function isSectionDone(id){const p=loadProgress();return !!p.completed[id];}
+function getSectionScore(id){const p=loadProgress();return p.completed[id]||0;}
+function markSectionDone(id,score){const p=loadProgress();p.completed[id]=score;saveProgress(p);}
+function markSectionUndone(id){const p=loadProgress();delete p.completed[id];saveProgress(p);}
+function getTotalEarned(){const p=loadProgress();let s=0;for(const k in p.completed)s+=p.completed[k];return s;}
+function getTotalPossible(){return sectionsData.reduce((a,b)=>a+b.totalPoints,0);}
+function getCompletedCount(){const p=loadProgress();return Object.keys(p.completed).length;}
+function getGradeText(score,total){
+    const pct=score/total;
+    if(pct>=0.9)return '🏆 ممتاز';
+    if(pct>=0.7)return '👍 جيد جداً';
+    if(pct>=0.5)return '✅ جيد';
+    return '📚 يحتاج مراجعة';
+}
 
-        // --- أسئلة كل قسم ---
-        const quizData = {
-            "grammar-countable": [
-                { q: "كلمة Book اسم معدود.", answer: true },
-                { q: "كلمة Water يمكن جمعها بـ (s).", answer: false },
-                { q: "نستخدم a/an مع الاسم المفرد المعدود.", answer: true },
-                { q: "كلمة Rice اسم غير معدود.", answer: true },
-                { q: "الصفات يمكن جمعها.", answer: false }
-            ],
-            "grammar-present-simple": [
-                { q: "المضارع البسيط يستخدم للروتين اليومي.", answer: true },
-                { q: "مع He/She/It نضيف (s) للفعل.", answer: true },
-                { q: "نستخدم does مع I و You.", answer: false },
-                { q: "الجملة: “She plays football.” صحيحة.", answer: true },
-                { q: "المضارع البسيط يستخدم للحقائق العلمية.", answer: true }
-            ],
-            "grammar-present-cont": [
-                { q: "المضارع المستمر يدل على حدث يحدث الآن.", answer: true },
-                { q: "الصيغة الصحيحة: I am studying.", answer: true },
-                { q: "نستخدم المضارع المستمر مع الحقائق الثابتة دائماً.", answer: false },
-                { q: "الصيغة: She is playing صحيحة.", answer: true },
-                { q: "المضارع المستمر يستخدم للأحداث المؤقتة.", answer: true }
-            ],
-            "grammar-past-simple": [
-                { q: "الماضي البسيط يدل على حدث انتهى بالماضي.", answer: true },
-                { q: "نستخدم did في السؤال.", answer: true },
-                { q: "الفعل الماضي من Go هو Went.", answer: true },
-                { q: "Yesterday يدل على المضارع.", answer: false },
-                { q: "الجملة “I saw Ali yesterday.” صحيحة.", answer: true }
-            ],
-            "crime-types": [
-                { q: "Theft يعني السرقة.", answer: true },
-                { q: "Murder يعني قتل غير متعمد.", answer: false },
-                { q: "Arson هو حرق المباني أو الممتلكات.", answer: true },
-                { q: "Kidnapping يعني خطف شخص.", answer: true },
-                { q: "Vandalism يعني تدمير ممتلكات الآخرين.", answer: true }
-            ],
-            "writing-intro-routine": [
-                { q: "هل كتبت تقديم النفس؟", answer: true },
-                { q: "هل كتبت الروتين اليومي؟", answer: true },
-                { q: "هل استخدمت المضارع البسيط؟", answer: true },
-                { q: "هل راجعت القواعد والإملاء؟", answer: true },
-                { q: "هل أصبحت قادراً على كتابة الإنشاء بدون حفظ كامل؟", answer: true }
-            ],
-            "five-sentences": [
-                { q: "هل كتبت 5 جمل كاملة؟", answer: true },
-                { q: "هل جميع الجمل بالمضارع البسيط؟", answer: true },
-                { q: "هل الجمل مرتبطة بالأدلة الجنائية؟", answer: true },
-                { q: "هل أضفت (s) مع He/She/It؟", answer: true },
-                { q: "هل راجعت الأخطاء الإملائية؟", answer: true }
-            ],
-            "paragraph": [
-                { q: "هل كتبت باركراف من حوالي 6 أسطر؟", answer: true },
-                { q: "هل اخترت موضوع علمي من الأدلة الجنائية؟", answer: true },
-                { q: "هل استخدمت كلمات علمية مناسبة؟", answer: true },
-                { q: "هل الكتابة واضحة ومرتبة؟", answer: true },
-                { q: "هل راجعت القواعد والإملاء؟", answer: true }
-            ]
-        };
+// ========== حلقة التقدم SVG ==========
+function createProgressRing(pct){
+    const r=52;const circ=2*Math.PI*r;const off=circ-(pct/100)*circ;
+    return `<svg class="progress-ring" viewBox="0 0 120 120">
+        <circle class="bg-circle" cx="60" cy="60" r="${r}"/>
+        <circle class="fg-circle" cx="60" cy="60" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/>
+    </svg>`;
+}
 
-        // --- دوال localStorage ---
-        function loadProgress() {
-            const raw = localStorage.getItem('eng_progress_v1');
-            return raw ? JSON.parse(raw) : { completed: [] };
-        }
-        function saveProgress(data) { localStorage.setItem('eng_progress_v1', JSON.stringify(data)); }
-        function isWelcomeShown() { return localStorage.getItem('eng_welcome_v1') === 'true'; }
-        function setWelcomeShown() { localStorage.setItem('eng_welcome_v1', 'true'); }
+// ========== الترحيب ==========
+function showWelcome(){
+    const total=getTotalPossible();
+    const earned=getTotalEarned();
+    const done=getCompletedCount();
+    const html=`
+        <div class="glass-card welcome-card">
+            <div class="logo-icon">📚</div>
+            <h1>أهلًا ${userName}! 👋</h1>
+            <p>مرحبًا بك في <strong>متابعة مادة اللغة العربية</strong><br>اختبر فهمك عبر اختبارات شاملة لكل أقسام المادة.</p>
+            <div class="welcome-stats">
+                <div class="welcome-stat"><div class="stat-num">${sectionsData.length}</div><div class="stat-lbl">قسم</div></div>
+                <div class="welcome-stat"><div class="stat-num">${total}</div><div class="stat-lbl">درجة كليّة</div></div>
+                <div class="welcome-stat"><div class="stat-num">${done}</div><div class="stat-lbl">مكتمل</div></div>
+                <div class="welcome-stat"><div class="stat-num">${earned}</div><div class="stat-lbl">نقطة مكتسبة</div></div>
+            </div>
+            <button class="btn-primary" onclick="startApp()">✨ ابدأ المتابعة</button>
+        </div>
+    `;
+    document.getElementById('app').innerHTML=html;
+}
 
-        function isSectionCompleted(sectionId) {
-            const progress = loadProgress();
-            return progress.completed.includes(sectionId);
-        }
-        function markSectionCompleted(sectionId) {
-            const progress = loadProgress();
-            if (!progress.completed.includes(sectionId)) {
-                progress.completed.push(sectionId);
-                saveProgress(progress);
-            }
-        }
-        function markSectionIncomplete(sectionId) {
-            const progress = loadProgress();
-            progress.completed = progress.completed.filter(id => id !== sectionId);
-            saveProgress(progress);
-        }
+// ========== الصفحة الرئيسية ==========
+function renderMainPage(){
+    const total=getTotalPossible();
+    const earned=getTotalEarned();
+    const pct=Math.round((earned/total)*100);
+    const grade=getGradeText(earned,total);
+    const doneCount=getCompletedCount();
 
-        function getTotalScore() {
-            const progress = loadProgress();
-            // كل قسم مكتمل يمنح 5 نقاط (لأن كل قسم من 5 أسئلة)
-            return progress.completed.length * 5;
-        }
-        function getTotalPossible() {
-            return sections.length * 5; // 8 أقسام × 5 = 40
-        }
-        function getGradeText(score, total) {
-            if (score >= 25) return 'ممتاز';
-            else if (score >= 15) return 'جيد جداً';
-            else if (score >= 10) return 'جيد';
-            else return 'يحتاج مراجعة قوية قبل الامتحان';
-        }
-
-        // --- صفحة الترحيب ---
-        function showWelcome() {
-            const html = `
-                <div class="glass-card welcome-card">
-                    <img src="${userPhoto}" alt="صورة">
-                    <h1>أهلًا ${userName}! 👋</h1>
-                    <p>مرحبًا بك في <strong>متابعة مادة الامتحان - لغة إنجليزية</strong> 🇬🇧</p>
-                    <p>اختبر فهمك عبر أسئلة (صح ✓ / خطأ ✗) لجميع أقسام المادة.</p>
-                    <button class="btn-primary" onclick="startApp()">✨ ابدأ الآن</button>
-                </div>
-            `;
-            document.getElementById('app').innerHTML = html;
-        }
-
-        // --- الصفحة الرئيسية ---
-        function renderMainPage() {
-            const completedSections = loadProgress().completed;
-            const totalScore = getTotalScore();
-            const totalPossible = getTotalPossible();
-            const grade = getGradeText(totalScore, totalPossible);
-            const pct = Math.round((completedSections.length / sections.length) * 100);
-
-            const sectionsHtml = sections.map(section => {
-                const completed = isSectionCompleted(section.id);
-                return `
-                    <div class="section-item">
-                        <div class="section-info">
-                            <span class="status">${completed ? '✅' : '⬜'}</span>
-                            <span>${section.icon} ${section.name} <small style="color:#888;">(${section.category})</small></span>
-                        </div>
-                        <div class="section-buttons">
-                            ${completed ?
-                                `<button class="btn-secondary" onclick="toggleSection('${section.id}', false)">❌ إلغاء</button>` :
-                                `<button class="btn-primary" onclick="startQuiz('${section.id}')">📝 اختبار</button>`
-                            }
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            const html = `
-                <div class="user">
-                    <img src="${userPhoto}" alt="">
+    const sectionsHtml=sectionsData.map(sec=>{
+        const done=isSectionDone(sec.id);
+        const score=getSectionScore(sec.id);
+        let badge;
+        if(done){badge=`<span class="sec-badge badge-done">✅ ${score}/${sec.totalPoints}</span>`;}
+        else{badge=`<span class="sec-badge badge-start">📝 ابدأ</span>`;}
+        const bgColor=done?'rgba(232,245,233,0.95)':'rgba(255,255,255,0.85)';
+        return `
+            <div class="section-card ${done?'completed':''}" style="background:${bgColor};" onclick="${done?`retrySection('${sec.id}')`:`startSection('${sec.id}')`}">
+                <div class="sec-left">
+                    <div class="sec-icon" style="background:${done?'#c8e6c9':'#e8eaf6'};">${sec.icon}</div>
                     <div>
-                        <strong>${userName}</strong>
-                        <div style="font-size:0.8rem; opacity:0.8;">@${user?.username || 'لا يوجد'}</div>
+                        <div class="sec-name">${sec.name}</div>
+                        <div class="sec-meta">${sec.category} • ${sec.totalPoints} نقطة</div>
                     </div>
                 </div>
-                <div class="glass-card">
-                    <h2>📊 تقييم التقدم</h2>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width:${pct}%"></div>
-                    </div>
-                    <p style="text-align:center;">${completedSections.length} / ${sections.length} أقسام مكتملة</p>
-                    <div class="total-grade">
-                        <strong>الدرجة الإجمالية: ${totalScore} / ${totalPossible}</strong><br>
-                        <span style="font-size:1.2rem;">${grade}</span>
-                    </div>
+                ${badge}
+            </div>`;
+    }).join('');
+
+    const html=`
+        <div class="user-row">
+            <img src="${userPhoto}" alt="">
+            <div>
+                <div class="user-name">${userName}</div>
+                <div class="user-handle">@${user?.username||'لا يوجد'}</div>
+            </div>
+        </div>
+        <div class="glass-card" style="text-align:center;">
+            <h2>📊 تقدّمك</h2>
+            <div class="progress-hero">
+                <div class="progress-ring-container">
+                    ${createProgressRing(pct)}
+                    <div class="progress-ring-text">${pct}%<small>مكتمل</small></div>
                 </div>
-                <div class="glass-card">
-                    <h2>📋 أقسام المادة</h2>
-                    <div class="section-list">${sectionsHtml}</div>
+                <div class="progress-info">
+                    <div class="big-grade">${earned} / ${total}</div>
+                    <div class="grade-desc">${grade}</div>
+                    <div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%;"></div></div>
+                    <div style="margin-top:6px;font-size:0.8rem;color:#888;">${doneCount} من ${sectionsData.length} قسم مكتمل</div>
                 </div>
-                <div class="back-link"><button onclick="showWelcome()">⬅️ العودة لصفحة الترحيب</button></div>
-                <div class="note">تطبيق تيليجرام المصغر • متابعة مادة الامتحان - لغة إنجليزية</div>
-            `;
-            document.getElementById('app').innerHTML = html;
-        }
+            </div>
+        </div>
+        <div class="glass-card">
+            <h2>📋 أقسام المادة</h2>
+            <div class="sections-grid">${sectionsHtml}</div>
+        </div>
+        <div class="back-link"><button onclick="showWelcome()">⬅️ العودة لصفحة الترحيب</button></div>
+        <div class="note">تطبيق تيليجرام المصغر • متابعة مادة اللغة العربية</div>
+    `;
+    document.getElementById('app').innerHTML=html;
+}
 
-        window.startApp = function() {
-            setWelcomeShown();
-            renderMainPage();
-        };
+window.startApp=function(){
+    if(!localStorage.getItem('arabic_welcome_v2'))localStorage.setItem('arabic_welcome_v2','true');
+    renderMainPage();
+};
+window.retrySection=function(id){
+    if(confirm('هل تريد إعادة هذا القسم؟ سيتم حذف نتيجتك السابقة.')){
+        markSectionUndone(id);
+        renderMainPage();
+        startSection(id);
+    }
+};
 
-        window.toggleSection = function(sectionId, complete) {
-            if (complete) markSectionCompleted(sectionId);
-            else markSectionIncomplete(sectionId);
-            renderMainPage();
-        };
+// ========== نظام الاختبارات ==========
+let currentQuiz=null;
 
-        // --- نظام الاختبار (صح/خطأ) ---
-        let currentQuiz = null;
+function removeModal(){const m=document.querySelector('.quiz-modal');if(m)m.remove();}
+function cancelQuiz(){removeModal();currentQuiz=null;}
 
-        function removeQuizModal() {
-            const modal = document.querySelector('.quiz-modal');
-            if (modal) modal.remove();
-        }
+window.startSection=function(id){
+    const sec=sectionsData.find(s=>s.id===id);
+    if(!sec)return;
+    currentQuiz={
+        sectionId:id,
+        questions:[...sec.questions],
+        currentIndex:0,
+        answers:new Array(sec.questions.length).fill(null),
+        quizDone:false,
+        sectionName:sec.name,
+        totalPoints:sec.totalPoints
+    };
+    renderModal();
+};
 
-        function cancelQuiz() {
-            removeQuizModal();
-            currentQuiz = null;
-        }
+function renderModal(){
+    if(!currentQuiz)return;
+    const q=currentQuiz.questions[currentQuiz.currentIndex];
+    const chosen=currentQuiz.answers[currentQuiz.currentIndex];
+    const isLast=currentQuiz.currentIndex===currentQuiz.questions.length-1;
+    const canCheck=chosen!==null;
+    let answerArea='';
 
-        window.startQuiz = function(sectionId) {
-            if (isSectionCompleted(sectionId)) {
-                alert('هذا القسم مكتمل بالفعل. يمكنك إلغاء الإكمال ثم إعادة الاختبار.');
-                return;
-            }
-            if (!quizData[sectionId]) {
-                alert('لا توجد أسئلة لهذا القسم بعد.');
-                return;
-            }
-            currentQuiz = {
-                sectionId: sectionId,
-                questions: [...quizData[sectionId]],
-                currentIndex: 0,
-                answers: new Array(quizData[sectionId].length).fill(null),
-                quizDone: false
-            };
-            renderQuizModal();
-        };
+    if(q.type==='mcq'){
+        answerArea=q.opts.map((opt,idx)=>`
+            <label class="quiz-option ${chosen===idx?'selected':''}" data-oi="${idx}">
+                <input type="radio" name="qz" style="display:none;">${opt}
+            </label>`).join('');
+    }else if(q.type==='tf'){
+        answerArea=`
+            <div class="tf-btns">
+                <button class="tf-btn true-btn ${chosen===true?'selected':''}" id="trueBtn">✓ صح</button>
+                <button class="tf-btn false-btn ${chosen===false?'selected':''}" id="falseBtn">✗ خطأ</button>
+            </div>`;
+    }else if(q.type==='yesno'){
+        answerArea=`
+            <div class="tf-btns">
+                <button class="tf-btn true-btn ${chosen===true?'selected':''}" id="trueBtn">👍 نعم</button>
+                <button class="tf-btn false-btn ${chosen===false?'selected':''}" id="falseBtn">👎 لا</button>
+            </div>`;
+    }
 
-        function renderQuizModal() {
-            if (!currentQuiz) return;
-            const q = currentQuiz.questions[currentQuiz.currentIndex];
-            const selectedAnswer = currentQuiz.answers[currentQuiz.currentIndex];
+    const modal=document.createElement('div');
+    modal.className='quiz-modal';
+    modal.innerHTML=`
+        <div class="quiz-content">
+            <h3>${currentQuiz.sectionName}</h3>
+            <div class="q-type-label">سؤال ${currentQuiz.currentIndex+1} / ${currentQuiz.questions.length}</div>
+            <div class="q-text">${q.q}</div>
+            ${answerArea}
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+                ${currentQuiz.currentIndex>0?'<button class="btn-secondary" id="prevBtnQ">⬅️ السابق</button>':''}
+                <button class="btn-primary" id="checkBtnQ" ${!canCheck?'disabled':''}>تحقق</button>
+            </div>
+            <div id="feedbackAreaQ"></div>
+            <button style="margin-top:12px;width:100%;background:#eee;" class="btn-secondary" onclick="cancelQuiz();renderMainPage();">إلغاء</button>
+        </div>`;
+    document.body.appendChild(modal);
 
-            const modal = document.createElement('div');
-            modal.className = 'quiz-modal';
-            modal.innerHTML = `
-                <div class="quiz-content">
-                    <h3>سؤال ${currentQuiz.currentIndex + 1} / ${currentQuiz.questions.length}</h3>
-                    <p class="question-text">${q.q}</p>
-                    <div class="true-false-btns">
-                        <button class="tf-btn true-btn ${selectedAnswer === true ? 'selected' : ''}" id="trueBtn">✓ صح</button>
-                        <button class="tf-btn false-btn ${selectedAnswer === false ? 'selected' : ''}" id="falseBtn">✗ خطأ</button>
-                    </div>
-                    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-                        ${currentQuiz.currentIndex > 0 ? '<button class="btn-secondary" id="prevBtn">⬅️ السابق</button>' : ''}
-                        <button class="btn-primary" id="checkBtn" ${selectedAnswer === null ? 'disabled' : ''}>تحقق</button>
-                    </div>
-                    <div id="feedbackArea"></div>
-                    <button style="margin-top:12px; width:100%; background:#eee;" class="btn-secondary" onclick="cancelQuiz(); renderMainPage();">إلغاء الاختبار</button>
-                </div>
-            `;
-            document.body.appendChild(modal);
-
-            document.getElementById('trueBtn').addEventListener('click', () => selectAnswer(true));
-            document.getElementById('falseBtn').addEventListener('click', () => selectAnswer(false));
-
-            const checkBtn = document.getElementById('checkBtn');
-            if (checkBtn) {
-                checkBtn.addEventListener('click', () => {
-                    if (!currentQuiz.quizDone) checkAnswer();
-                });
-            }
-
-            const prevBtn = document.getElementById('prevBtn');
-            if (prevBtn) {
-                prevBtn.addEventListener('click', () => prevQuestion());
-            }
-        }
-
-        function selectAnswer(value) {
-            if (!currentQuiz || currentQuiz.quizDone) return;
-            currentQuiz.answers[currentQuiz.currentIndex] = value;
-            const modal = document.querySelector('.quiz-modal');
-            if (!modal) return;
-            const trueBtn = modal.querySelector('#trueBtn');
-            const falseBtn = modal.querySelector('#falseBtn');
-            const checkBtn = modal.querySelector('#checkBtn');
-
-            trueBtn.classList.remove('selected');
-            falseBtn.classList.remove('selected');
-
-            if (value === true) trueBtn.classList.add('selected');
-            else falseBtn.classList.add('selected');
-
-            if (checkBtn) checkBtn.disabled = false;
-        }
-
-        function checkAnswer() {
-            if (!currentQuiz || currentQuiz.quizDone) return;
-            const q = currentQuiz.questions[currentQuiz.currentIndex];
-            const chosen = currentQuiz.answers[currentQuiz.currentIndex];
-            if (chosen === null || chosen === undefined) return;
-            const isCorrect = (chosen === q.answer);
-            currentQuiz.quizDone = true;
-
-            const modal = document.querySelector('.quiz-modal');
-            if (!modal) return;
-            const trueBtn = modal.querySelector('#trueBtn');
-            const falseBtn = modal.querySelector('#falseBtn');
-
-            trueBtn.style.pointerEvents = 'none';
-            falseBtn.style.pointerEvents = 'none';
-
-            if (q.answer === true) trueBtn.classList.add('correct-answer');
-            else falseBtn.classList.add('correct-answer');
-
-            if (!isCorrect) {
-                if (chosen === true) trueBtn.classList.add('wrong-answer');
-                else falseBtn.classList.add('wrong-answer');
-            }
-
-            const feedbackArea = modal.querySelector('#feedbackArea');
-            if (isCorrect) {
-                feedbackArea.innerHTML = '<div class="feedback-icon">✅</div><p style="text-align:center;color:#1e7e34;">إجابة صحيحة!</p>';
-                createConfetti(modal.querySelector('.quiz-content'));
-            } else {
-                feedbackArea.innerHTML = '<div class="feedback-icon">❌</div><p style="text-align:center;color:#c5221f;">إجابة خاطئة! الصحيح: ' + (q.answer ? '✓ صح' : '✗ خطأ') + '</p>';
-            }
-
-            const checkBtn = modal.querySelector('#checkBtn');
-            if (checkBtn) checkBtn.style.display = 'none';
-            const prevBtn = modal.querySelector('#prevBtn');
-            if (prevBtn) prevBtn.style.display = 'none';
-
-            const isLast = currentQuiz.currentIndex === currentQuiz.questions.length - 1;
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'btn-primary';
-            if (isLast) {
-                nextBtn.textContent = 'إنهاء الاختبار';
-                nextBtn.addEventListener('click', finishQuiz);
-            } else {
-                nextBtn.textContent = 'التالي ⏩';
-                nextBtn.addEventListener('click', moveToNextQuestion);
-            }
-            checkBtn.parentNode.appendChild(nextBtn);
-        }
-
-        function moveToNextQuestion() {
-            removeQuizModal();
-            currentQuiz.currentIndex++;
-            currentQuiz.quizDone = false;
-            renderQuizModal();
-        }
-
-        function prevQuestion() {
-            removeQuizModal();
-            currentQuiz.currentIndex--;
-            currentQuiz.quizDone = false;
-            renderQuizModal();
-        }
-
-        function finishQuiz() {
-            let correct = 0;
-            currentQuiz.questions.forEach((q, i) => {
-                const chosen = currentQuiz.answers[i];
-                if (chosen === q.answer) correct++;
+    // ربط الأحداث
+    if(q.type==='mcq'){
+        modal.querySelectorAll('.quiz-option').forEach(opt=>{
+            opt.addEventListener('click',()=>{
+                const idx=parseInt(opt.dataset.oi);
+                selectAnswer(idx);
             });
-            const total = currentQuiz.questions.length;
-            const sectionId = currentQuiz.sectionId;
-            cancelQuiz();
+        });
+    }else{
+        const tb=modal.querySelector('#trueBtn');
+        const fb=modal.querySelector('#falseBtn');
+        if(tb)tb.addEventListener('click',()=>selectAnswer(true));
+        if(fb)fb.addEventListener('click',()=>selectAnswer(false));
+    }
+    const cb=modal.querySelector('#checkBtnQ');
+    if(cb)cb.addEventListener('click',()=>{if(!currentQuiz.quizDone)checkAnswer();});
+    const pb=modal.querySelector('#prevBtnQ');
+    if(pb)pb.addEventListener('click',prevQuestion);
+}
 
-            const message = `نتيجتك في هذا القسم: ${correct} / ${total}\n` +
-                (correct === total ? '🎉 ممتاز! أحسنت الإجابة على جميع الأسئلة.' :
-                 correct >= 3 ? '✅ جيد. تم إكمال القسم.' :
-                 '⚠️ يُنصح بمراجعة هذا القسم مرة أخرى.');
+function selectAnswer(val){
+    if(!currentQuiz||currentQuiz.quizDone)return;
+    currentQuiz.answers[currentQuiz.currentIndex]=val;
+    const modal=document.querySelector('.quiz-modal');if(!modal)return;
+    const q=currentQuiz.questions[currentQuiz.currentIndex];
+    if(q.type==='mcq'){
+        modal.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));
+        const s=modal.querySelector(`.quiz-option[data-oi="${val}"]`);
+        if(s)s.classList.add('selected');
+    }else{
+        const tb=modal.querySelector('#trueBtn');const fb=modal.querySelector('#falseBtn');
+        if(tb)tb.classList.remove('selected');if(fb)fb.classList.remove('selected');
+        if(val===true&&tb)tb.classList.add('selected');
+        if(val===false&&fb)fb.classList.add('selected');
+    }
+    const cb=modal.querySelector('#checkBtnQ');if(cb)cb.disabled=false;
+}
 
-            alert(message);
+function checkAnswer(){
+    if(!currentQuiz||currentQuiz.quizDone)return;
+    const q=currentQuiz.questions[currentQuiz.currentIndex];
+    const chosen=currentQuiz.answers[currentQuiz.currentIndex];
+    if(chosen===null||chosen===undefined)return;
+    let isCorrect;
+    if(q.type==='mcq')isCorrect=(chosen===q.correct-1);
+    else if(q.type==='tf')isCorrect=(chosen===q.answer);
+    else isCorrect=true; // yesno always "correct" but counts as yes=1, no=0
 
-            // دائمًا نكمل القسم حتى لو لم يحصل على الدرجة الكاملة (لأنها أسئلة متابعة)
-            markSectionCompleted(sectionId);
-            renderMainPage();
-        }
+    currentQuiz.quizDone=true;
+    const modal=document.querySelector('.quiz-modal');if(!modal)return;
 
-        // --- تأثير كونفيتي ---
-        function createConfetti(container) {
-            const colors = ['#ff0','#f00','#0f0','#00f','#ff00ff','#00ffff'];
-            for (let i=0; i<20; i++) {
-                const confetti = document.createElement('div');
-                confetti.style.position = 'absolute';
-                confetti.style.width = '8px';
-                confetti.style.height = '8px';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
-                confetti.style.left = Math.random()*100 + '%';
-                confetti.style.top = '-10px';
-                confetti.style.borderRadius = '50%';
-                confetti.style.animation = `confettiFall ${1+Math.random()}s ease forwards`;
-                container.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 2000);
+    if(q.type==='mcq'){
+        modal.querySelectorAll('.quiz-option').forEach((o,idx)=>{
+            o.style.pointerEvents='none';
+            if(idx===q.correct-1)o.classList.add('correct');
+            else if(idx===chosen&&!isCorrect)o.classList.add('wrong');
+        });
+    }else{
+        const tb=modal.querySelector('#trueBtn');const fb=modal.querySelector('#falseBtn');
+        if(tb)tb.style.pointerEvents='none';if(fb)fb.style.pointerEvents='none';
+        if(q.type==='tf'){
+            const correctVal=q.answer;
+            if(correctVal===true&&tb)tb.classList.add('correct-highlight');
+            if(correctVal===false&&fb)fb.classList.add('correct-highlight');
+            if(!isCorrect){
+                if(chosen===true&&tb)tb.classList.add('wrong-highlight');
+                if(chosen===false&&fb)fb.classList.add('wrong-highlight');
             }
+        }else{
+            // yesno
+            if(chosen===true&&tb)tb.classList.add('correct-highlight');
+            if(chosen===false&&fb)fb.classList.add('correct-highlight');
         }
+    }
 
-        const styleSheet = document.createElement("style");
-        styleSheet.textContent = `
-            @keyframes confettiFall {
-                0% { transform: translateY(0) rotate(0deg); opacity:1; }
-                100% { transform: translateY(200px) rotate(720deg); opacity:0; }
-            }
-        `;
-        document.head.appendChild(styleSheet);
+    const fa=modal.querySelector('#feedbackAreaQ');
+    if(isCorrect||q.type==='yesno'){
+        fa.innerHTML='<div class="feedback-icon">✅</div><p style="text-align:center;color:#2e7d32;">تم التسجيل!</p>';
+        createConfetti(modal.querySelector('.quiz-content'));
+    }else{
+        let correctStr='';
+        if(q.type==='mcq')correctStr=q.opts[q.correct-1];
+        else correctStr=q.answer?'✓ صح':'✗ خطأ';
+        fa.innerHTML='<div class="feedback-icon">❌</div><p style="text-align:center;color:#c62828;">الإجابة الصحيحة: '+correctStr+'</p>';
+    }
 
-        // بدء التطبيق
-        if (isWelcomeShown()) {
-            renderMainPage();
-        } else {
-            showWelcome();
-        }
-    </script>
+    const cb=modal.querySelector('#checkBtnQ');if(cb)cb.style.display='none';
+    const pb=modal.querySelector('#prevBtnQ');if(pb)pb.style.display='none';
+    const isLast=currentQuiz.currentIndex===currentQuiz.questions.length-1;
+    const nb=document.createElement('button');nb.className='btn-primary';
+    nb.textContent=isLast?'إنهاء الاختبار':'التالي ⏩';
+    nb.addEventListener('click',isLast?finishQuiz:moveNext);
+    cb.parentNode.appendChild(nb);
+}
+
+function moveNext(){removeModal();currentQuiz.currentIndex++;currentQuiz.quizDone=false;renderModal();}
+function prevQuestion(){removeModal();currentQuiz.currentIndex--;currentQuiz.quizDone=false;renderModal();}
+
+function finishQuiz(){
+    let score=0;
+    currentQuiz.questions.forEach((q,i)=>{
+        const chosen=currentQuiz.answers[i];
+        if(q.type==='mcq'){if(chosen===q.correct-1)score++;}
+        else if(q.type==='tf'){if(chosen===q.answer)score++;}
+        else{if(chosen===true)score++;} // yesno
+    });
+    const total=currentQuiz.questions.length;
+    // Scale to section totalPoints
+    const scaledScore=Math.round((score/total)*currentQuiz.totalPoints);
+    cancelQuiz();
+    markSectionDone(currentQuiz.sectionId,scaledScore);
+    const pct=Math.round((scaledScore/currentQuiz.totalPoints)*100);
+    const msg=`📊 نتيجة ${currentQuiz.sectionName}:\n${scaledScore} / ${currentQuiz.totalPoints} نقطة (${pct}%)\n`+
+        `إجابات صحيحة: ${score} من ${total}`;
+    alert(msg);
+    renderMainPage();
+}
+
+// ========== تأثير كونفيتي ==========
+function createConfetti(container){
+    const colors=['#ff0','#f00','#0f0','#00f','#ff00ff','#00ffff','#c9a96e','#1a237e'];
+    for(let i=0;i<25;i++){
+        const c=document.createElement('div');
+        c.style.cssText=`position:absolute;width:8px;height:8px;background:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}%;top:-10px;border-radius:50%;animation:confettiFall ${1+Math.random()}s ease forwards;`;
+        container.appendChild(c);
+        setTimeout(()=>c.remove(),2000);
+    }
+}
+const st=document.createElement('style');
+st.textContent=`@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(200px) rotate(720deg);opacity:0}}`;
+document.head.appendChild(st);
+
+// بدء التطبيق
+if(localStorage.getItem('arabic_welcome_v2')){renderMainPage();}else{showWelcome();}
+</script>
 </body>
 </html>
