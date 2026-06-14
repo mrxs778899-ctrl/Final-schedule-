@@ -1,405 +1,578 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>متابعة مادة اللغة العربية</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>🧬 Physiology Lectures - TMA</title>
+    <script src="https://telegram.org/js/telegram-web-app.js">
+    </script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
+        :root {
+            --bg: #0b0c17;
+            --surface: #151724;
+            --surface2: #1e2132;
+            --primary: #6c63ff;
+            --primary-glow: #8f88ff;
+            --accent: #00d4aa;
+            --gold: #ffb800;
+            --text: #e9e9f0;
+            --text2: #b0b0c8;
+            --danger: #ff5e5e;
+            --success: #4ade80;
+            --radius: 18px;
+            --radius-sm: 12px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 30px rgba(108,99,255,0.3);
+            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+            --font: 'Segoe UI', 'SF Pro', 'Helvetica Neue', sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
         body{
-            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-            color:#1c1e21;
+            font-family:var(--font);
+            background:var(--bg);
+            color:var(--text);
             min-height:100vh;
-            background:url('https://images.unsplash.com/photo-1509023464722-18d996393ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
-            background-size:cover;
-            position:relative;
+            overflow-x:hidden;
+            -webkit-tap-highlight-color:transparent;
+            user-select:none;
+            background-image:
+                radial-gradient(ellipse at 30% 20%, rgba(108,99,255,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(0,212,170,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 50%, rgba(255,184,0,0.04) 0%, transparent 70%);
+            background-attachment:fixed;
         }
-        body::before{
-            content:'';
-            position:fixed;top:0;left:0;right:0;bottom:0;
-            background:rgba(0,0,0,0.55);
-            z-index:-1;
-        }
-        .container{max-width:520px;margin:0 auto;padding:20px;position:relative;z-index:1;}
-        .glass-card{
-            background:rgba(255,255,255,0.94);
-            backdrop-filter:blur(20px);
-            border-radius:28px;
-            padding:22px;
-            margin-bottom:16px;
-            box-shadow:0 12px 32px rgba(0,0,0,0.22);
-            width:100%;
-        }
-        .welcome-card{text-align:center;padding:35px 22px;}
-        .welcome-card .logo-icon{
-            width:95px;height:95px;border-radius:50%;
-            background:linear-gradient(135deg,#1a237e,#3949ab);
-            display:flex;align-items:center;justify-content:center;
-            margin:0 auto 18px;font-size:3rem;
-            box-shadow:0 10px 25px rgba(26,35,126,0.4);
-            animation:float 3s ease-in-out infinite;
-        }
-        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-        .welcome-card h1{font-size:1.8rem;color:#1a237e;margin-bottom:10px;}
-        .welcome-card p{color:#444;margin:15px 0;line-height:1.7;font-size:0.95rem;}
-        .welcome-stats{display:flex;justify-content:center;gap:18px;margin:18px 0;flex-wrap:wrap;}
-        .welcome-stat{background:#f5f5f5;border-radius:16px;padding:14px 18px;text-align:center;min-width:70px;}
-        .welcome-stat .stat-num{font-size:1.6rem;font-weight:bold;color:#1a237e;}
-        .welcome-stat .stat-lbl{font-size:0.7rem;color:#888;margin-top:4px;}
-        .btn-primary{
-            background:linear-gradient(135deg,#1a237e,#3949ab);
-            color:#fff;border:none;padding:14px 30px;border-radius:30px;
-            font-size:1rem;font-weight:bold;cursor:pointer;transition:all 0.25s;
-            box-shadow:0 8px 20px rgba(26,35,126,0.4);margin:4px;text-align:center;
-        }
-        .btn-primary:active{transform:scale(0.95);opacity:0.9;}
-        .btn-secondary{
-            background:#e8eaed;color:#333;border:none;padding:10px 18px;border-radius:30px;
-            font-size:0.85rem;font-weight:bold;cursor:pointer;transition:0.2s;margin:3px;
-        }
-        .btn-secondary:active{background:#d2d4d7;}
-        .user-row{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
-        .user-row img{width:50px;height:50px;border-radius:50%;border:3px solid #c9a96e;box-shadow:0 4px 10px rgba(0,0,0,0.15);}
-        .user-row .user-name{font-size:1.05rem;font-weight:bold;color:#1a237e;}
-        .user-row .user-handle{font-size:0.78rem;opacity:0.75;}
-        h2{font-size:1.35rem;margin-bottom:14px;color:#1a237e;display:flex;align-items:center;gap:8px;}
-        .bar-chart{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:140px;margin:10px 0;padding:0 10px;}
-        .bar-col{display:flex;flex-direction:column;align-items:center;flex:1;max-width:30px;}
-        .bar-fill-container{width:100%;height:110px;display:flex;flex-direction:column-reverse;background:#e0e0e0;border-radius:8px 8px 0 0;overflow:hidden;}
-        .bar-fill{width:100%;background:linear-gradient(0deg,#1a237e,#c9a96e);transition:height 0.6s ease;border-radius:8px 8px 0 0;}
-        .bar-label{font-size:0.6rem;color:#888;margin-top:4px;text-align:center;width:100%;}
-        .bar-value{font-size:0.65rem;font-weight:bold;color:#1a237e;margin-top:2px;}
-        .sections-grid{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
-        .section-card{
-            display:flex;align-items:center;justify-content:space-between;
-            background:rgba(255,255,255,0.85);border-radius:18px;padding:14px 16px;
-            cursor:pointer;transition:all 0.25s;border:2px solid transparent;
-            flex-wrap:wrap;gap:10px;
-        }
-        .section-card.completed{border-color:#2e7d32;background:rgba(232,245,233,0.95);}
-        .section-card .sec-left{display:flex;align-items:center;gap:12px;}
-        .section-card .sec-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
-        .section-card .sec-name{font-weight:bold;font-size:0.95rem;color:#1a237e;}
-        .section-card .sec-meta{font-size:0.72rem;color:#888;}
-        .sec-badge{padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:bold;white-space:nowrap;}
-        .badge-start{background:#1a237e;color:#fff;}
-        .badge-done{background:#c8e6c9;color:#2e7d32;}
-        .quiz-modal{
-            position:fixed;top:0;left:0;width:100%;height:100%;
-            background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:999;
-        }
-        .quiz-content{
-            background:#fff;border-radius:28px;padding:22px;width:92%;
-            max-width:500px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,0.4);
-        }
-        .quiz-content h3{color:#1a237e;margin-bottom:6px;text-align:center;font-size:1.1rem;}
-        .q-text{font-size:1.05rem;margin:14px 0;text-align:center;font-weight:500;line-height:1.6;}
-        .q-type-label{text-align:center;font-size:0.75rem;color:#888;margin-bottom:4px;}
-        .quiz-option{
-            display:block;background:#f5f5f5;border:2px solid transparent;border-radius:14px;
-            padding:13px;margin:8px 0;cursor:pointer;transition:0.2s;text-align:right;font-size:0.95rem;
-        }
-        .quiz-option.selected{border-color:#1a237e;background:#e8eaf6;}
-        .quiz-option.correct{border-color:#2e7d32;background:#c8e6c9!important;animation:pulse 0.5s;}
-        .quiz-option.wrong{border-color:#c62828;background:#ffcdd2!important;animation:shake 0.5s;}
-        .tf-btns{display:flex;gap:16px;justify-content:center;margin:18px 0;}
-        .tf-btn{
-            flex:1;padding:16px;border-radius:16px;border:3px solid transparent;
-            font-size:1.2rem;font-weight:bold;cursor:pointer;transition:all 0.2s;text-align:center;
-        }
-        .tf-btn.true-btn{background:#e8f5e9;color:#2e7d32;border-color:#c8e6c9;}
-        .tf-btn.false-btn{background:#ffebee;color:#c62828;border-color:#ffcdd2;}
-        .tf-btn.true-btn.selected{background:#2e7d32;color:#fff;border-color:#2e7d32;}
-        .tf-btn.false-btn.selected{background:#c62828;color:#fff;border-color:#c62828;}
-        .tf-btn.correct-highlight{background:#2e7d32!important;color:#fff!important;border-color:#2e7d32!important;animation:pulse 0.5s;}
-        .tf-btn.wrong-highlight{background:#c62828!important;color:#fff!important;border-color:#c62828!important;animation:shake 0.5s;}
-        .feedback-icon{text-align:center;font-size:2.8rem;margin:10px 0;animation:popIn 0.4s ease;}
-        @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
-        @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-        @keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
-        .note{text-align:center;font-size:0.7rem;color:#ddd;margin-top:18px;text-shadow:0 1px 3px rgba(0,0,0,0.5);}
-        .back-link{text-align:center;margin-top:10px;}
-        .back-link button{background:none;border:none;color:#c9a96e;text-decoration:underline;font-size:0.9rem;cursor:pointer;}
+        ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:10px;}
+
+        .particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+        .particle{position:absolute;border-radius:50%;animation:floatUp linear infinite;opacity:0;}
+        @keyframes floatUp{0%{transform:translateY(105vh) scale(0);opacity:0;}10%{opacity:0.7;}90%{opacity:0.1;}100%{transform:translateY(-10vh) scale(1.4);opacity:0;}}
+
+        .app-container{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:16px 14px 40px;min-height:100vh;}
+        .app-header{text-align:center;padding:20px 10px 16px;}
+        .app-header .logo-icon{font-size:52px;display:block;animation:bounce 2s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(108,99,255,0.5));}
+        @keyframes bounce{0%,100%{transform:translateY(0);}30%{transform:translateY(-12px);}50%{transform:translateY(0);}70%{transform:translateY(-5px);}}
+        .app-header h1{font-size:1.6rem;font-weight:800;margin-top:6px;background:linear-gradient(135deg,var(--primary-glow),var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.3px;}
+        .app-header .subtitle{font-size:0.85rem;color:var(--text2);margin-top:2px;}
+
+        .overall-progress{background:var(--surface);border-radius:var(--radius);padding:18px 16px;margin:8px 0 18px;border:1px solid rgba(255,255,255,0.06);box-shadow:var(--shadow);position:relative;overflow:hidden;}
+        .overall-progress::after{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:var(--primary);border-radius:50%;filter:blur(40px);opacity:0.3;z-index:0;}
+        .overall-progress .progress-header{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
+        .overall-progress .progress-label{font-weight:700;font-size:0.95rem;}
+        .overall-progress .progress-pct{font-weight:800;font-size:1.3rem;color:var(--accent);}
+        .progress-bar-outer{width:100%;height:10px;background:var(--surface2);border-radius:20px;margin-top:10px;overflow:hidden;position:relative;z-index:1;}
+        .progress-bar-inner{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent),var(--gold));border-radius:20px;transition:width 0.7s cubic-bezier(0.4,0,0.2,1);width:0%;box-shadow:0 0 16px rgba(108,99,255,0.5);}
+        .stats-row{display:flex;gap:12px;margin-top:10px;position:relative;z-index:1;font-size:0.78rem;color:var(--text2);}
+        .stats-row span{background:var(--surface2);padding:5px 10px;border-radius:20px;font-weight:600;}
+        .stats-row .stat-val{color:var(--gold);}
+
+        .sections-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+        @media(max-width:380px){.sections-grid{grid-template-columns:1fr;}}
+
+        .section-card{background:var(--surface);border-radius:var(--radius);padding:16px 14px;cursor:pointer;border:1.5px solid transparent;transition:all var(--transition);position:relative;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;min-height:130px;}
+        .section-card:hover{border-color:var(--primary);transform:translateY(-3px);box-shadow:var(--shadow-glow);}
+        .section-card:active{transform:scale(0.96);transition:transform 0.12s ease;}
+        .section-card .card-icon{font-size:2rem;transition:transform var(--transition);}
+        .section-card:hover .card-icon{transform:scale(1.2) rotate(-8deg);}
+        .section-card .card-title{font-weight:700;font-size:0.9rem;line-height:1.3;color:var(--text);}
+        .section-card .card-meta{font-size:0.72rem;color:var(--text2);}
+        .section-card .card-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;background:var(--surface2);color:var(--text2);transition:all var(--transition);}
+        .section-card.completed .card-badge{background:rgba(74,222,128,0.15);color:var(--success);}
+        .section-card .mini-progress{width:100%;height:4px;background:var(--surface2);border-radius:10px;overflow:hidden;margin-top:auto;}
+        .section-card .mini-progress-fill{height:100%;border-radius:10px;background:var(--accent);transition:width 0.5s ease;width:0%;}
+        .section-card.completed .mini-progress-fill{background:var(--success);width:100%;}
+        .section-card.completed{border-color:rgba(74,222,128,0.3);}
+        .section-card .score-text{font-size:0.7rem;font-weight:700;color:var(--gold);}
+
+        .quiz-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:100;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.25s ease;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        .quiz-modal{background:var(--surface);border-radius:22px;width:92%;max-width:480px;max-height:88vh;overflow-y:auto;padding:20px 16px 24px;box-shadow:0 20px 50px rgba(0,0,0,0.6);animation:slideUp 0.35s cubic-bezier(0.22,0.61,0.36,1);position:relative;border:1px solid rgba(255,255,255,0.08);}
+        @keyframes slideUp{from{transform:translateY(50px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+        .quiz-modal .quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:sticky;top:0;background:var(--surface);padding-bottom:10px;z-index:2;}
+        .quiz-modal .quiz-title{font-weight:800;font-size:1.05rem;line-height:1.3;}
+        .quiz-modal .close-btn{width:36px;height:36px;border-radius:50%;background:var(--surface2);border:none;color:var(--text);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--transition);}
+        .quiz-modal .close-btn:hover{background:var(--danger);color:#fff;transform:rotate(90deg);}
+
+        .key-points-toggle{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:600;font-size:0.9rem;transition:all var(--transition);border:1px solid transparent;}
+        .key-points-toggle:hover{border-color:var(--primary);}
+        .key-points-list{list-style:none;padding:0;margin:10px 0 0;display:none;font-size:0.8rem;color:var(--text2);line-height:1.6;}
+        .key-points-list.visible{display:block;animation:fadeIn 0.3s ease;}
+        .key-points-list li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+
+        .q-progress{display:flex;gap:5px;margin-bottom:18px;flex-wrap:wrap;}
+        .q-dot{width:22px;height:22px;border-radius:50%;background:var(--surface2);font-size:0.6rem;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all var(--transition);color:var(--text2);}
+        .q-dot.current{background:var(--primary);color:#fff;box-shadow:0 0 14px rgba(108,99,255,0.6);animation:pulse 1.3s ease-in-out infinite;}
+        .q-dot.correct-dot{background:var(--success);color:#000;}
+        .q-dot.wrong-dot{background:var(--danger);color:#fff;}
+        @keyframes pulse{0%,100%{box-shadow:0 0 14px rgba(108,99,255,0.6);}50%{box-shadow:0 0 28px rgba(108,99,255,0.9);}}
+
+        .question-card{background:var(--surface2);border-radius:var(--radius-sm);padding:20px 16px;margin-bottom:14px;border:1px solid rgba(255,255,255,0.05);animation:fadeIn 0.3s ease;text-align:center;font-size:1rem;font-weight:600;line-height:1.6;min-height:80px;display:flex;align-items:center;justify-content:center;transition:all var(--transition);}
+        .question-card.correct-flash{border-color:var(--success)!important;box-shadow:0 0 24px rgba(74,222,128,0.35)!important;background:rgba(74,222,128,0.08)!important;}
+        .question-card.wrong-flash{border-color:var(--danger)!important;box-shadow:0 0 24px rgba(255,94,94,0.35)!important;background:rgba(255,94,94,0.08)!important;}
+
+        .btn-row{display:flex;gap:12px;margin-bottom:10px;}
+        .btn-tf{flex:1;padding:15px 10px;border-radius:var(--radius-sm);border:2px solid rgba(255,255,255,0.1);font-size:1rem;font-weight:700;cursor:pointer;transition:all var(--transition);background:var(--surface);color:var(--text);}
+        .btn-tf:hover{border-color:var(--primary);box-shadow:0 0 20px rgba(108,99,255,0.3);}
+        .btn-tf:active{transform:scale(0.94);}
+        .btn-tf.selected-true{border-color:var(--success)!important;background:rgba(74,222,128,0.15)!important;color:var(--success)!important;}
+        .btn-tf.selected-false{border-color:var(--danger)!important;background:rgba(255,94,94,0.15)!important;color:var(--danger)!important;}
+        .btn-tf:disabled{opacity:0.5;pointer-events:none;}
+
+        .explanation{background:rgba(255,184,0,0.08);border-radius:var(--radius-sm);padding:12px 14px;font-size:0.82rem;color:var(--gold);font-weight:500;line-height:1.5;animation:fadeIn 0.4s ease;border-left:3px solid var(--gold);}
+
+        .nav-btns{display:flex;gap:10px;margin-top:6px;}
+        .nav-btn{flex:1;padding:12px;border-radius:25px;border:none;font-weight:700;cursor:pointer;transition:all var(--transition);font-size:0.9rem;}
+        .nav-btn.next-btn{background:var(--primary);color:#fff;}
+        .nav-btn.finish-btn{background:var(--accent);color:#000;}
+        .nav-btn.retry-btn{background:var(--surface2);color:var(--text);border:1px solid rgba(255,255,255,0.2);}
+
+        .results-container{text-align:center;animation:fadeIn 0.5s ease;}
+        .results-container .big-score{font-size:5rem;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+        .results-container .score-label{font-size:1rem;color:var(--text2);margin:4px 0 16px;}
+        .results-container .star-row{font-size:2.5rem;letter-spacing:4px;margin:10px 0;}
+        .star-lit{color:var(--gold);animation:starPop 0.5s ease forwards;display:inline-block;}
+        .star-dim{color:#444;display:inline-block;}
+        @keyframes starPop{0%{transform:scale(0) rotate(-30deg);opacity:0;}60%{transform:scale(1.5) rotate(10deg);opacity:1;}100%{transform:scale(1) rotate(0);opacity:1;}}
+
+        .confetti-piece{position:fixed;z-index:200;pointer-events:none;animation:confettiFall linear forwards;}
+        @keyframes confettiFall{0%{transform:translateY(-120px) rotate(0deg) scale(1);opacity:1;}100%{transform:translateY(105vh) rotate(720deg) scale(0.3);opacity:0;}}
+
+        @media(min-width:500px){.sections-grid{grid-template-columns:1fr 1fr 1fr;}.app-container{padding:20px 20px 50px;}}
     </style>
 </head>
 <body>
-<div class="container" id="app"></div>
-<script>
-const tg=window.Telegram.WebApp;tg.ready();tg.expand();
-const user=tg.initDataUnsafe?.user;
-const userName=user?user.first_name||'مستخدم':'مستخدم';
-const userPhoto=user?.photo_url||`https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=1a237e&color=fff`;
+<div class="particles" id="particles"></div>
 
-const sectionsData=[
-    {id:"grammar-nouns",name:"علامات الاسم والمعارف",icon:"📝",category:"قواعد",totalPoints:10,questions:[
-        {type:"mcq",q:"أيُّ ممَّا يأتي يُعد من علامات الاسم؟",opts:["سوف","التنوين","لم","لن"],correct:2},
-        {type:"mcq",q:"الكلمة التي دخلت عليها (ال) التعريف هي:",opts:["كتاب","يكتب","الكتاب","اكتب"],correct:3},
-        {type:"mcq",q:"أيُّ الجمل الآتية تحتوي على اسم مجرور؟",opts:["نجح الطالب","ذهبتُ إلى المدرسة","يكتب محمد","لن أتأخر"],correct:2},
-        {type:"mcq",q:"كلمة (هذا) تُعد:",opts:["ضمير","اسم إشارة","اسم موصول","علم"],correct:2},
-        {type:"mcq",q:"كلمة (الذي) تُعد:",opts:["اسم موصول","علم","فعل","حرف"],correct:1},
-        {type:"tf",q:"العلم هو اسم يدل على شيء غير محدد.",answer:false},
-        {type:"tf",q:"الاسم قد يأتي بعد حرف الجر.",answer:true},
-        {type:"tf",q:"الضمير من أنواع المعارف.",answer:true},
-        {type:"tf",q:"المنادى لا يُعد من علامات الاسم.",answer:false},
-        {type:"tf",q:"المضاف إلى معرفة يُعد معرفة.",answer:true}
-    ]},
-    {id:"grammar-mansubat",name:"المجرورات والمنصوبات",icon:"📖",category:"قواعد",totalPoints:8,questions:[
-        {type:"mcq",q:"الاسم الواقع بعد حرف الجر يسمى:",opts:["مفعول به","مجرور بحرف الجر","حال","تمييز"],correct:2},
-        {type:"mcq",q:"في جملة (كتابُ الطالبِ) كلمة الطالبِ:",opts:["فاعل","مضاف إليه","حال","بدل"],correct:2},
-        {type:"mcq",q:"أيُّ مما يأتي من المنصوبات؟",opts:["المفعول به","المبتدأ","الفاعل","الخبر"],correct:1},
-        {type:"mcq",q:"من أنواع التوابع للمجرور:",opts:["الفاعل","العطف","المبتدأ","الخبر"],correct:2},
-        {type:"tf",q:"الحال من المنصوبات.",answer:true},
-        {type:"tf",q:"التمييز من المجرورات.",answer:false},
-        {type:"tf",q:"النعت قد يكون تابعًا للمجرور.",answer:true},
-        {type:"tf",q:"المستثنى من المنصوبات.",answer:true}
-    ]},
-    {id:"grammar-mudare",name:"نصب وجزم الفعل المضارع",icon:"⏳",category:"قواعد",totalPoints:12,questions:[
-        {type:"mcq",q:"الحرف الذي ينصب الفعل المضارع هو:",opts:["لم","لن","لا الناهية","لما"],correct:2},
-        {type:"mcq",q:"في جملة (أريد أن أتعلم) الفعل المضارع منصوب بـ:",opts:["لم","أنْ","لا","كي لا"],correct:2},
-        {type:"mcq",q:"الأداة التي تجزم فعلاً واحدًا هي:",opts:["إنْ","مهما","لم","من"],correct:3},
-        {type:"mcq",q:"في جملة (لا تكذب) نوع الأداة:",opts:["ناصبة","جازمة","حرف جر","حرف نداء"],correct:2},
-        {type:"mcq",q:"أداة الشرط التي تجزم فعلين هي:",opts:["لن","كي","إنْ","حتى"],correct:3},
-        {type:"mcq",q:"(اجتهد فتنجح) الفاء هنا:",opts:["فاء السببية","فاء العطف","فاء الاستئناف","فاء القسم"],correct:1},
-        {type:"tf",q:"لنْ من أدوات الجزم.",answer:false},
-        {type:"tf",q:"لا الناهية تجزم الفعل المضارع.",answer:true},
-        {type:"tf",q:"حتى قد تنصب الفعل المضارع.",answer:true},
-        {type:"tf",q:"أدوات الشرط تجزم فعلين.",answer:true},
-        {type:"tf",q:"لمّا من أدوات النصب.",answer:false},
-        {type:"tf",q:"واو المعية تأتي بعد طلب أو نفي.",answer:true}
-    ]},
-    {id:"grammar-numbers",name:"الأعداد",icon:"🔢",category:"قواعد",totalPoints:8,questions:[
-        {type:"mcq",q:"العددان (1 و2):",opts:["يخالفان المعدود","يوافقان المعدود","لا يتغيران","لا علاقة لهما بالمعدود"],correct:2},
-        {type:"mcq",q:"الأعداد من 3 إلى 10:",opts:["توافق المعدود","تخالف المعدود","تبقى ثابتة","تُجمع دائمًا"],correct:2},
-        {type:"mcq",q:"العدد المناسب لكلمة (رجال):",opts:["ثلاث رجال","ثلاثة رجال","ثلاثَ رجال","ثلاثةُ رجل"],correct:2},
-        {type:"mcq",q:"ألفاظ العقود مثل عشرون:",opts:["تتغير حسب المعدود","لا تتغير","مؤنثة دائمًا","مذكرة دائمًا"],correct:2},
-        {type:"tf",q:"العدد (إحدى عشرة) يوافق المعدود.",answer:true},
-        {type:"tf",q:"المئة والألف مفردتان دائمًا.",answer:true},
-        {type:"tf",q:"العدد من 13 إلى 19 يتفق جزآه مع المعدود.",answer:false},
-        {type:"tf",q:"عشرون امرأةً استعمال صحيح.",answer:true}
-    ]},
-    {id:"hifz-isra",name:"سورة الإسراء",icon:"🕌",category:"حفظ",totalPoints:4,questions:[
-        {type:"yesno",q:"هل حفظت الآيات المطلوبة من سورة الإسراء؟"},
-        {type:"yesno",q:"هل راجعت تفسير ومعاني الآيات؟"},
-        {type:"yesno",q:"هل تستطيع قراءة الآيات دون توقف طويل؟"},
-        {type:"yesno",q:"هل حفظت ترتيب الأفكار الواردة في الآيات؟"}
-    ]},
-    {id:"adab-khitaba",name:"الخطابة والرسائل والمقالة",icon:"🎤",category:"أدب",totalPoints:12,questions:[
-        {type:"mcq",q:"الخطابة تهدف إلى:",opts:["التسلية فقط","الإقناع والتأثير","السرد القصصي فقط","وصف الطبيعة"],correct:2},
-        {type:"mcq",q:"من أركان الخطابة:",opts:["الجمهور","الوزن","القافية","البحر الشعري"],correct:1},
-        {type:"mcq",q:"الرسائل الإدارية والسياسية تُسمى:",opts:["رسائل إخوانية","رسائل ديوانية","رسائل شعرية","رسائل خيالية"],correct:2},
-        {type:"mcq",q:"المقالة هي:",opts:["قصيدة شعرية","قطعة نثرية قصيرة نسبيًا","رواية طويلة","مسرحية"],correct:2},
-        {type:"mcq",q:"من أسباب ظهور المقالة الحديثة:",opts:["اختفاء الصحافة","انتشار الصحافة والمجلات","ضعف القراءة","قلة النشر"],correct:2},
-        {type:"mcq",q:"من خصائص المقالة:",opts:["الغموض الشديد","وضوح الأسلوب","كثرة الشخصيات","الاعتماد على الحوار فقط"],correct:2},
-        {type:"tf",q:"الرسائل الإخوانية ذات طابع شخصي.",answer:true},
-        {type:"tf",q:"المقالة الحديثة لا تعبّر عن الرأي.",answer:false},
-        {type:"tf",q:"الخطابة تعتمد على التأثير بالجمهور.",answer:true},
-        {type:"tf",q:"من خصائص المقالة وحدة الموضوع.",answer:true},
-        {type:"tf",q:"المسرحية نوع من المقالة.",answer:false},
-        {type:"tf",q:"من أسباب ظهور المقالة تطور وسائل النشر.",answer:true}
-    ]},
-    {id:"adab-masrah",name:"المسرحية والمعاجم",icon:"🎭",category:"أدب",totalPoints:10,questions:[
-        {type:"mcq",q:"المسرحية تعتمد بشكل أساسي على:",opts:["الحوار","السجع","الوزن","القافية"],correct:1},
-        {type:"mcq",q:"من عناصر المسرحية:",opts:["الشخصيات","البحور الشعرية","القافية","الروي"],correct:1},
-        {type:"mcq",q:"الصراع في المسرحية يُعد:",opts:["عنصرًا ثانويًا","محرك الأحداث","عنصرًا غير مهم","خاصًا بالشعر فقط"],correct:2},
-        {type:"mcq",q:"كتاب (الصحاح تاج اللغة وصحاح العربية) مؤلفه:",opts:["الزمخشري","الجوهري","الفيومي","الرازي"],correct:2},
-        {type:"mcq",q:"كتاب (أساس البلاغة) يعود إلى:",opts:["الجوهري","الزمخشري","الرازي","الفيومي"],correct:2},
-        {type:"tf",q:"الزمان والمكان من عناصر المسرحية.",answer:true},
-        {type:"tf",q:"المسرحية تُقرأ فقط ولا تُمثل.",answer:false},
-        {type:"tf",q:"مختار الصحاح من معاجم مدرسة الصحاح.",answer:true},
-        {type:"tf",q:"الحل يمثل نهاية المسرحية.",answer:true},
-        {type:"tf",q:"الشخصيات ليست عنصرًا مهمًا في المسرحية.",answer:false}
-    ]},
-    {id:"adab-sard",name:"السرد والشخصيات",icon:"📜",category:"أدب",totalPoints:10,questions:[
-        {type:"mcq",q:"السرد الخطي يعني:",opts:["عرض الأحداث بترتيب زمني","العودة للماضي","استباق المستقبل","حذف الأحداث"],correct:1},
-        {type:"mcq",q:"العودة إلى أحداث ماضية تسمى:",opts:["الاستباق","الاسترجاع","السرد الخطي","الوصف"],correct:2},
-        {type:"mcq",q:"الراوي الذي يحكي بضمير (أنا) يسمى:",opts:["السرد بضمير الغائب","السرد بضمير المتكلم","الراوي الخارجي","الراوي الثابت"],correct:2},
-        {type:"mcq",q:"الشخصية التي تتغير مع الأحداث تسمى:",opts:["ثابتة","نامية","ثانوية","رمزية"],correct:2},
-        {type:"mcq",q:"الشخصية التي تدور حولها الأحداث هي:",opts:["الثانوية","الرئيسية","الثابتة","الرمزية"],correct:2},
-        {type:"tf",q:"الاستباق يعني التقدم لأحداث مستقبلية.",answer:true},
-        {type:"tf",q:"الشخصية الثابتة تتطور كثيرًا.",answer:false},
-        {type:"tf",q:"السرد أسلوب في الحكي والقص.",answer:true},
-        {type:"tf",q:"الشخصية الرمزية ترمز إلى فكرة أو قيمة.",answer:true},
-        {type:"tf",q:"السرد بضمير الغائب يكون الراوي داخل الأحداث دائمًا.",answer:false}
-    ]},
-    {id:"adab-tibaq",name:"الطباق والمقابلة",icon:"⚖️",category:"أدب",totalPoints:8,questions:[
-        {type:"mcq",q:"الطباق هو:",opts:["الجمع بين الشيء وضده","تشبيه شيئين","حذف كلمة","تكرار الحروف"],correct:1},
-        {type:"mcq",q:"المقابلة أوسع من الطباق لأنها:",opts:["تشمل أكثر من ضدين","خاصة بالشعر","لا تحتوي تضادًا","تعتمد على السجع"],correct:1},
-        {type:"mcq",q:"(يحيي ويميت) مثال على:",opts:["طباق إيجاب","طباق سلب","مقابلة","تشبيه"],correct:1},
-        {type:"mcq",q:"(يعلمون ولا يعلمون) مثال على:",opts:["مقابلة","طباق سلب","استعارة","جناس"],correct:2},
-        {type:"tf",q:"الطباق من المحسنات البديعية المعنوية.",answer:true},
-        {type:"tf",q:"المقابلة لا تحتوي على تضاد.",answer:false},
-        {type:"tf",q:"طباق السلب يعتمد على النفي.",answer:true},
-        {type:"tf",q:"الطباق والمقابلة من أساليب البلاغة.",answer:true}
-    ]},
-    {id:"qasaid-mutanabbi",name:"قصيدة ميمية المتنبي",icon:"🎵",category:"قصائد",totalPoints:4,questions:[
-        {type:"yesno",q:"هل حفظت الأبيات المطلوبة من القصيدة؟"},
-        {type:"yesno",q:"هل راجعت معاني الكلمات الصعبة؟"},
-        {type:"yesno",q:"هل تستطيع تمييز الشاعر والقصيدة؟"},
-        {type:"yesno",q:"هل تدربت على قراءة الأبيات بصوت واضح؟"}
-    ]},
-    {id:"qasaid-matar",name:"قصيدة أنشودة المطر",icon:"🌧️",category:"قصائد",totalPoints:4,questions:[
-        {type:"yesno",q:"هل حفظت المقطع المطلوب من القصيدة؟"},
-        {type:"yesno",q:"هل فهمت الفكرة العامة للمقطع؟"},
-        {type:"yesno",q:"هل راجعت اسم الشاعر؟"},
-        {type:"yesno",q:"هل تستطيع إكمال الأبيات دون النظر للكتاب؟"}
-    ]}
+<div class="app-container" id="appContainer">
+    <div class="app-header">
+        <span class="logo-icon">🧬</span>
+        <h1>Physiology Lectures</h1>
+        <p class="subtitle">GIT · Urinary · Temperature · Lung · Blood</p>
+    </div>
+    <div class="overall-progress" id="overallProgress">
+        <div class="progress-header">
+            <span class="progress-label">📊 Overall Progress</span>
+            <span class="progress-pct" id="overallPct">0%</span>
+        </div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="overallBar"></div></div>
+        <div class="stats-row">
+            <span>✅ Completed: <b class="stat-val" id="statCompleted">0</b></span>
+            <span>📝 Total: <b class="stat-val">6</b></span>
+            <span>⭐ Avg: <b class="stat-val" id="statAvg">-</b></span>
+        </div>
+    </div>
+    <div class="sections-grid" id="sectionsGrid"></div>
+</div>
+
+<div class="quiz-overlay" id="quizOverlay" style="display:none;">
+    <div class="quiz-modal" id="quizModal"></div>
+</div>
+
+<script>
+(function(){
+const tg = window.Telegram?.WebApp;
+if(tg){ tg.ready(); tg.expand(); tg.setHeaderColor('#0b0c17'); tg.setBackgroundColor('#0b0c17'); if(tg.BackButton) tg.BackButton.onClick(() => closeQuiz()); }
+
+// Floating particles
+const particlesContainer = document.getElementById('particles');
+const pColors = ['#6c63ff','#00d4aa','#ffb800','#ff5e5e','#4ade80','#8f88ff','#ffffff'];
+for(let i=0;i<35;i++){
+    const p=document.createElement('div'); p.classList.add('particle');
+    const size=Math.random()*5+2; p.style.width=size+'px'; p.style.height=size+'px';
+    p.style.left=Math.random()*100+'%'; p.style.backgroundColor=pColors[Math.floor(Math.random()*pColors.length)];
+    p.style.animationDuration=(Math.random()*14+8)+'s'; p.style.animationDelay=(Math.random()*12)+'s';
+    p.style.boxShadow=`0 0 ${size*3}px ${p.style.backgroundColor}`;
+    particlesContainer.appendChild(p);
+}
+
+// ─────────────────── DATA ───────────────────
+const sectionsData = [
+{
+    id:1, icon:'🫁', title:'GI Anatomy & Function', subtitle:'Gastrointestinal System',
+    points:[
+        "The GI tract is a long muscular tube extending ~9 m from mouth to anus.",
+        "Accessory organs: teeth, tongue, salivary glands, liver, pancreas.",
+        "Four main functions: ingestion, digestion, absorption, excretion.",
+        "Saliva: 1.0–1.5 L/day; contains buffers, mucins, salivary amylase.",
+        "Stomach regions: fundus, body, antrum, pylorus.",
+        "Parietal cells secrete intrinsic factor (B12) and HCl.",
+        "Chief cells produce pepsinogen → pepsin (pH 1.5–2.0) for protein digestion.",
+        "Small intestine: duodenum, jejunum, ileum; longest segment.",
+        "Ileocecal valve: sphincter controlling flow from ileum to cecum.",
+        "Liver produces bile (fat emulsification); gallbladder stores it."
+    ],
+    questions:[
+        {statement:"The stomach has only two muscular layers.",answer:false,explanation:"False. It has three muscular layers."},
+        {statement:"The large intestine is approximately 6 feet long and absorbs water and electrolytes.",answer:true,explanation:""},
+        {statement:"The pancreas produces enzymes like trypsinogen and lipase.",answer:true,explanation:""},
+        {statement:"The small intestine mucosa has villi, but not microvilli.",answer:false,explanation:"False. It has villi, and each villus has multiple microvilli."},
+        {statement:"The main function of the esophagus is to transport food via peristalsis.",answer:true,explanation:""}
+    ]
+},
+{
+    id:2, icon:'🧪', title:'Digestion & Absorption', subtitle:'Biochemistry',
+    points:[
+        "Digestion: breakdown of food into particles small enough to cross the GI barrier.",
+        "Absorption: transport of digested products into blood or lymph.",
+        "Absorption mechanisms: simple diffusion, active transport, facilitated & passive transport.",
+        "Carbohydrate chemical digestion begins in the mouth via amylase.",
+        "Starch broken by amylase; sugars by lactase, sucrase, maltase.",
+        "Proteins digested in stomach by pepsin (HCl-activated) and later by small intestine proteases.",
+        "Lipids are hydrophobic; emulsified by bile salts then broken by pancreatic lipase.",
+        "Small intestine responsible for 90% of absorption.",
+        "GI tract absorbs ~9 L water/day.",
+        "Amino acids absorbed into bloodstream via active transport."
+    ],
+    questions:[
+        {statement:"Proteins are digested into amino acids in the mouth.",answer:false,explanation:"False. They are digested in the stomach and small intestine."},
+        {statement:"Pancreatic lipase breaks down fats into free fatty acids and monoglycerides.",answer:true,explanation:""},
+        {statement:"Only 2 liters of water are ingested daily, but the body absorbs 9 liters from secretions.",answer:true,explanation:""},
+        {statement:"Fats are water-soluble and do not require bile salts for digestion.",answer:false,explanation:"False. Fats are hydrophobic and require bile salts for emulsification."},
+        {statement:"The chemical digestion of carbohydrates begins in the stomach.",answer:false,explanation:"False. It begins in the mouth."}
+    ]
+},
+{
+    id:3, icon:'💧', title:'Urinary System', subtitle:'Kidneys & Nephrons',
+    points:[
+        "Urinary system: kidneys, ureters, urinary bladder, urethra.",
+        "Kidneys are retroperitoneal (T12–L3).",
+        "Functional unit: nephron (renal corpuscle + renal tubule).",
+        "Renal corpuscle: glomerulus + Bowman's capsule.",
+        "Ureters carry urine via peristalsis every 10–15 s.",
+        "Bladder stores urine; surrounded by prostate in males.",
+        "Urethra has two sphincters: internal (involuntary) and external (voluntary).",
+        "Urine formation steps: Glomerular filtration, Reabsorption, Secretion.",
+        "Glomerular filtration: ultrafiltration; all plasma constituents except proteins pass into Bowman's capsule.",
+        "Urine composition: 95% water, 5% nitrogenous wastes (urea, ammonia, creatinine)."
+    ],
+    questions:[
+        {statement:"The kidneys produce the hormone erythropoietin.",answer:true,explanation:""},
+        {statement:"Tubular secretion involves adding substances like hydrogen and potassium ions into the filtrate.",answer:true,explanation:""},
+        {statement:"The adrenal glands sit on the inferior pole of each kidney.",answer:false,explanation:"False. They sit on the superior pole."},
+        {statement:"99% of the filtrate is reabsorbed by the renal tubules.",answer:true,explanation:""},
+        {statement:"The female urethra is longer than the male urethra.",answer:false,explanation:"False. The female urethra is much shorter."}
+    ]
+},
+{
+    id:4, icon:'🌡️', title:'Body Temperature', subtitle:'Thermoregulation',
+    points:[
+        "Normal body temperature: 36°C–37°C.",
+        "Hypothalamus is the thermoregulation center.",
+        "Peripheral thermoreceptors in skin; central in viscera, spinal cord, hypothalamus.",
+        "Lowest temperature at 4 AM, highest at 6 PM.",
+        "Efferent responses: behavioral adjustments (shade, warmth).",
+        "Vasodilation → heat loss; vasoconstriction & shivering → heat conservation/generation.",
+        "Fever: body temperature ≥38°C (100.4°F).",
+        "Hyperthermia: unregulated high temperature, normal hypothalamic set-point.",
+        "Hypothermia: involuntary drop in core temperature below 35°C (95°F).",
+        "During menstruation, average body temperature is at its minimum."
+    ],
+    questions:[
+        {statement:"The hypothalamus regulates body temperature by comparing current temperature to a set-point of 37°C.",answer:true,explanation:""},
+        {statement:"A high fever is defined as any temperature above 41°C.",answer:false,explanation:"False. High fever is above 39.5°C; very high fever is above 41°C."},
+        {statement:"During menstruation, the average body temperature is at its maximum.",answer:false,explanation:"False. It is at its minimum."},
+        {statement:"Heat stroke involves a temperature >40°C with dry, hot skin and CNS abnormalities.",answer:true,explanation:""},
+        {statement:"Impaired thermoregulation is a leading cause of hypothermia.",answer:true,explanation:""}
+    ]
+},
+{
+    id:5, icon:'🫧', title:'Lung Volumes & Capacities', subtitle:'Spirometry',
+    points:[
+        "Spirometry records volume movement of air into/out of lungs.",
+        "Tidal Volume (TV): ~500 mL, normal quiet respiration.",
+        "Inspiratory Reserve Volume (IRV): ~3300 mL, extra after normal inspiration.",
+        "Expiratory Reserve Volume (ERV): ~1000 mL, extra after normal expiration.",
+        "Residual Volume (RV): ~1200 mL, remains after forced expiration; prevents lung collapse.",
+        "Vital Capacity (VC) = TV + IRV + ERV.",
+        "Total Lung Capacity (TLC) = VC + RV.",
+        "Functional Residual Capacity (FRC) = ERV + RV.",
+        "Peak Expiratory Flow Rate (PEFR): fastest flow during forced expiration (~600 L/min in males).",
+        "Minute Volume = Tidal Volume × Respiratory Rate (~6 L/min)."
+    ],
+    questions:[
+        {statement:"Residual Volume (RV) can be directly measured by a standard spirometer.",answer:false,explanation:"False. RV cannot be measured by spirometry alone."},
+        {statement:"Inspiratory Capacity (IC) equals TV + IRV.",answer:true,explanation:""},
+        {statement:"PEFR is useful for diagnosing and monitoring asthma.",answer:true,explanation:""},
+        {statement:"Vital Capacity (VC) includes the Residual Volume.",answer:false,explanation:"False. VC = TV+IRV+ERV; RV is not included."},
+        {statement:"PEFR in a healthy adult female is approximately 450 L/min.",answer:true,explanation:""}
+    ]
+},
+{
+    id:6, icon:'🩸', title:'Hormones & Blood Practical', subtitle:'BT, CT, Grouping, Urine',
+    points:[
+        "Endocrine secretion: hormones into blood to distant targets (e.g., insulin).",
+        "Paracrine: acts on nearby cells (e.g., histamine); Autocrine: acts on same cell (e.g., cytokines).",
+        "Bleeding Time (BT): assesses platelet function; normal 1–7 min.",
+        "Clotting Time (CT): assesses intrinsic pathway; normal 4–10 min.",
+        "Blood groups: based on A, B, D (Rh) antigens.",
+        "Universal Recipient: AB; Universal Donor: O.",
+        "Urine volume abnormalities: Anuria <100 mL/d, Oliguria <400 mL/d, Polyuria >3000 mL/d.",
+        "Urine dipstick detects: protein, glucose, ketones, blood, pH, bilirubin, urobilinogen, nitrite, leukocytes.",
+        "Microscopy: casts (hyaline, RBC, WBC, granular), crystals (calcium oxalate, uric acid, triple phosphate).",
+        "Triple phosphate crystals have a 'coffin lid' shape."
+    ],
+    questions:[
+        {statement:"Prolonged Bleeding Time (BT) is primarily associated with hemophilia.",answer:false,explanation:"False. Hemophilia mainly prolongs Clotting Time (CT); BT is more associated with platelet disorders."},
+        {statement:"The blood group with no antigens on RBCs is Type O.",answer:true,explanation:""},
+        {statement:"Glucose in urine (Glycosuria) is always caused by diabetes mellitus.",answer:false,explanation:"False. It can be caused by renal glycosuria, pregnancy, stress, or SGLT2 inhibitors."},
+        {statement:"Triple phosphate crystals have a 'coffin lid' shape.",answer:true,explanation:""},
+        {statement:"RBC casts in urine sediment are specific for glomerulonephritis.",answer:true,explanation:""}
+    ]
+}
 ];
 
-function loadProgress(){const r=localStorage.getItem('arabic_progress_v4');return r?JSON.parse(r):{completed:{}};}
-function saveProgress(d){localStorage.setItem('arabic_progress_v4',JSON.stringify(d));}
-function isSectionDone(id){const p=loadProgress();return !!p.completed[id];}
-function getSectionScore(id){const p=loadProgress();return p.completed[id]||0;}
-function markSectionDone(id,score){const p=loadProgress();p.completed[id]=score;saveProgress(p);}
-function markSectionUndone(id){const p=loadProgress();delete p.completed[id];saveProgress(p);}
-function getTotalEarned(){const p=loadProgress();let s=0;for(const k in p.completed)s+=p.completed[k];return s;}
-function getTotalPossible(){return sectionsData.reduce((a,b)=>a+b.totalPoints,0);}
-function getCompletedCount(){return Object.keys(loadProgress().completed).length;}
-function getGradeText(score,total){const pct=score/total;if(pct>=0.9)return'🏆 ممتاز';if(pct>=0.7)return'👍 جيد جداً';if(pct>=0.5)return'✅ جيد';return'📚 يحتاج مراجعة';}
+// ─────────── STORAGE ───────────
+const STORAGE_KEY = 'physiology_progress_v1';
+function loadProgress(){ try{ const d=localStorage.getItem(STORAGE_KEY); return d ? JSON.parse(d) : {}; }catch(e){ return {}; } }
+function saveProgress(p){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }catch(e){} }
+let progressData = loadProgress();
 
-function createBarChart(sections){
-    let html='<div class="bar-chart">';
-    sections.forEach(sec=>{
-        const score=getSectionScore(sec.id);
-        const max=sec.totalPoints;
-        const pct=(score/max)*100;
-        const height=Math.max(2,(pct/100)*110);
-        html+=`<div class="bar-col"><div class="bar-fill-container"><div class="bar-fill" style="height:${height}px;"></div></div><div class="bar-label">${sec.icon}</div><div class="bar-value">${score}/${max}</div></div>`;
+function getSectionProgress(id){ return progressData[id] || null; }
+function setSectionProgress(id, score, total){ progressData[id] = { score, total, completed:true, timestamp:Date.now() }; saveProgress(progressData); }
+function resetSectionProgress(id){ delete progressData[id]; saveProgress(progressData); }
+
+function getOverallStats(){
+    const ids = Object.keys(progressData).filter(k => progressData[k]?.completed);
+    const completedCount = ids.length;
+    const totalSections = sectionsData.length;
+    const pct = totalSections ? Math.round((completedCount/totalSections)*100) : 0;
+    let avg = null;
+    if(completedCount){
+        const totalScore = ids.reduce((s,k)=> s + progressData[k].score, 0);
+        const totalQs = ids.reduce((s,k)=> s + progressData[k].total, 0);
+        avg = totalQs ? Math.round((totalScore/totalQs)*100) : 0;
+    }
+    return { completedCount, totalSections, pct, avgScore: avg };
+}
+
+function renderDashboard(){
+    const grid = document.getElementById('sectionsGrid');
+    grid.innerHTML = '';
+    sectionsData.forEach((sec, idx) => {
+        const prog = getSectionProgress(sec.id);
+        const isCompleted = prog?.completed;
+        const score = prog?.score;
+        const card = document.createElement('div');
+        card.className = 'section-card' + (isCompleted ? ' completed' : '');
+        card.setAttribute('data-section-id', sec.id);
+        card.style.animationDelay = (idx*0.04) + 's';
+        card.style.animation = 'fadeIn 0.5s ease forwards';
+        card.style.opacity = '0';
+        card.innerHTML = `
+        <span class="card-icon">${sec.icon}</span>
+        <span class="card-title">${sec.title}</span>
+        <span class="card-meta">${sec.subtitle}</span>
+        <div class="mini-progress"><div class="mini-progress-fill" style="width:${isCompleted?'100%':'0%'}"></div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span class="card-badge"><span class="badge-dot"></span> ${isCompleted ? 'Done' : 'Start'}</span>
+          ${isCompleted && score!==null ? `<span class="score-text">⭐ ${score}/5</span>` : ''}
+        </div>`;
+        card.addEventListener('click', () => openQuiz(sec));
+        grid.appendChild(card);
+        requestAnimationFrame(() => { card.style.opacity = '1'; });
     });
-    html+='</div>';
-    return html;
+    updateOverallStats();
 }
 
-function showWelcome(){
-    const total=getTotalPossible(),earned=getTotalEarned(),done=getCompletedCount();
-    document.getElementById('app').innerHTML=`
-        <div class="glass-card welcome-card">
-            <div class="logo-icon">📚</div><h1>أهلًا ${userName}! 👋</h1>
-            <p>مرحبًا بك في <strong>متابعة مادة اللغة العربية</strong><br>اختبر فهمك عبر اختبارات شاملة لكل أقسام المادة.</p>
-            <div class="welcome-stats">
-                <div class="welcome-stat"><div class="stat-num">${sectionsData.length}</div><div class="stat-lbl">قسم</div></div>
-                <div class="welcome-stat"><div class="stat-num">${total}</div><div class="stat-lbl">درجة كليّة</div></div>
-                <div class="welcome-stat"><div class="stat-num">${done}</div><div class="stat-lbl">مكتمل</div></div>
-                <div class="welcome-stat"><div class="stat-num">${earned}</div><div class="stat-lbl">نقطة مكتسبة</div></div>
-            </div>
-            <button class="btn-primary" onclick="startApp()">✨ ابدأ المتابعة</button>
-        </div>`;
+function updateOverallStats(){
+    const stats = getOverallStats();
+    document.getElementById('overallPct').textContent = stats.pct + '%';
+    document.getElementById('overallBar').style.width = stats.pct + '%';
+    document.getElementById('statCompleted').textContent = stats.completedCount;
+    document.getElementById('statAvg').textContent = stats.avgScore !== null ? stats.avgScore + '%' : '-';
 }
 
-function renderMainPage(){
-    const total=getTotalPossible(),earned=getTotalEarned(),pct=Math.round((earned/total)*100);
-    const grade=getGradeText(earned,total),doneCount=getCompletedCount();
-    const sectionsHtml=sectionsData.map(sec=>{
-        const done=isSectionDone(sec.id),score=getSectionScore(sec.id);
-        return`<div class="section-card ${done?'completed':''}" style="background:${done?'rgba(232,245,233,0.95)':'rgba(255,255,255,0.85)'};" onclick="${done?`retrySection('${sec.id}')`:`startSection('${sec.id}')`}">
-            <div class="sec-left"><div class="sec-icon" style="background:${done?'#c8e6c9':'#e8eaf6'};">${sec.icon}</div><div><div class="sec-name">${sec.name}</div><div class="sec-meta">${sec.category} • ${sec.totalPoints} نقطة</div></div></div>
-            <span class="sec-badge ${done?'badge-done':'badge-start'}">${done?`✅ ${score}/${sec.totalPoints}`:'📝 ابدأ'}</span>
-        </div>`;
-    }).join('');
-    document.getElementById('app').innerHTML=`
-        <div class="user-row"><img src="${userPhoto}" alt=""><div><div class="user-name">${userName}</div><div class="user-handle">@${user?.username||'لا يوجد'}</div></div></div>
-        <div class="glass-card" style="text-align:center;">
-            <h2>📊 تقدّمك في المادة</h2>
-            ${createBarChart(sectionsData)}
-            <div style="margin-top:12px;font-size:1rem;font-weight:bold;color:#1a237e;">${earned} / ${total} نقطة (${pct}%)</div>
-            <div style="font-size:0.9rem;color:#555;">${grade}</div>
-            <div style="margin-top:8px;font-size:0.8rem;color:#888;">${doneCount} من ${sectionsData.length} أقسام مكتملة</div>
-        </div>
-        <div class="glass-card"><h2>📋 أقسام المادة</h2><div class="sections-grid">${sectionsHtml}</div></div>
-        <div class="back-link"><button onclick="showWelcome()">⬅️ العودة لصفحة الترحيب</button></div>
-        <div class="note">تطبيق تيليجرام المصغر • متابعة مادة اللغة العربية</div>`;
+// ─────────── QUIZ LOGIC ───────────
+let currentSection = null, currentQIndex = 0, userAnswers = [], answeredFlags = [];
+
+function openQuiz(section){
+    if(tg?.BackButton) tg.BackButton.show();
+    currentSection = section;
+    currentQIndex = 0;
+    userAnswers = new Array(section.questions.length).fill(null);
+    answeredFlags = new Array(section.questions.length).fill(false);
+    renderQuiz();
+    document.getElementById('quizOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
-window.startApp=function(){if(!localStorage.getItem('arabic_welcome_v4'))localStorage.setItem('arabic_welcome_v4','true');renderMainPage();};
-window.retrySection=function(id){if(confirm('هل تريد إعادة هذا القسم؟ سيتم حذف نتيجتك السابقة.')){markSectionUndone(id);renderMainPage();startSection(id);}};
-
-let currentQuiz=null;
-function removeModal(){const m=document.querySelector('.quiz-modal');if(m)m.remove();}
-function cancelQuiz(){removeModal();currentQuiz=null;}
-
-window.startSection=function(id){
-    const sec=sectionsData.find(s=>s.id===id);if(!sec)return;
-    currentQuiz={sectionId:id,questions:[...sec.questions],currentIndex:0,answers:new Array(sec.questions.length).fill(null),quizDone:false,sectionName:sec.name,totalPoints:sec.totalPoints};
-    renderModal();
-};
-
-function renderModal(){
-    if(!currentQuiz)return;
-    const q=currentQuiz.questions[currentQuiz.currentIndex];
-    const chosen=currentQuiz.answers[currentQuiz.currentIndex];
-    const canCheck=chosen!==null;
-    let answerArea='';
-    if(q.type==='mcq')answerArea=q.opts.map((opt,idx)=>`<label class="quiz-option ${chosen===idx?'selected':''}" data-oi="${idx}"><input type="radio" name="qz" style="display:none;">${opt}</label>`).join('');
-    else if(q.type==='tf')answerArea=`<div class="tf-btns"><button class="tf-btn true-btn ${chosen===true?'selected':''}" id="trueBtn">✓ صح</button><button class="tf-btn false-btn ${chosen===false?'selected':''}" id="falseBtn">✗ خطأ</button></div>`;
-    else if(q.type==='yesno')answerArea=`<div class="tf-btns"><button class="tf-btn true-btn ${chosen===true?'selected':''}" id="trueBtn">👍 نعم</button><button class="tf-btn false-btn ${chosen===false?'selected':''}" id="falseBtn">👎 لا</button></div>`;
-
-    const modal=document.createElement('div');modal.className='quiz-modal';
-    modal.innerHTML=`<div class="quiz-content"><h3>${currentQuiz.sectionName}</h3><div class="q-type-label">سؤال ${currentQuiz.currentIndex+1} / ${currentQuiz.questions.length}</div><div class="q-text">${q.q}</div>${answerArea}<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;">${currentQuiz.currentIndex>0?'<button class="btn-secondary" id="prevBtnQ">⬅️ السابق</button>':''}<button class="btn-primary" id="checkBtnQ" ${!canCheck?'disabled':''}>تحقق</button></div><div id="feedbackAreaQ"></div><button style="margin-top:12px;width:100%;background:#eee;" class="btn-secondary" onclick="cancelQuiz();renderMainPage();">إلغاء</button></div>`;
-    document.body.appendChild(modal);
-
-    if(q.type==='mcq')modal.querySelectorAll('.quiz-option').forEach(o=>o.addEventListener('click',()=>selectAnswer(parseInt(o.dataset.oi))));
-    else{const tb=modal.querySelector('#trueBtn'),fb=modal.querySelector('#falseBtn');if(tb)tb.addEventListener('click',()=>selectAnswer(true));if(fb)fb.addEventListener('click',()=>selectAnswer(false));}
-    modal.querySelector('#checkBtnQ').addEventListener('click',()=>{if(!currentQuiz.quizDone)checkAnswer();});
-    const pb=modal.querySelector('#prevBtnQ');if(pb)pb.addEventListener('click',prevQuestion);
+function closeQuiz(){
+    if(tg?.BackButton) tg.BackButton.hide();
+    document.getElementById('quizOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+    currentSection = null; currentQIndex = 0; userAnswers = []; answeredFlags = [];
+    renderDashboard();
 }
 
-function selectAnswer(val){
-    if(!currentQuiz||currentQuiz.quizDone)return;
-    currentQuiz.answers[currentQuiz.currentIndex]=val;
-    const modal=document.querySelector('.quiz-modal');if(!modal)return;
-    const q=currentQuiz.questions[currentQuiz.currentIndex];
-    if(q.type==='mcq'){modal.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));const s=modal.querySelector(`.quiz-option[data-oi="${val}"]`);if(s)s.classList.add('selected');}
-    else{const tb=modal.querySelector('#trueBtn'),fb=modal.querySelector('#falseBtn');if(tb)tb.classList.remove('selected');if(fb)fb.classList.remove('selected');if(val===true&&tb)tb.classList.add('selected');if(val===false&&fb)fb.classList.add('selected');}
-    const cb=modal.querySelector('#checkBtnQ');if(cb)cb.disabled=false;
+function toggleKeyPoints(){
+    const list = document.getElementById('keyPointsList');
+    if(list) list.classList.toggle('visible');
 }
 
-function checkAnswer(){
-    if(!currentQuiz||currentQuiz.quizDone)return;
-    const q=currentQuiz.questions[currentQuiz.currentIndex],chosen=currentQuiz.answers[currentQuiz.currentIndex];
-    if(chosen===null||chosen===undefined)return;
-    let isCorrect;if(q.type==='mcq')isCorrect=(chosen===q.correct-1);else if(q.type==='tf')isCorrect=(chosen===q.answer);else isCorrect=true;
-    currentQuiz.quizDone=true;
-    const modal=document.querySelector('.quiz-modal');if(!modal)return;
-    if(q.type==='mcq')modal.querySelectorAll('.quiz-option').forEach((o,idx)=>{o.style.pointerEvents='none';if(idx===q.correct-1)o.classList.add('correct');else if(idx===chosen&&!isCorrect)o.classList.add('wrong');});
-    else{const tb=modal.querySelector('#trueBtn'),fb=modal.querySelector('#falseBtn');if(tb)tb.style.pointerEvents='none';if(fb)fb.style.pointerEvents='none';if(q.type==='tf'){const cv=q.answer;if(cv===true&&tb)tb.classList.add('correct-highlight');if(cv===false&&fb)fb.classList.add('correct-highlight');if(!isCorrect){if(chosen===true&&tb)tb.classList.add('wrong-highlight');if(chosen===false&&fb)fb.classList.add('wrong-highlight');}}else{if(chosen===true&&tb)tb.classList.add('correct-highlight');if(chosen===false&&fb)fb.classList.add('correct-highlight');}}
-    const fa=modal.querySelector('#feedbackAreaQ');fa.innerHTML=isCorrect||q.type==='yesno'?'<div class="feedback-icon">✅</div><p style="text-align:center;color:#2e7d32;">تم التسجيل!</p>':'<div class="feedback-icon">❌</div><p style="text-align:center;color:#c62828;">الإجابة الصحيحة: '+(q.type==='mcq'?q.opts[q.correct-1]:q.answer?'✓ صح':'✗ خطأ')+'</p>';
-    if(isCorrect||q.type==='yesno')createConfetti(modal.querySelector('.quiz-content'));
-    const cb=modal.querySelector('#checkBtnQ');if(cb)cb.style.display='none';
-    const prev=modal.querySelector('#prevBtnQ');if(prev)prev.style.display='none';
-    const isLast=currentQuiz.currentIndex===currentQuiz.questions.length-1;
-    const nb=document.createElement('button');nb.className='btn-primary';nb.textContent=isLast?'إنهاء الاختبار':'التالي ⏩';
-    nb.addEventListener('click',isLast?finishQuiz:moveNext);cb.parentNode.appendChild(nb);
+function renderQuiz(){
+    if(!currentSection) return;
+    const sec = currentSection;
+    const q = sec.questions[currentQIndex];
+    const isAnswered = answeredFlags[currentQIndex];
+    const selected = userAnswers[currentQIndex];
+
+    let dots = '';
+    for(let i=0; i<sec.questions.length; i++){
+        let cls = 'q-dot';
+        if(i === currentQIndex && !answeredFlags[i]) cls += ' current';
+        if(answeredFlags[i] && userAnswers[i] === sec.questions[i].answer) cls += ' correct-dot';
+        if(answeredFlags[i] && userAnswers[i] !== null && userAnswers[i] !== sec.questions[i].answer) cls += ' wrong-dot';
+        dots += `<div class="${cls}">${i+1}</div>`;
+    }
+
+    let cardClass = 'question-card';
+    if(isAnswered) cardClass += (selected === q.answer) ? ' correct-flash' : ' wrong-flash';
+
+    const isLast = currentQIndex === sec.questions.length-1;
+    const allDone = answeredFlags.every(a => a === true);
+
+    const modal = document.getElementById('quizModal');
+    modal.innerHTML = `
+    <div class="quiz-header">
+      <span class="quiz-title">${sec.icon} ${sec.title}</span>
+      <button class="close-btn" onclick="window.closeQuiz()">✕</button>
+    </div>
+    <div class="key-points-toggle" onclick="window.toggleKeyPoints()">
+      📋 10 Must-Know Points (tap to expand)
+    </div>
+    <ul class="key-points-list" id="keyPointsList">
+      ${sec.points.map(p => `<li>• ${p}</li>`).join('')}
+    </ul>
+    <div class="q-progress">${dots}</div>
+    <div class="${cardClass}">${q.statement}</div>
+    <div class="btn-row">
+      <button class="btn-tf ${selected===true?'selected-true':''}" ${isAnswered?'disabled':''} onclick="window.answerQuestion(true)">✅ True</button>
+      <button class="btn-tf ${selected===false?'selected-false':''}" ${isAnswered?'disabled':''} onclick="window.answerQuestion(false)">❌ False</button>
+    </div>
+    ${isAnswered && !q.answer && q.explanation ? `<div class="explanation">💡 ${q.explanation}</div>` : ''}
+    ${isAnswered && q.answer ? '<div style="color:var(--success);font-weight:700;text-align:center;margin:6px 0;">✅ Correct!</div>' : ''}
+    ${isAnswered && !q.answer ? '<div style="color:var(--danger);font-weight:700;text-align:center;margin:6px 0;">❌ Incorrect</div>' : ''}
+    <div class="nav-btns">
+      ${isAnswered && !isLast ? `<button class="nav-btn next-btn" onclick="window.nextQuestion()">Next →</button>` : ''}
+      ${isAnswered && isLast ? `<button class="nav-btn finish-btn" onclick="window.finishQuiz()">🏁 Show Results</button>` : ''}
+      ${!isAnswered ? `<button class="nav-btn retry-btn" onclick="window.skipQuestion()" style="flex:0.5;font-size:0.75rem;">Skip ⏭</button>` : ''}
+    </div>
+    ${allDone && isLast && isAnswered ? `<div style="text-align:center;margin-top:8px;"><button class="nav-btn finish-btn" onclick="window.finishQuiz()" style="width:100%;">🏁 Show Final Results</button></div>` : ''}
+    `;
 }
 
-function moveNext(){removeModal();currentQuiz.currentIndex++;currentQuiz.quizDone=false;renderModal();}
-function prevQuestion(){removeModal();currentQuiz.currentIndex--;currentQuiz.quizDone=false;renderModal();}
+function answerQuestion(ans){
+    if(!currentSection || answeredFlags[currentQIndex]) return;
+    userAnswers[currentQIndex] = ans;
+    answeredFlags[currentQIndex] = true;
+    const q = currentSection.questions[currentQIndex];
+    if(tg?.HapticFeedback){
+        tg.HapticFeedback.notificationOccurred(ans === q.answer ? 'success' : 'error');
+    }
+    renderQuiz();
+}
+
+function nextQuestion(){
+    if(!currentSection || currentQIndex >= currentSection.questions.length-1) return;
+    currentQIndex++;
+    renderQuiz();
+    document.getElementById('quizModal').scrollTop = 0;
+}
+
+function skipQuestion(){
+    if(!currentSection || answeredFlags[currentQIndex]) return;
+    userAnswers[currentQIndex] = null;
+    answeredFlags[currentQIndex] = true;
+    if(currentQIndex < currentSection.questions.length-1){
+        currentQIndex++;
+        renderQuiz();
+    } else {
+        renderQuiz();
+    }
+}
 
 function finishQuiz(){
-    // حفظ المراجع قبل الحذف
-    const quizRef=currentQuiz;
-    let score=0;
-    quizRef.questions.forEach((q,i)=>{
-        const chosen=quizRef.answers[i];
-        if(q.type==='mcq'){if(chosen===q.correct-1)score++;}
-        else if(q.type==='tf'){if(chosen===q.answer)score++;}
-        else{if(chosen===true)score++;}
-    });
-    const total=quizRef.questions.length;
-    const scaledScore=Math.round((score/total)*quizRef.totalPoints);
-    // إزالة المودال أولاً
-    removeModal();
-    // حفظ النتيجة
-    markSectionDone(quizRef.sectionId,scaledScore);
-    currentQuiz=null;
-    const pct=Math.round((scaledScore/quizRef.totalPoints)*100);
-    alert(`📊 نتيجة ${quizRef.sectionName}:\n${scaledScore} / ${quizRef.totalPoints} نقطة (${pct}%)\nإجابات صحيحة: ${score} من ${total}`);
-    renderMainPage();
+    if(!currentSection) return;
+    const sec = currentSection;
+    let correct = 0;
+    for(let i=0; i<sec.questions.length; i++){
+        if(userAnswers[i] === sec.questions[i].answer) correct++;
+    }
+    setSectionProgress(sec.id, correct, sec.questions.length);
+    const pct = Math.round((correct/5)*100);
+    let emoji = '😢';
+    if(pct >= 100) emoji = '🏆';
+    else if(pct >= 80) emoji = '🌟';
+    else if(pct >= 60) emoji = '👍';
+    else if(pct >= 40) emoji = '📖';
+
+    const stars = Array.from({length:5}, (_,i) => i<correct ? 'star-lit' : 'star-dim');
+    const modal = document.getElementById('quizModal');
+    modal.innerHTML = `
+    <div class="quiz-header"><span class="quiz-title">${sec.icon} ${sec.title}</span><button class="close-btn" onclick="window.closeQuiz()">✕</button></div>
+    <div class="results-container">
+      <div style="font-size:3rem;">${emoji}</div>
+      <div class="big-score">${correct}/5</div>
+      <div class="score-label">Correct answers</div>
+      <div class="star-row">${stars.map((s,i) => `<span class="${s}" style="animation-delay:${i*0.12}s;">⭐</span>`).join('')}</div>
+      <p style="color:var(--text2);margin:12px 0;">Percentage: <b style="color:var(--accent);">${pct}%</b></p>
+      <div class="btn-row">
+        <button class="nav-btn retry-btn" onclick="window.retryQuiz()">🔄 Retry</button>
+        <button class="nav-btn finish-btn" onclick="window.closeQuiz()">✅ Done</button>
+      </div>
+    </div>`;
+    if(pct >= 80) spawnConfetti();
+    if(pct === 100) setTimeout(spawnConfetti, 600);
+    updateOverallStats();
+    if(tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 }
 
-function createConfetti(c){const colors=['#ff0','#f00','#0f0','#00f','#ff00ff','#00ffff','#c9a96e','#1a237e'];for(let i=0;i<25;i++){const d=document.createElement('div');d.style.cssText=`position:absolute;width:8px;height:8px;background:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}%;top:-10px;border-radius:50%;animation:confettiFall ${1+Math.random()}s ease forwards;`;c.appendChild(d);setTimeout(()=>d.remove(),2000);}}
-const st=document.createElement('style');st.textContent='@keyframes confettiFall{0%{transform:translateY(0)rotate(0deg);opacity:1}100%{transform:translateY(200px)rotate(720deg);opacity:0}}';document.head.appendChild(st);
+function retryQuiz(){
+    if(!currentSection) return;
+    resetSectionProgress(currentSection.id);
+    userAnswers = new Array(currentSection.questions.length).fill(null);
+    answeredFlags = new Array(currentSection.questions.length).fill(false);
+    currentQIndex = 0;
+    renderQuiz();
+    updateOverallStats();
+}
 
-if(localStorage.getItem('arabic_welcome_v4')){renderMainPage();}else{showWelcome();}
+function spawnConfetti(){
+    const confettiColors = ['#ffb800','#ff5e5e','#4ade80','#6c63ff','#00d4aa','#ff69b4','#ffd000','#00bfff'];
+    for(let i=0; i<60; i++){
+        const piece = document.createElement('div'); piece.classList.add('confetti-piece');
+        piece.style.left = Math.random()*100+'%';
+        piece.style.top = -(Math.random()*80+20)+'px';
+        piece.style.width = (Math.random()*10+5)+'px';
+        piece.style.height = (Math.random()*10+5)+'px';
+        piece.style.backgroundColor = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+        piece.style.borderRadius = Math.random()>0.5 ? '50%' : '2px';
+        piece.style.animationDuration = (Math.random()*2+1.8)+'s';
+        piece.style.animationDelay = Math.random()*0.6+'s';
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 3000);
+    }
+}
+
+// Expose functions globally for onclick
+window.closeQuiz = closeQuiz;
+window.toggleKeyPoints = toggleKeyPoints;
+window.answerQuestion = answerQuestion;
+window.nextQuestion = nextQuestion;
+window.skipQuestion = skipQuestion;
+window.finishQuiz = finishQuiz;
+window.retryQuiz = retryQuiz;
+
+// Close on Esc or overlay click
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && currentSection) closeQuiz(); });
+document.getElementById('quizOverlay').addEventListener('click', function(e){ if(e.target === this) closeQuiz(); });
+
+// Initial render
+renderDashboard();
+const initStats = getOverallStats();
+if(initStats.completedCount === initStats.totalSections && initStats.totalSections > 0){
+    setTimeout(() => { spawnConfetti(); setTimeout(spawnConfetti, 700); }, 500);
+}
+})();
 </script>
 </body>
 </html>
